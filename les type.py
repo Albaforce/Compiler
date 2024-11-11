@@ -12,16 +12,26 @@ negative_real = r"\(\-(?:0|[1-9][0-9]{0,3}|[1-2][0-9]{0,4}|3276[0-8])\)"
 INTEGER_PATTERN = f"(?:{positive_real}|{positive_real_without_sign}|{negative_real})" # Matches integers with optional parentheses
 
 # Unsigned float (e.g., 88.5, 0.5)
-unsigned_float = r"(?:0|[1-9][0-9]*)(?:\.[0-9]+)"
-signed_float_with_parentheses = r"\(\+?(?:0|[1-9][0-9]*)(?:\.[0-9]+)\)"
-negative_float_with_parentheses = r"\(-(?:0|[1-9][0-9]*)(?:\.[0-9]+)\)"
+#unsigned_float = r"(?:0|[1-9][0-9]*)(?:\.[0-9]+)"
+#signed_float_with_parentheses = r"\(\+?(?:0|[1-9][0-9]*)(?:\.[0-9]+)\)"
+#negative_float_with_parentheses = r"\(-(?:0|[1-9][0-9]*)(?:\.[0-9]+)\)"
+
+unsigned_float = r"(?:0|[1-9][0-9]*)(?:\.[0-9]+)?"
+signed_float_with_parentheses = r"\(\+?(?:0|[1-9][0-9]*)(?:\.[0-9]+)?\)"
+negative_float_with_parentheses = r"\(-(?:0|[1-9][0-9]*)(?:\.[0-9]+)?\)"
 
 FLOAT_PATTERN = f"(?:{unsigned_float}|{signed_float_with_parentheses}|{negative_float_with_parentheses})" # Matches floats with optional parentheses
+
+#single_char_literal_pattern = r"'[^']'"
+#string_literal_pattern = r'"[^"]*"'
 
 single_char_literal_pattern = r"'[^']'"
 string_literal_pattern = r'"[^"]*"'
 
 CHAR_PATTERN = f"(?:{single_char_literal_pattern}|{string_literal_pattern})"                    # Matches a single character in single quotes
+
+# Define regular expressions for Comment
+comment_pattern = r"%%.*"
 
 
 # 3. Validation of integer literals
@@ -44,20 +54,34 @@ def is_var_declaration(line):
 # Tokenize function to categorize words in the input
 def tokenize(code):
     tokens = []
-    words = words = re.findall(r"[\w']+|[=;]", code)
+
+    #le cas de commentaire : 
+    if re.match(comment_pattern, code):  # Détecte un commentaire complet
+        tokens.append(("COMMENT", code))
+        return tokens
+
+
+    # words = re.findall(r"[\w']+|[=;]", code)       #cette ecriture me retourne 5 5 + no string ""
+    words = re.findall(r"\b\d+\.\d+|\d+|\w+|'.'|\"[^\"]*\"|[=;]", code) #cette ecriture me retourne 5.5 + string ""
     
-    for i, word in enumerate(words):
+    for word in words:
          # Check if it's the first word
             if word == "CONST":
                 tokens.append(("CONST", True))
             elif word in KEYWORDS:
                 tokens.append(("KEYWORD", word))
             elif re.match(FLOAT_PATTERN, word):
-                tokens.append(("FLOAT", word))
-            elif re.match(INTEGER_PATTERN, word):
-                tokens.append(("INTEGER", word))
+            # Si le nombre contient une virgule (float) ou non (entier)
+                if '.' in word:
+                    tokens.append(("FLOAT", word))
+                else:
+                    tokens.append(("INTEGER", word))
             elif re.match(CHAR_PATTERN, word):
-                tokens.append(("CHAR", word))
+                # Détecter les littéraux de caractères simples et de chaînes
+                if word.startswith('"') and word.endswith('"'):
+                    tokens.append(("STRING", word))
+                else:
+                    tokens.append(("CHAR", word))
             elif word.isidentifier():  # Identifiers like variable names
                 tokens.append(("IDENTIFIER", word))
             elif word == "=":
@@ -70,14 +94,20 @@ def tokenize(code):
 
 # Parsing function to check correct syntax for constants
 def parse(tokens):
+
+    #commencer par le cas de commentaire
+    if tokens and tokens[0][0] == "COMMENT":
+        print(f"Ignoring comment: {tokens[0][1]}")
+        return
+
     i = 0
     while i < len(tokens):
         token_type, token_value = tokens[i]
         
-        if token_type == "KEYWORD" and token_value == "CONST":
+        if token_type == "CONST":
             # Expecting TYPE after CONST
             type_token = tokens[i + 1]
-            if type_token[0] == "KEYWORD" and type_token[1] in {"INTEGER", "FLOAT", "CHAR"}:
+            if type_token[0] == "KEYWORD" and type_token[1] in {"INTEGER", "FLOAT", "CHAR"} and len(tokens) > i + 3 and tokens[i + 3][0] == "ASSIGN" and len(tokens) > i + 4:
                 idf_token = tokens[i + 2]
                 assign_token = tokens[i + 3]
                 value_token = tokens[i + 4]
@@ -86,7 +116,7 @@ def parse(tokens):
                 if idf_token[0] == "IDENTIFIER" and assign_token[0] == "ASSIGN":
                     # Check if value matches expected type
                     if (type_token[1] == "INTEGER" and value_token[0] == "INTEGER") or \
-                       (type_token[1] == "FLOAT" and value_token[0] == "FLOAT") or \
+                       (type_token[1] == "FLOAT" and (value_token[0] == "FLOAT" or value_token[0] == "INTEGER")) or \
                        (type_token[1] == "CHAR" and value_token[0] == "CHAR"):
                         print(f"Valid constant declaration: {type_token[1]} {idf_token[1]} = {value_token[1]}")
                     else:
@@ -100,10 +130,18 @@ def parse(tokens):
         else:
             i += 1
 
+
+
 #now for the suntactic analysis
-
-
 def syntactic_analysis(tokens):
+
+    #commencer par les commentaires :
+    if tokens and tokens[0][0] == "COMMENT":
+        print(f"Ignoring comment: {tokens[0][1]}")
+        print("Syntactic analysis successful")
+        return True  # Le commentaire est ignore mais considere valide
+
+
     # Initialize a variable to store the result
     syntax_valid = True
     
@@ -150,10 +188,11 @@ def syntactic_analysis(tokens):
             if keyword == 'INTEGER' and value_type != 'INTEGER':
                 print(f"Invalid value for INTEGER: {value_token[1]}")
                 syntax_valid = False
-            elif keyword == 'FLOAT' and value_type != 'FLOAT':
+            elif keyword == 'FLOAT' and value_type != 'FLOAT' and value_type != 'INTEGER':
                 print(f"Invalid value for FLOAT: {value_token[1]}")
                 syntax_valid = False
-            elif keyword == 'CHAR' and value_type != 'CHAR':
+            elif keyword == 'CHAR' and value_type != 'CHAR' and value_type != 'STRING':
+                print(value_type)
                 print(f"Invalid value for CHAR: {value_token[1]}")
                 syntax_valid = False
         else:
@@ -192,7 +231,7 @@ parse(tokens)
 syntactic_analysis(tokens)
 
 #test
-""""
+
 code = [
     "CONST INTEGER d = 5;",
     "CONST INTEGER d = 5.5;",
@@ -201,15 +240,53 @@ code = [
     "CONST FLOAT f = 5;",
     "CONST CHAR ch = 'a';",
     "CONST CHAR ch = 123;",
+    "CHAR ch = 'b'",
+    'CHAR ch = "test" ',
+    "INTEGER tab[10]",
+    "FLOAT tab[10]",
+    "CHAR tab[10]",
     "INTEGER num = 7;",
     "INTEGER num;",
     "CONST INTEGER a = 10; CONST INTEGER b = 20;",
     "INTEGER num = 5;",
+    "FLOAT t = +5",
+    "FLOAT t = +5.5",
+    "FLOAT t = -5",
+    "FLOAT t = -5.5",
+    "FLOAT t = (+5)",
+    "FLOAT t = (+5.5)",
+    "FLOAT t = (-5)",
+    "FLOAT t = (-5.5)",
+    "%%test comment !!!!!!!",
+    "INTEGER num = 5; %%test comment !!!!!!!"
 ]
 for line in code:
     print(f"\nAnalyzing line: {line}")
-    tokens = tokenize([line])  # Tokenize the current line
+    tokens = tokenize(line)  # Tokenize the current line
     print("Tokens:", tokens)
     parse(tokens)
     syntactic_analysis(tokens)  # Run syntactic analysis on the tokens
+
+
+
+
+"""
+les modification :
+
+1) traiter un peu des cas particulier comme : 
+    - INTEGER x = 2.5 (true)    ===>   INTEGER x = 2.5 (false)
+    - FLOAT y = 3.14 (false)    ===>   FLOAT y = 3.14 (true)  
+    - FLOAT y = 3 (false)       ===>   FLOAT y = 3 (true) 
+    - CHAR ch = "test" (false)  ===>   CHAR ch = "test" (true)
+
+2) ajouter le cas du commentaire (dnas une ligne 'seul')
+
+
+3) il reste a verifier :
+    - l'instruction se termine par point-vergule ';'
+    - le cas des tableaux (il marche je ne suis pas sur)
+    - l'idf doit commencer par MAJUSCULE
+    - le commentaire dans la meme ligne avec une insruction 
+    - le cas des parentheses dans la decalration d'un FLOAT
+
 """
