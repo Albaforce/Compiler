@@ -13,14 +13,14 @@ NOT_OPERATOR = r'!'
 
 LOGIC_PATTERN = f"{AND_OPERATOR}|{OR_OPERATOR}|{NOT_OPERATOR}"
 
-GREATER_THAN = r'>'
-LESS_THAN = r'<'
 GREATER_EQUAL = r'>='
 LESS_EQUAL = r'<='
+GREATER_THAN = r'>'
+LESS_THAN = r'<'
 EQUALS = r'=='
 NOT_EQUALS = r'!='
 
-CONDITION_PATTERN = f"{GREATER_THAN}|{LESS_THAN}|{GREATER_EQUAL}|{LESS_EQUAL}|{EQUALS}|{NOT_EQUALS}"
+CONDITION_PATTERN = f"{GREATER_EQUAL}|{LESS_EQUAL}|{GREATER_THAN}|{LESS_THAN}|{EQUALS}|{NOT_EQUALS}"
 
 def lexer(input_string):
     tokens = []  
@@ -53,17 +53,17 @@ def lexer(input_string):
 
     matches = re.finditer(CONDITION_PATTERN, input_string)
     for match in matches:
-        if match.group() == '>':
+        if match.group() == '>=':
+            token = {'type': 'GREATER_EQUAL', 'value': match.group()}
+            tokens.append(token)
+        elif match.group() == '<=':
+            token = {'type': 'LESS_EQUAL', 'value': match.group()}        
+        elif match.group() == '>':
             token = {'type': 'GREATER_THAN', 'value': match.group()}
             tokens.append(token)
         elif match.group() == '<':
             token = {'type': 'LESS_THAN', 'value': match.group()}
             tokens.append(token)
-        elif match.group() == '>=':
-            token = {'type': 'GREATER_EQUAL', 'value': match.group()}
-            tokens.append(token)
-        elif match.group() == '<=':
-            token = {'type': 'LESS_EQUAL', 'value': match.group()}
             tokens.append(token)
         elif match.group() == '==':
             token = {'type': 'EQUALS', 'value': match.group()}
@@ -74,8 +74,8 @@ def lexer(input_string):
     
     return tokens
 
-input_string = " 3 + 5 * 2 + w && x || y > z == 10"
+input_string = " 3 + 5 * 2 + w && x || y > z == 1d21+ 12-177 <= 5"
 tokens = lexer(input_string)
-
+# raho f maintenance
 for token in tokens:
     print(token)
