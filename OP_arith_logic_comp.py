@@ -20,62 +20,57 @@ LESS_THAN = r'<'
 EQUALS = r'=='
 NOT_EQUALS = r'!='
 
-CONDITION_PATTERN = f"{GREATER_EQUAL}|{LESS_EQUAL}|{GREATER_THAN}|{LESS_THAN}|{EQUALS}|{NOT_EQUALS}"
+CONDITION_PATTERN = f"{NOT_EQUALS}|{EQUALS}|{LESS_EQUAL}|{GREATER_EQUAL}|{GREATER_THAN}|{LESS_THAN}"
+
+IDENTIFIER = r'[A-Z][a-z0-9]{0,7}'  # Start with uppercase letter, followed by alphanumeric characters
+
+NUMBER = r'\d+\.\d+|\d+'  # Matches floating-point and integer numbers
+
+# Combined pattern (ensure multi-character operators come first)
+PATTERN = f"{CONDITION_PATTERN}|{ARITHMETIC_PATTERN}|{LOGIC_PATTERN}|{NUMBER}|{IDENTIFIER}"
 
 def lexer(input_string):
-    tokens = []  
-    matches = re.finditer(ARITHMETIC_PATTERN, input_string)
-    for match in matches:
-        if match.group() == '+':
-            token = {'type': 'ADD_OPERATOR', 'value': match.group()}
-            tokens.append(token)
-        elif match.group() == '-':
-            token = {'type': 'SUB_OPERATOR', 'value': match.group()}
-            tokens.append(token)
-        elif match.group() == '*':
-            token = {'type': 'MULTIPLY_OPERATOR', 'value': match.group()}
-            tokens.append(token)
-        elif match.group() == '/':
-            token = {'type': 'DIV_OPERATOR', 'value': match.group()}
+    tokens = []
+
+    # Order matters: Multi-character operators first
+    OPERATORS = {
+        '==': 'EQUAL',
+        '!=': 'NOT_EQUALS',
+        '<=': 'LESS_EQUAL',
+        '>=': 'GREATER_EQUAL',
+        '>': 'GREATER_THAN',
+        '<': 'LESS_THAN',
+        '+': 'ADD_OPERATOR',
+        '-': 'SUB_OPERATOR',
+        '*': 'MULTIPLY_OPERATOR',
+        '/': 'DIV_OPERATOR',
+        '&&': 'AND_OPERATOR',
+        '||': 'OR_OPERATOR',
+        '!': 'NOT_OPERATOR'
+    }
+
+    # Use finditer() to find matches for all patterns in input
+    for match in re.finditer(PATTERN, input_string):
+        lexeme = match.group()
+
+        if lexeme in OPERATORS:
+            token = {'type': OPERATORS[lexeme], 'value': lexeme}
             tokens.append(token)
 
-    matches = re.finditer(LOGIC_PATTERN, input_string)
-    for match in matches:
-        if match.group() == '&&':
-            token = {'type': 'AND_OPERATOR', 'value': match.group()}
-            tokens.append(token)
-        elif match.group() == '||':
-            token = {'type': 'OR_OPERATOR', 'value': match.group()}
-            tokens.append(token)
-        elif match.group() == '!':
-            token = {'type': 'NOT_OPERATOR', 'value': match.group()}
+        elif re.fullmatch(NUMBER, lexeme):
+            token = {'type': 'NUMBER', 'value': lexeme}
             tokens.append(token)
 
-    matches = re.finditer(CONDITION_PATTERN, input_string)
-    for match in matches:
-        if match.group() == '>=':
-            token = {'type': 'GREATER_EQUAL', 'value': match.group()}
+        else:
+            token = {'type': 'IDENTIFIER', 'value': lexeme}
             tokens.append(token)
-        elif match.group() == '<=':
-            token = {'type': 'LESS_EQUAL', 'value': match.group()}        
-        elif match.group() == '>':
-            token = {'type': 'GREATER_THAN', 'value': match.group()}
-            tokens.append(token)
-        elif match.group() == '<':
-            token = {'type': 'LESS_THAN', 'value': match.group()}
-            tokens.append(token)
-            tokens.append(token)
-        elif match.group() == '==':
-            token = {'type': 'EQUALS', 'value': match.group()}
-            tokens.append(token)
-        elif match.group() == '!=':
-            token = {'type': 'NOT_EQUALS', 'value': match.group()}
-            tokens.append(token)
-    
+
     return tokens
 
-input_string = " 3 + 5 * 2 + w && x || y > z == 1d21+ 12-177 <= 5"
+
+input_string = "3 + 5 * 2 + W && Xa || y > z == 10 && x!= 15 ! v >= 0.2 <= 5"
 tokens = lexer(input_string)
-# raho f maintenance
+
 for token in tokens:
     print(token)
+print(len(tokens))
