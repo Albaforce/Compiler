@@ -26,8 +26,9 @@ IDENTIFIER = r'[A-Z][a-z0-9]{0,7}'  # Start with uppercase letter, followed by a
 
 NUMBER = r'\d+\.\d+|\d+'  # Matches floating-point and integer numbers
 
+PARENTHESIS_PATTERN = r'\(|\)'
 # Combined pattern (ensure multi-character operators come first)
-PATTERN = f"{CONDITION_PATTERN}|{ARITHMETIC_PATTERN}|{LOGIC_PATTERN}|{NUMBER}|{IDENTIFIER}"
+PATTERN = f"{PARENTHESIS_PATTERN}|{CONDITION_PATTERN}|{ARITHMETIC_PATTERN}|{LOGIC_PATTERN}|{NUMBER}|{IDENTIFIER}"
 
 def lexer(input_string):
     tokens = []
@@ -48,29 +49,67 @@ def lexer(input_string):
         '||': 'OR_OPERATOR',
         '!': 'NOT_OPERATOR'
     }
+    PARENTHESIS = {
+        '(': 'LPAREN',
+        ')': 'RPAREN'
+    }
 
-    # Use finditer() to find matches for all patterns in input
+   # Track last position in the input string
+    last_pos = 0
+
     for match in re.finditer(PATTERN, input_string):
-        lexeme = match.group()
+        start, end = match.span()
+        value = match.group()
 
-        if lexeme in OPERATORS:
-            token = {'type': OPERATORS[lexeme], 'value': lexeme}
-            tokens.append(token)
+        # Handle any "unknown" text between matches
+        if start > last_pos:
+            unknown_text = input_string[last_pos:start].strip()
+            for char in unknown_text:  # Handle each character as unknown
+                if char.strip():  # Ignore whitespace
+                    tokens.append({'type': 'UNKNOWN', 'value': char})
 
-        elif re.fullmatch(NUMBER, lexeme):
-            token = {'type': 'NUMBER', 'value': lexeme}
-            tokens.append(token)
+        # Identify operator type
+        if value in OPERATORS:
+            tokens.append({'type': OPERATORS[value], 'value': value})
+        elif value in PARENTHESIS:
+            tokens.append({'type': PARENTHESIS[value], 'value': value})
+        elif re.fullmatch(NUMBER, value):
+            tokens.append({'type': 'NUMBER', 'value': value})
+        elif re.fullmatch(IDENTIFIER, value):
+            tokens.append({'type': 'IDENTIFIER', 'value': value})
+        
+        # Update last position
+        last_pos = end
 
-        else:
-            token = {'type': 'IDENTIFIER', 'value': lexeme}
-            tokens.append(token)
+    # Handle any trailing unknown text after the last match
+    if last_pos < len(input_string):
+        unknown_text = input_string[last_pos:].strip()
+        for char in unknown_text:
+            if char.strip():  # Ignore whitespace
+                tokens.append({'type': 'UNKNOWN', 'value': char})
 
     return tokens
 
 
-input_string = "3 + 5 * 2 + W && Xa || y > z == 10 && x!= 15 ! v >= 0.2 <= 5"
-tokens = lexer(input_string)
+# Test cases
+test_cases = {
+    "input1": "3 + 5 * 2 - 8 / 4",
+    "input2": "A && B || C && !D",
+    "input3": "X >= Y && Z != 10 || W <= 5",
+    "input4": "Count + Total_sum - 45.32 * Variable / 3",
+    "input5": "value != 10 && Amount > 20 || result <= THreshold",
+    "input6": "a < b <= c > d >= e == f != g",
+    "input7": "(a + b) * (c - d) / (e && f)",
+    "input8": "4 + 5 * 6 > 10 && 2 + 3 < 8",
+    "input9": "0.2 <= 5 && 3.14159 > 2 && 7.0 == 7",
+    "input10": "X && Y || Z && !W",
+    "input11": "4 + 5 $ 6 - 3 ##"  # Contains an invalid symbol '$''#'
+}
 
-for token in tokens:
-    print(token)
-print(len(tokens))
+# Sometest
+for name, input_string in test_cases.items():
+    print(f"\n{name}: {input_string}")
+    tokens = lexer(input_string)
+    for token in tokens:
+        print(token)
+    print(f"Total tokens: {len(tokens)}")
