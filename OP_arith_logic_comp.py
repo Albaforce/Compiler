@@ -91,25 +91,104 @@ def lexer(input_string):
     return tokens
 
 
-# Test cases
-test_cases = {
-    "input1": "3 + 5 * 2 - 8 / 4",
-    "input2": "A && B || C && !D",
-    "input3": "X >= Y && Z != 10 || W <= 5",
-    "input4": "Count + Total_sum - 45.32 * Variable / 3",
-    "input5": "value != 10 && Amount > 20 || result <= THreshold",
-    "input6": "a < b <= c > d >= e == f != g",
-    "input7": "(a + b) * (c - d) / (e && f)",
-    "input8": "4 + 5 * 6 > 10 && 2 + 3 < 8",
-    "input9": "0.2 <= 5 && 3.14159 > 2 && 7.0 == 7",
-    "input10": "X && Y || Z && !W",
-    "input11": "4 + 5 $ 6 - 3 ##"  # Contains an invalid symbol '$''#'
-}
+#---------------------------------------SYNTAX ANALYSIS PART------------------------------------------------#
 
-# Sometest
-for name, input_string in test_cases.items():
-    print(f"\n{name}: {input_string}")
-    tokens = lexer(input_string)
+def parser(tokens):
+    stack = []
+    previous_token = None  # To track consecutive operators
+    
     for token in tokens:
-        print(token)
-    print(f"Total tokens: {len(tokens)}")
+        type_ = token['type']
+        value = token['value']
+
+        # Check for consecutive operators
+        if type_ in ['ADD_OPERATOR', 'SUB_OPERATOR', 'MULTIPLY_OPERATOR', 'DIV_OPERATOR', 'AND_OPERATOR', 'OR_OPERATOR']:
+            if previous_token and previous_token['type'] in ['ADD_OPERATOR', 'SUB_OPERATOR', 'MULTIPLY_OPERATOR', 'DIV_OPERATOR', 'AND_OPERATOR', 'OR_OPERATOR']:
+                return f"Syntax Error: Consecutive operators '{previous_token['value']} {value}' are invalid."
+
+        if type_ in ['NUMBER', 'IDENTIFIER']:
+            stack.append(token)  # Operand
+        elif type_ in ['ADD_OPERATOR', 'SUB_OPERATOR', 'MULTIPLY_OPERATOR', 'DIV_OPERATOR']:
+            # Operators must come after an operand, not another operator or at the start
+            if not stack or stack[-1]['type'] in ['ADD_OPERATOR', 'SUB_OPERATOR', 'MULTIPLY_OPERATOR', 'DIV_OPERATOR', 'LESS_EQUAL', 'GREATER_EQUAL', 'GREATER_THAN', 'LESS_THAN', 'EQUALS', 'NOT_EQUALS']:
+                return f"Syntax Error: Operator '{value}' misplaced or invalid."
+            stack.append(token)  # Operator
+        elif type_ in ['LESS_EQUAL', 'GREATER_EQUAL', 'GREATER_THAN', 'LESS_THAN', 'EQUALS', 'NOT_EQUALS']:
+            # Comparison operators must follow operands or be placed between two operands
+            if not stack or stack[-1]['type'] in ['ADD_OPERATOR', 'SUB_OPERATOR', 'MULTIPLY_OPERATOR', 'DIV_OPERATOR', 'LESS_EQUAL', 'GREATER_EQUAL', 'GREATER_THAN', 'LESS_THAN', 'EQUALS', 'NOT_EQUALS']:
+                return f"Syntax Error: Conditional operator '{value}' misplaced or invalid."
+            stack.append(token)  # Comparison operator
+        elif type_ == 'LPAREN':
+            stack.append(token)  # Opening parenthesis
+        elif type_ == 'RPAREN':
+            if not stack or stack[-1]['type'] in ['ADD_OPERATOR', 'SUB_OPERATOR', 'MULTIPLY_OPERATOR', 'DIV_OPERATOR', 'LESS_EQUAL', 'GREATER_EQUAL', 'GREATER_THAN', 'LESS_THAN', 'EQUALS', 'NOT_EQUALS']:
+                return "Syntax Error: Parenthesis closing without an operand or operator."
+            stack.append(token)  # Closing parenthesis
+
+        previous_token = token  # Update the previous token for next iteration
+
+    # Ensure the last token is a valid operand (not an operator)
+    if stack and stack[-1]['type'] in ['ADD_OPERATOR', 'SUB_OPERATOR', 'MULTIPLY_OPERATOR', 'DIV_OPERATOR', 'LESS_EQUAL', 'GREATER_EQUAL', 'GREATER_THAN', 'LESS_THAN', 'EQUALS', 'NOT_EQUALS']:
+        return "Syntax Error: Expression ends with an operator."
+
+    # Parentheses balancing
+    open_parens = 0
+    for token in stack:
+        if token['type'] == 'LPAREN':
+            open_parens += 1
+        elif token['type'] == 'RPAREN':
+            open_parens -= 1
+
+    if open_parens != 0:
+        return "Syntax Error: Unmatched parentheses."
+
+    return "Syntax is correct."
+
+
+
+# Test cases
+test_cases = [
+    "3 + 5",
+    "3 + + 5",
+    "3 + * 5",
+    "3 + 5 *",
+    "3 + (5 * 2)",
+    "3 + (5 * 2",
+    "3 < 5",
+    "3 < ",
+    "3 > A ;",
+    "A + B",
+    "A + + B",
+    "A + (B * C",
+    "(A + B) * C",
+    "3 + 5 * (2 - 3)",
+    "(3 + 5) *",
+    "A * (B + C)",
+    "A * B + C",
+    "A * B + + C",
+    "A + B - C",
+    "A > B",
+    "A > B + C",
+    "A * B < C",
+    "A = B",
+    "(A + B",
+    "3 + (A + B",
+    "A + (B * C) > D",
+    "3 < (A + B)",
+    "3 + 5 ;",
+    "3 > (A + B",
+    "A + (B + C) * D",
+    "(A + B) * C +",
+    "(3 + 5) * (2 + 3)",
+    "(3 + 5) * 2",
+    "3 + 5 * 2 /",
+    "(3 + 5 * 2)",
+    "(3 + 5))"
+]
+# Run the tests
+# Test the specific case that was failing
+for idx, input_string in enumerate(test_cases, 1):
+    tokens = lexer(input_string)  # Tokenize the input
+    result = parser(tokens) 
+    print(input_string) # Run the parser
+    print(f"Test {idx}: {result}") # Print the result to see if the error is handled correctly
