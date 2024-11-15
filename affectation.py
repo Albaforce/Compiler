@@ -28,13 +28,25 @@ def is_valid_syntax(expression):
     # Check for any consecutive operators (e.g., "++", "+-", etc.)
     if re.search(r'[+\-*/]{2,}', expression):
         return False
-    # Check if the expression starts or ends with an operator (e.g., "+X", "X+")
-    if re.match(r'^[+\-*/]', expression) or re.match(r'[+\-*/]$', expression):
+    
+    if re.match(r'^[\*/]', expression) or re.match(r'[+\-*/]$', expression):
         return False
+   
     # Check if there is an incomplete operator at the end, e.g., "X +"
     if re.search(r'[+\-*/]\s*$', expression):
         return False
+    
+    if re.search(r'[+\-*/]\s*\)', expression):  # Operator right before closing parenthesis
+        print("operator before ')' ")
+        return False
+    
+    if re.search(r'\([*/]', expression):  # Operator immediately after opening parenthesis
+        print("Invalid operator after '('")
+        return False
+    
     return True
+
+    
 
 def are_identifiers_valid(expression):
     # Split by operators and parentheses to extract potential identifiers
@@ -100,29 +112,33 @@ def is_valid_assignment(expression):
 
 # Testing with various expressions
 expressions = [
+    "X=-6",
     "A = (X + 7 + B)/(5.3 - (-2))",  # Valid
     "Ab123 = (9 + 8 * (3 - 1)) / 4",  # Valid
-    "As56ss = (2 * (5 + 3) - (1 / 2))",  # Valid
+    "As56ss = (2 * (5 + 3) - (1 / 2-))",  # Valid
     "Val = A + 0.0",  # Valid
     "Id = (4) + (5)",  # Valid
     "Ooo = 4 + G",  # Valid
     "A = (((X + Y) * (Z - W)) / (53 + (A - B)))",  # Valid
+    "A = (((X + Y) * (Z - W)) / (53 + (*A - B)))",  # Invalid
     "A = ((X + (Y - Z)) * (2 + (A / (B - (C + D)))))",  # Valid
     "A = (X + (-3 + (5 - (6 * (4 + 1)))))/ (Y - (Z + 7))",  # Valid
     "A = (((((X + 2) * (3 - 4)) / (53 - (6 + 7))) + 8) - (Y * (Z + (W - (T / 5)))))",  # Valid
     "Wrong = ggergegfeg))",  # Invalid: Unbalanced parentheses
     "Wrong = 4 + ",  # Invalid: Incomplete expression after operator
-    "A = +X",  # Invalid: Operator at the start
-    "X = * Y",  # Invalid: Operator at the start
+    "A = X=5",  # Invalid: Operator at the start
+    "X = - Y",  # Valid: Operator at the start
     "A = X + + Y",  # Invalid: Consecutive operators
     "B = 1 + (2 * 3",  # Invalid: Unbalanced parentheses
     "OO = 4 + 5 ",
-    "Oo = 1 - PP"
+    "Oo = 1 - Po"
 ]
 
 # Process each expression
 for expression in expressions:
+    expression = ''.join(expression.split())
     if is_valid_assignment(expression):
         print(f"'{expression}': Valid expression")
     else:
         print(f"'{expression}': Invalid expression")
+
