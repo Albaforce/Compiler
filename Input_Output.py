@@ -1,4 +1,4 @@
- import re
+import re
 
 # 1. Validation des instructions READ
 def is_read_statement(line):
