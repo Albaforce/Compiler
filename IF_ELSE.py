@@ -1,11 +1,12 @@
 import re
-
+from affectation import is_valid_assignment
 
 IF_PATTERN = r'IF'
 ELSE_PATTERN = r'ELSE'
 IDF = r'[A-Z][a-z0-9]{0,7}'  
-CONDITION_PATTERN = rf'{IDF}\s*(>|<|==|!=|<=|>=)\s*{IDF}'
+CONDITION_PATTERN = rf'{IDF}(>|<|==|!=|<=|>=){IDF}'
 
+AFFECTATION = rf'{IDF}=.*?;'
 
 def find_block(code, start):
     """
@@ -33,13 +34,13 @@ def find_block(code, start):
 
 
 
-def lexical_analysis(code, depth=0):
+def analysis(code, depth=0):
     """
     Analyse récursive du code pour détecter les IF et ELSE valides/invalides.
     """
     while code:
         # Chercher un bloc IF
-        if_match = re.search(rf'{IF_PATTERN}\s*\(\s*{CONDITION_PATTERN}\s*\)\s*', code)
+        if_match = re.search(rf'{IF_PATTERN}\({CONDITION_PATTERN}\)', code)
         if if_match:
             if_content = if_match.group()
             block_start = if_match.end()
@@ -47,10 +48,22 @@ def lexical_analysis(code, depth=0):
 
             if block_content:
                 full_if_block = code[:block_end + 1]  # Inclut le contenu du bloc IF complet
-                print("  " * depth + f"IF valid: {full_if_block}")
+                
+
+                aff = True
+                exprs = re.findall(AFFECTATION,block_content)
+                for e in exprs :
+                    if not is_valid_assignment(e[:-1]):
+                        aff = False
+                        break
+                if aff:
+                    print("  " * depth + f"IF valid: {full_if_block}")
+                else:
+                    print("  " * depth + "IF invalid: Error affectation")
+                    break
 
                 # Analyse récursive du contenu du bloc
-                lexical_analysis(block_content[1:-1], depth + 1)
+                analysis(block_content[1:-1], depth + 1)
                 code = code[block_end + 1:]  # Continuer après le bloc
             else:
                 print("  " * depth + "IF invalid: Missing or malformed block")
@@ -58,15 +71,27 @@ def lexical_analysis(code, depth=0):
 
             # Vérifier s'il y a un ELSE correspondant
             code = code.strip()  # Nettoyer les espaces autour
-            else_match = re.match(rf'{ELSE_PATTERN}\s*', code)
+            else_match = re.match(rf'{ELSE_PATTERN}', code)
             if else_match:
                 else_content = else_match.group()
                 block_else_start = else_match.end()
                 block_content, block_end = find_block(code, block_else_start)
                 if block_content:
                     full_else_block = code[:block_end + 1]  # Inclut le contenu du bloc ELSE complet
-                    print("  " * depth + f"ELSE valid: {full_else_block}")
-                    lexical_analysis(block_content[1:-1], depth + 1)
+                    
+                    aff = True
+                    exprs = re.findall(AFFECTATION,block_content)
+                    for e in exprs :
+                        if not is_valid_assignment(e[:-1]):
+                            aff = False
+                            break
+                    if aff:
+                        print("  " * depth + f"ELSE valid: {full_else_block}")
+                    else:
+                        print("  " * depth + "ELSE invalid: Error affectation")
+                        break
+                    
+                    analysis(block_content[1:-1], depth + 1)
                     code = code[block_end + 1:]
                 else:
                     print("  " * depth + "ELSE invalid: Missing or malformed block")
@@ -82,17 +107,18 @@ def lexical_analysis(code, depth=0):
 code = [
     "IF (Aa > Bb) {IF (Cc > Dd) {Cc=E+2.6;} ELSE {Cc=0;}} ELSE{Cc=1;}",  # Correctement imbriqué
     "IF (Aa > Bb){Cc=E+2.6;} ELSE{ ELSE{Cc=0;}}",  # ELSE en trop
-    "IF (X < Y){ IF (Z > W){ } ELSE{ } } ELSE{ }",  # Correctement imbriqué
+    "IF (X < Y){ IF (Z > W){ } ELSE{ } } ELSE{B = 1 + (2 * 3; }",  # Error a cause d'affectation
     "ELSE{Cc=0;}",  # ELSE sans IF
     "IF (Aa > Bb) {Cc=E+2.6;} ELSE",  # ELSE sans bloc
     "IF (X < Y) { } ELSE { } ELSE {Cc=0;}",  # ELSE supplémentaire sans IF correspondant
-    "IF (X == Y) { }"
+    "IF (X == Y) {B = 1 + (2 * 3 ;}" # Error a cause d'affectation
 ]
 
 # Analyse de chaque exemple
 for c in code:
+    c = ''.join(c.split())
     print(f"Analyzing: {c}")
     print()
-    lexical_analysis(c)
+    analysis(c)
     print()
 
