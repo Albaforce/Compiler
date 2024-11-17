@@ -6,7 +6,7 @@ ELSE_PATTERN = r'ELSE'
 IDF = r'[A-Z][a-z0-9]{0,7}'  
 CONDITION_PATTERN = rf'{IDF}(>|<|==|!=|<=|>=){IDF}'
 
-AFFECTATION = rf'{IDF}=.*?;'
+AFFECTATION = rf'{IDF}={1}.*?;'
 
 def find_block(code, start):
     """
@@ -54,19 +54,20 @@ def analysis(code, depth=0):
                 exprs = re.findall(AFFECTATION,block_content)
                 for e in exprs :
                     if not is_valid_assignment(e[:-1]):
+                        print(e)
                         aff = False
                         break
                 if aff:
-                    print("  " * depth + f"IF valid: {full_if_block}")
+                    print("     " * depth + f"IF valid: {full_if_block}")
                 else:
-                    print("  " * depth + "IF invalid: Error affectation")
+                    print("     " * depth + "IF invalid: Error affectation")
                     break
 
                 # Analyse récursive du contenu du bloc
                 analysis(block_content[1:-1], depth + 1)
                 code = code[block_end + 1:]  # Continuer après le bloc
             else:
-                print("  " * depth + "IF invalid: Missing or malformed block")
+                print("     " * depth + "IF invalid: Missing or malformed block")
                 break
 
             # Vérifier s'il y a un ELSE correspondant
@@ -83,23 +84,24 @@ def analysis(code, depth=0):
                     exprs = re.findall(AFFECTATION,block_content)
                     for e in exprs :
                         if not is_valid_assignment(e[:-1]):
+                            print(e)
                             aff = False
                             break
                     if aff:
-                        print("  " * depth + f"ELSE valid: {full_else_block}")
+                        print("     " * depth + f"ELSE valid: {full_else_block}")
                     else:
-                        print("  " * depth + "ELSE invalid: Error affectation")
+                        print("     " * depth + "ELSE invalid: Error affectation")
                         break
                     
                     analysis(block_content[1:-1], depth + 1)
                     code = code[block_end + 1:]
                 else:
-                    print("  " * depth + "ELSE invalid: Missing or malformed block")
+                    print("     " * depth + "ELSE invalid: Missing or malformed block")
                     break
         else:
             # Si aucun IF valide n'est trouvé, vérifier pour ELSE
             if 'ELSE' in code:
-                print("  " * depth + "ELSE invalid: ELSE without matching IF")
+                print("     " * depth + "ELSE invalid: ELSE without matching IF")
             break
 
 
@@ -111,7 +113,8 @@ code = [
     "ELSE{Cc=0;}",  # ELSE sans IF
     "IF (Aa > Bb) {Cc=E+2.6;} ELSE",  # ELSE sans bloc
     "IF (X < Y) { } ELSE { } ELSE {Cc=0;}",  # ELSE supplémentaire sans IF correspondant
-    "IF (X == Y) {B = 1 + (2 * 3 ;}" # Error a cause d'affectation
+    "IF (X == Y) {B = 1 + (2 * 3 ;}", # Error a cause d'affectation
+    "IF (A != B) { IF (C != D) { IF(E != F) {B = 1 + (2 * 3) ;} ELSE{IF(G != H){ X = 12 + 45 ;}ELSE{} } }}" #correcte
 ]
 
 # Analyse de chaque exemple
