@@ -6,7 +6,8 @@ ELSE_PATTERN = r'ELSE'
 IDF = r'[A-Z][a-z0-9]{0,7}'  
 CONDITION_PATTERN = rf'{IDF}(>|<|==|!=|<=|>=){IDF}'
 
-AFFECTATION = rf'{IDF}={1}.*?;'
+AFFECTATION = rf'[A-Za-z][A-Za-z0-9]*=[A-Za-z0-9\+\-\*/\(\)\s]*;'
+
 
 def find_block(code, start):
     """
@@ -114,7 +115,7 @@ code = [
     "IF (Aa > Bb) {Cc=E+2.6;} ELSE",  # ELSE sans bloc
     "IF (X < Y) { } ELSE { } ELSE {Cc=0;}",  # ELSE supplémentaire sans IF correspondant
     "IF (X == Y) {B = 1 + (2 * 3 ;}", # Error a cause d'affectation
-    "IF (A != B) { IF (C != D) { IF(E != F) {B = 1 + (2 * 3) ;} ELSE{IF(G != H){ X = 12 + 45 ;}ELSE{} } }}" #correcte
+    "IF (A != B) { IF (C != D) { IF(E != F) {B = 1 + (2 * 3) ;} ELSE{IF(G != H){ X = 12 + 45 ;}ELSE{O = 5054;} } } O = 45 + 1111; o = 45 + 45; }" ,#correcte
 ]
 
 # Analyse de chaque exemple
