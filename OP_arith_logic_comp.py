@@ -32,6 +32,8 @@ PATTERN = f"{PARENTHESIS_PATTERN}|{CONDITION_PATTERN}|{ARITHMETIC_PATTERN}|{LOGI
 
 def lexer(input_string):
     tokens = []
+    b = 0
+    c = 0
 
     # Order matters: Multi-character operators first
     OPERATORS = {
@@ -69,14 +71,26 @@ def lexer(input_string):
                     tokens.append({'type': 'UNKNOWN', 'value': char})
 
         # Identify operator type
+        
         if value in OPERATORS:
-            tokens.append({'type': OPERATORS[value], 'value': value})
+            if b == 1 :
+                tokens.append({'type': 'Consecutive operators ', 'value': value})
+            elif c == 0 :
+                tokens.append({'type': 'Expression shouldn\'t began with an operator'})
+            else:
+                tokens.append({'type': OPERATORS[value], 'value': value})
+                b = 1
         elif value in PARENTHESIS:
             tokens.append({'type': PARENTHESIS[value], 'value': value})
+            b = 0            
         elif re.fullmatch(NUMBER, value):
             tokens.append({'type': 'NUMBER', 'value': value})
+            b = 0
+            c = 1
         elif re.fullmatch(IDENTIFIER, value):
             tokens.append({'type': 'IDENTIFIER', 'value': value})
+            b = 0
+            c = 1
         
         # Update last position
         last_pos = end
@@ -86,7 +100,7 @@ def lexer(input_string):
         unknown_text = input_string[last_pos:].strip()
         for char in unknown_text:
             if char.strip():  # Ignore whitespace
-                tokens.append({'type': 'UNKNOWN', 'value': char})
+                tokens.appenOR_OPERATORd({'type': 'UNKNOWN', 'value': char})
 
     return tokens
 
@@ -94,6 +108,15 @@ def lexer(input_string):
 #---------------------------------------SYNTAX ANALYSIS PART------------------------------------------------#
 
 def parser(tokens):
+    # Check for unknown tokens
+    for token in tokens:
+        if token['type'] == 'UNKNOWN' :
+            return f"Syntax Error: Unknown token '{token['value']}'."
+        if token['type'] == 'Consecutive operators ':
+            return f"Syntax Error: Consecutive operators '{token['value']}'"
+        if token['type'] == 'Expression shouldn\'t began with an operator' :
+            return f"Syntax Error: 'Expression shouldn\'t began with an operator'"
+
     stack = []
     previous_token = None  # To track consecutive operators
     
@@ -102,9 +125,7 @@ def parser(tokens):
         value = token['value']
 
         # Check for consecutive operators
-        if type_ in ['ADD_OPERATOR', 'SUB_OPERATOR', 'MULTIPLY_OPERATOR', 'DIV_OPERATOR', 'AND_OPERATOR', 'OR_OPERATOR']:
-            if previous_token and previous_token['type'] in ['ADD_OPERATOR', 'SUB_OPERATOR', 'MULTIPLY_OPERATOR', 'DIV_OPERATOR', 'AND_OPERATOR', 'OR_OPERATOR']:
-                return f"Syntax Error: Consecutive operators '{previous_token['value']} {value}' are invalid."
+       
 
         if type_ in ['NUMBER', 'IDENTIFIER']:
             stack.append(token)  # Operand
@@ -121,8 +142,10 @@ def parser(tokens):
         elif type_ == 'LPAREN':
             stack.append(token)  # Opening parenthesis
         elif type_ == 'RPAREN':
-            if not stack or stack[-1]['type'] in ['ADD_OPERATOR', 'SUB_OPERATOR', 'MULTIPLY_OPERATOR', 'DIV_OPERATOR', 'LESS_EQUAL', 'GREATER_EQUAL', 'GREATER_THAN', 'LESS_THAN', 'EQUALS', 'NOT_EQUALS']:
-                return "Syntax Error: Parenthesis closing without an operand or operator."
+            if not stack:
+               return "Syntax Error: Mismatched closing parenthesis."
+            if stack[-1]['type'] == 'LPAREN':  # Directly following an opening parenthesis
+               return "Syntax Error: Empty parentheses are not allowed."
             stack.append(token)  # Closing parenthesis
 
         previous_token = token  # Update the previous token for next iteration
@@ -146,49 +169,25 @@ def parser(tokens):
 
 
 
+
 # Test cases
 test_cases = [
-    "3 + 5",
-    "3 + + 5",
-    "3 + * 5",
-    "3 + 5 *",
-    "3 + (5 * 2)",
-    "3 + (5 * 2",
-    "3 < 5",
-    "3 < ",
-    "3 > A ;",
-    "A + B",
-    "A + + B",
-    "A + (B * C",
-    "(A + B) * C",
-    "3 + 5 * (2 - 3)",
-    "(3 + 5) *",
-    "A * (B + C)",
-    "A * B + C",
-    "A * B + + C",
-    "A + B - C",
-    "A > B",
-    "A > B + C",
-    "A * B < C",
-    "A = B",
-    "(A + B",
-    "3 + (A + B",
-    "A + (B * C) > D",
-    "3 < (A + B)",
-    "3 + 5 ;",
-    "3 > (A + B",
-    "A + (B + C) * D",
-    "(A + B) * C +",
-    "(3 + 5) * (2 + 3)",
-    "(3 + 5) * 2",
-    "3 + 5 * 2 /",
-    "(3 + 5 * 2)",
-    "(3 + 5))"
+    "A & B",
+    "A | B",
+    "A |||| B",
+    "A ! && <= B",
+    "A======B",
+    "()",
+    "&&"
+
 ]
 # Run the tests
 # Test the specific case that was failing
+
+
 for idx, input_string in enumerate(test_cases, 1):
-    tokens = lexer(input_string)  # Tokenize the input
-    result = parser(tokens) 
-    print(input_string) # Run the parser
-    print(f"Test {idx}: {result}") # Print the result to see if the error is handled correctly
+     tokens = lexer(input_string)  # Tokenize the input
+     result = parser(tokens) 
+     print(input_string) # Run the parser
+     print(f"Test {idx}: {result}") # Print the result to see if the error is handled correctly
+
