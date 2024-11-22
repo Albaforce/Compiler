@@ -1,6 +1,8 @@
 import re
 import affectation
 
+from affectation import is_valid_assignment
+
 # Function to extract and validate the assignment in for(...)
 def validate_for_loop(for_expression, symbol_table):
     # Match a for loop like for(i=a:1:n) or for(i=a:n)
