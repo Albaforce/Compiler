@@ -1,0 +1,4 @@
+INTEGER a;
+INTEGER B;
+
+B = 3 + 6 ;
