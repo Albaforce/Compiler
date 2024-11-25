@@ -3,19 +3,12 @@ from ply import lex
 class MinINGLexer:
     # Liste des tokens
     tokens = [
-        'ID',          # Identificateurs
-        'INTEGER',     # Constantes entières
-        'FLOAT',       # Constantes flottantes
-        'CHAR',        # Caractères
-        'PLUS',        'MINUS',      # + -
-        'TIMES',       'DIVIDE',     # * /
-        'LPAREN',      'RPAREN',     # ( )
-        'LBRACE',      'RBRACE',     # { }
-        'LBRACKET',    'RBRACKET',   # [ ]
-        'EQUALS',      'SEMI',       # = ;
-        'COMMA',                     # ,
-        'GT', 'LT', 'GE', 'LE', 'EQ', 'NE',  # > < >= <= == !=
-        'AND', 'OR', 'NOT'           # && || !
+        'IDF', 'INTEGER', 'FLOAT', 'CHAR',
+        'PLUS', 'MINUS', 'MULTIPLY', 'DIVIDE',
+        'LPAREN', 'RPAREN', 'LBRACE', 'RBRACE',
+        'LBRACKET', 'RBRACKET', 'EQUALS', 'SEMICOL',
+        'COMMA', 'GT', 'LT', 'GE', 'LE', 'EQ', 'NE',
+        'AND', 'OR', 'NOT'
     ]
 
     # Mots réservés
@@ -39,7 +32,7 @@ class MinINGLexer:
     # Règles pour les tokens simples
     t_PLUS = r'\+'
     t_MINUS = r'-'
-    t_TIMES = r'\*'
+    t_MULTIPLY = r'\*'
     t_DIVIDE = r'/'
     t_LPAREN = r'\('
     t_RPAREN = r'\)'
@@ -48,7 +41,7 @@ class MinINGLexer:
     t_LBRACKET = r'\['
     t_RBRACKET = r'\]'
     t_EQUALS = r'='
-    t_SEMI = r';'
+    t_SEMICOL = r';'
     t_COMMA = r','
     t_GT = r'>'
     t_LT = r'<'
@@ -66,37 +59,46 @@ class MinINGLexer:
     # Ignorer les commentaires
     t_ignore_COMMENT = r'%%.*'
 
+    def __init__(self):
+        self.symbol_table = {}  # Symbol table to track identifiers and constants
+        self.errors = []        # List of errors
+
     def t_FLOAT(self, t):
-        r'[+-]?\d*\.\d+'
-        t.value = float(t.value)
+        r'\(\s*[+-]\s*\d+\.\d+\s*\)|\d+\.\d+'
+        t.value = t.value.replace(' ', '')  # Remove spaces within parentheses
+        t.value = float(t.value.strip('()'))  # Strip parentheses for the value
+        self.symbol_table[t.value] = {'type': 'FLOAT'}
         return t
 
     def t_INTEGER(self, t):
-        r'(\([+-]\)\d+|\d+)'
-        t.value = int(t.value)
-        if abs(t.value) > 32767:
-            print(f"Integer {t.value} out of range [-32768, 32767]")
-            t.value = 32767 if t.value > 0 else -32768
+        r'\(\s*[+-]\s*\d+\s*\)|\d+'
+        t.value = t.value.replace(' ', '')  # Remove spaces within parentheses
+        t.value = int(t.value.strip('()'))  # Strip parentheses for the value
+        if not (-32768 <= t.value <= 32767):
+            self.errors.append(f"Integer {t.value} is out of range [-32768, 32767].")
+            return None
+        self.symbol_table[t.value] = {'type': 'INTEGER'}
         return t
 
-    def t_ID(self, t):
-        r'[A-Z][A-Za-z0-9_]*'
-        # Vérifier d'abord si c'est un mot réservé
+    def t_IDF(self, t):
+        r'[A-Z][A-Za-z0-9]*'
+        # Check if it's a reserved word
         if t.value in self.reserved:
             t.type = self.reserved[t.value]
-            return t
-        
-        # Si ce n'est pas un mot réservé, c'est un identificateur utilisateur
-        if '_' in t.value:
-            print(f"Warning: Identifier {t.value} contains underscore (not allowed for user variables)")
-        if len(t.value) > 8:
-            print(f"Warning: Identifier {t.value} too long (max 8 chars)")
-            t.value = t.value[:8]
+        else:
+            if '_' in t.value:
+                print(f"Error: Identifier {t.value} contains underscores, which are not allowed.")
+                t.type = 'ERROR'
+            if len(t.value) > 8:
+                print(f"Warning: Identifier {t.value} is too long (max 8 chars). It will be truncated.")
+                t.value = t.value[:8]
+        self.symbol_table[t.value] = {'type': 'IDF'}
         return t
 
     def t_CHAR(self, t):
-        r'\'.\''
-        t.value = t.value[1]
+        r"'\S'"
+        t.value = t.value[1]  # Extract the character
+        self.symbol_table[t.value] = {'type': 'CHAR'}
         return t
 
     def t_newline(self, t):
@@ -104,7 +106,9 @@ class MinINGLexer:
         t.lexer.lineno += len(t.value)
 
     def t_error(self, t):
-        print(f"Illegal character '{t.value[0]}' at line {t.lexer.lineno}")
+        line_start = self.lexer.lexdata.rfind('\n', 0, t.lexpos) + 1
+        column = t.lexpos - line_start + 1
+        self.errors.append(f"Illegal character '{t.value[0]}' at line {t.lexer.lineno}, column {column}")
         t.lexer.skip(1)
 
     def build(self, **kwargs):
@@ -116,20 +120,36 @@ class MinINGLexer:
             tok = self.lexer.token()
             if not tok:
                 break
-            print(tok)
-
-# Exemple d'utilisation
+            self.symbol_table[tok.value] = {'type': tok.type, 'line': tok.lineno}
+        self.print_symbol_table()
+        
+        # Print errors, if any
+        if self.errors:
+            print("\nErrors:")
+            for error in self.errors:
+                print(error)
+                
+    def print_symbol_table(self):
+        # Printing symbol table in a table format
+        print(f"{'Token':<15} {'Token Name':<20} {'Line'}")
+        print("-" * 50)
+        for token, data in self.symbol_table.items():
+            print(f"{token:<15} {data['type']:<20} {data['line']}")
+        
+# Example usage
 if __name__ == "__main__":
     lexer = MinINGLexer()
     lexer.build()
     
-    # Test avec un exemple simple
+    # Test input
     data = '''
     VAR_GLOBAL {
         INTEGER Var1;
         FLOAT Var2;
-        CHAR Var3;
-        BOOL A & B | >= = == > var
+        CHAR 'A';
+        INVALID!IDF;
+        CONST INTEGER a = (+12345);  %% Out of range
+        ( +5 ) 5 ( +12.34 ) (-3.14) ;
     }
     '''
     
