@@ -23,6 +23,16 @@ def is_valid_identifier(identifier):
     # Valid identifiers must start with a letter and can contain digits, up to 8 characters
     return bool(re.match(r'^[A-Z][a-z0-9]{0,7}$', identifier))
 
+# 1. Validation of string declarations
+def is_string_declaration(line):
+    # Matches a string declaration of the format: variable = 'string'
+    return bool(re.match(r"^[A-Za-z][a-z0-9]{0,7}\s*=\s*'[^']*'\s*$", line))
+
+# 2. Validation of character arrays with a single character, index restricted to 1
+def is_char_array_assignment(line):
+    # Matches a character array assignment of the format: variable[1] = 'character'
+    return bool(re.match(r"^[A-Za-z][a-z0-9]{0,7}\[1\]\s*=\s*'[A-Za-z0-9]'\s*$", line))
+
 # Function to validate the placement of operators and operands
 def is_valid_syntax(expression):
     # Check for any consecutive operators (e.g., "++", "+-", etc.)
