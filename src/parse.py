@@ -125,8 +125,7 @@ class MinINGParser:
     
     # Affectation pour tableaux
     def p_array_assignment(self, p):
-        '''array_assignment : IDF LBRACKET expression RBRACKET EQUALS expression
-                           | IDF LBRACKET expression RBRACKET EQUALS CHAR'''  # Nouvelle règle pour l'affectation de caractère
+        '''array_assignment : IDF LBRACKET expression RBRACKET EQUALS expression'''  
         if len(p) == 7:
             p[0] = ('array_assign', p[1], p[3], p[6])
     
