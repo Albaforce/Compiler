@@ -21,7 +21,7 @@ class MinINGParser:
         )
         
         # Construire le parser
-        self.parser = yacc.yacc(module=self, write_tables=False, debug=False)
+        self.parser = yacc.yacc(module=self)
 
     # Programme principal
     def p_program(self, p):
