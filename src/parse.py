@@ -162,8 +162,20 @@ class MinINGParser:
 
     # Boucle FOR
     def p_for_loop(self, p):
-        '''for_loop : FOR LPAREN assignment COLOM condition COLOM assignment RPAREN LBRACE instructions RBRACE'''
+        '''for_loop : FOR LPAREN assignment COLOM for_pas COLOM for_condition RPAREN LBRACE instructions RBRACE'''
         p[0] = ('for', p[3], p[5], p[7], p[10])
+
+    #for_pas
+    def p_for_pas(self,p):
+        '''for_pas : IDF
+                  | INTEGER'''
+        p[0] = ('for_pas' , p[1])
+
+    #for_condition
+    def p_for_condition(self,p):
+        '''for_condition : IDF
+                  | INTEGER'''
+        p[0] = ('for_condition' , p[1])
 
     # Condition
     def p_condition(self, p):
@@ -243,7 +255,7 @@ if __name__ == "__main__":
         } ELSE {
             A = 1;
         }
-        FOR(I = 0: I < 10: I = I + 1) {
+        FOR(I = 0: 2: N) {
             A = A + 1;
         }
         WRITE(A, B[2], Ch, Lettre);
