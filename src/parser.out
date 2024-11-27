@@ -45,82 +45,88 @@ Rule 39    expression -> FLOAT
 Rule 40    expression -> CHAR
 Rule 41    if_statement -> IF LPAREN condition RPAREN LBRACE instructions RBRACE
 Rule 42    if_statement -> IF LPAREN condition RPAREN LBRACE instructions RBRACE ELSE LBRACE instructions RBRACE
-Rule 43    for_loop -> FOR LPAREN assignment COLOM condition COLOM assignment RPAREN LBRACE instructions RBRACE
-Rule 44    condition -> expression comparison_op expression
-Rule 45    condition -> condition AND condition
-Rule 46    condition -> condition OR condition
-Rule 47    condition -> NOT condition
-Rule 48    condition -> LPAREN condition RPAREN
-Rule 49    comparison_op -> GT
-Rule 50    comparison_op -> LT
-Rule 51    comparison_op -> GE
-Rule 52    comparison_op -> LE
-Rule 53    comparison_op -> EQ
-Rule 54    comparison_op -> NE
-Rule 55    io_statement -> READ LPAREN IDF RPAREN
-Rule 56    io_statement -> WRITE LPAREN write_list RPAREN
-Rule 57    write_list -> write_list COMMA expression
-Rule 58    write_list -> expression
-Rule 59    write_list -> STRING
-Rule 60    write_list -> write_list COMMA STRING
-Rule 61    empty -> <empty>
+Rule 43    for_loop -> FOR LPAREN assignment COLOM for_pas COLOM for_condition RPAREN LBRACE instructions RBRACE
+Rule 44    for_pas -> IDF
+Rule 45    for_pas -> INTEGER
+Rule 46    for_condition -> IDF
+Rule 47    for_condition -> INTEGER
+Rule 48    condition -> expression comparison_op expression
+Rule 49    condition -> condition AND condition
+Rule 50    condition -> condition OR condition
+Rule 51    condition -> NOT condition
+Rule 52    condition -> LPAREN condition RPAREN
+Rule 53    comparison_op -> GT
+Rule 54    comparison_op -> LT
+Rule 55    comparison_op -> GE
+Rule 56    comparison_op -> LE
+Rule 57    comparison_op -> EQ
+Rule 58    comparison_op -> NE
+Rule 59    io_statement -> READ LPAREN IDF RPAREN
+Rule 60    io_statement -> WRITE LPAREN write_list RPAREN
+Rule 61    write_list -> write_list COMMA expression
+Rule 62    write_list -> expression
+Rule 63    write_list -> STRING
+Rule 64    write_list -> write_list COMMA STRING
+Rule 65    empty -> <empty>
 
 Terminals, with rules where they appear
 
-AND                  : 45
+AND                  : 49
 CHAR                 : 20 40
 COLOM                : 43 43
-COMMA                : 8 57 60
+COMMA                : 8 61 64
 CONST                : 17
 DECLARATION          : 1
 DIVIDE               : 34
 ELSE                 : 42
-EQ                   : 53
+EQ                   : 57
 EQUALS               : 12 13 17 29 30
 FLOAT                : 19 39
 FOR                  : 43
-GE                   : 51
-GT                   : 49
-IDF                  : 10 11 12 13 17 29 30 36 37 55
+GE                   : 55
+GT                   : 53
+IDF                  : 10 11 12 13 17 29 30 36 37 44 46 59
 IF                   : 41 42
 INSTRUCTION          : 1
-INTEGER              : 11 18 38
+INTEGER              : 11 18 38 45 47
 LBRACE               : 1 1 41 42 42 43
 LBRACKET             : 11 13 30 37
-LE                   : 52
-LPAREN               : 35 41 42 43 48 55 56
-LT                   : 50
+LE                   : 56
+LPAREN               : 35 41 42 43 52 59 60
+LT                   : 54
 MINUS                : 32
 MULTIPLY             : 33
-NE                   : 54
-NOT                  : 47
-OR                   : 46
+NE                   : 58
+NOT                  : 51
+OR                   : 50
 PLUS                 : 31
 RBRACE               : 1 1 41 42 42 43
 RBRACKET             : 11 13 30 37
-READ                 : 55
-RPAREN               : 35 41 42 43 48 55 56
+READ                 : 59
+RPAREN               : 35 41 42 43 52 59 60
 SEMICOL              : 7 17 24 25 28
-STRING               : 13 59 60
+STRING               : 13 63 64
 TYPE_CHAR            : 16
 TYPE_FLOAT           : 15
 TYPE_INTEGER         : 14
-WRITE                : 56
+WRITE                : 60
 error                : 
 
 Nonterminals, with rules where they appear
 
 array_assignment     : 25
-assignment           : 24 43 43
-comparison_op        : 44
-condition            : 41 42 43 45 45 46 46 47 48
+assignment           : 24 43
+comparison_op        : 48
+condition            : 41 42 49 49 50 50 51 52
 const_declaration    : 6
 const_value          : 12 17
 declaration          : 2 3
 declarations         : 1 2
 empty                : 4 23
-expression           : 29 30 30 31 31 32 32 33 33 34 34 35 37 44 44 57 58
+expression           : 29 30 30 31 31 32 32 33 33 34 34 35 37 48 48 61 62
+for_condition        : 43
 for_loop             : 27
+for_pas              : 43
 if_statement         : 26
 instruction          : 21 22
 instructions         : 1 21 41 42 42 43
@@ -130,7 +136,7 @@ type                 : 7 17
 type_declaration     : 5
 var_item             : 8 9
 var_list             : 7 8
-write_list           : 56 57 60
+write_list           : 60 61 64
 
 Parsing method: LALR
 
@@ -164,7 +170,7 @@ state 3
     (4) declarations -> . empty
     (5) declaration -> . type_declaration
     (6) declaration -> . const_declaration
-    (61) empty -> .
+    (65) empty -> .
     (7) type_declaration -> . type var_list SEMICOL
     (17) const_declaration -> . CONST type IDF EQUALS const_value SEMICOL
     (14) type -> . TYPE_INTEGER
@@ -175,16 +181,16 @@ state 3
   ! shift/reduce conflict for TYPE_INTEGER resolved as shift
   ! shift/reduce conflict for TYPE_FLOAT resolved as shift
   ! shift/reduce conflict for TYPE_CHAR resolved as shift
-    RBRACE          reduce using rule 61 (empty -> .)
+    RBRACE          reduce using rule 65 (empty -> .)
     CONST           shift and go to state 10
     TYPE_INTEGER    shift and go to state 11
     TYPE_FLOAT      shift and go to state 12
     TYPE_CHAR       shift and go to state 13
 
-  ! CONST           [ reduce using rule 61 (empty -> .) ]
-  ! TYPE_INTEGER    [ reduce using rule 61 (empty -> .) ]
-  ! TYPE_FLOAT      [ reduce using rule 61 (empty -> .) ]
-  ! TYPE_CHAR       [ reduce using rule 61 (empty -> .) ]
+  ! CONST           [ reduce using rule 65 (empty -> .) ]
+  ! TYPE_INTEGER    [ reduce using rule 65 (empty -> .) ]
+  ! TYPE_FLOAT      [ reduce using rule 65 (empty -> .) ]
+  ! TYPE_CHAR       [ reduce using rule 65 (empty -> .) ]
 
     declarations                   shift and go to state 4
     declaration                    shift and go to state 5
@@ -434,32 +440,32 @@ state 26
     (26) instruction -> . if_statement
     (27) instruction -> . for_loop
     (28) instruction -> . io_statement SEMICOL
-    (61) empty -> .
+    (65) empty -> .
     (29) assignment -> . IDF EQUALS expression
     (30) array_assignment -> . IDF LBRACKET expression RBRACKET EQUALS expression
     (41) if_statement -> . IF LPAREN condition RPAREN LBRACE instructions RBRACE
     (42) if_statement -> . IF LPAREN condition RPAREN LBRACE instructions RBRACE ELSE LBRACE instructions RBRACE
-    (43) for_loop -> . FOR LPAREN assignment COLOM condition COLOM assignment RPAREN LBRACE instructions RBRACE
-    (55) io_statement -> . READ LPAREN IDF RPAREN
-    (56) io_statement -> . WRITE LPAREN write_list RPAREN
+    (43) for_loop -> . FOR LPAREN assignment COLOM for_pas COLOM for_condition RPAREN LBRACE instructions RBRACE
+    (59) io_statement -> . READ LPAREN IDF RPAREN
+    (60) io_statement -> . WRITE LPAREN write_list RPAREN
 
   ! shift/reduce conflict for IDF resolved as shift
   ! shift/reduce conflict for IF resolved as shift
   ! shift/reduce conflict for FOR resolved as shift
   ! shift/reduce conflict for READ resolved as shift
   ! shift/reduce conflict for WRITE resolved as shift
-    RBRACE          reduce using rule 61 (empty -> .)
+    RBRACE          reduce using rule 65 (empty -> .)
     IDF             shift and go to state 43
     IF              shift and go to state 44
     FOR             shift and go to state 45
     READ            shift and go to state 46
     WRITE           shift and go to state 47
 
-  ! IDF             [ reduce using rule 61 (empty -> .) ]
-  ! IF              [ reduce using rule 61 (empty -> .) ]
-  ! FOR             [ reduce using rule 61 (empty -> .) ]
-  ! READ            [ reduce using rule 61 (empty -> .) ]
-  ! WRITE           [ reduce using rule 61 (empty -> .) ]
+  ! IDF             [ reduce using rule 65 (empty -> .) ]
+  ! IF              [ reduce using rule 65 (empty -> .) ]
+  ! FOR             [ reduce using rule 65 (empty -> .) ]
+  ! READ            [ reduce using rule 65 (empty -> .) ]
+  ! WRITE           [ reduce using rule 65 (empty -> .) ]
 
     instructions                   shift and go to state 35
     instruction                    shift and go to state 36
@@ -550,9 +556,9 @@ state 35
     (30) array_assignment -> . IDF LBRACKET expression RBRACKET EQUALS expression
     (41) if_statement -> . IF LPAREN condition RPAREN LBRACE instructions RBRACE
     (42) if_statement -> . IF LPAREN condition RPAREN LBRACE instructions RBRACE ELSE LBRACE instructions RBRACE
-    (43) for_loop -> . FOR LPAREN assignment COLOM condition COLOM assignment RPAREN LBRACE instructions RBRACE
-    (55) io_statement -> . READ LPAREN IDF RPAREN
-    (56) io_statement -> . WRITE LPAREN write_list RPAREN
+    (43) for_loop -> . FOR LPAREN assignment COLOM for_pas COLOM for_condition RPAREN LBRACE instructions RBRACE
+    (59) io_statement -> . READ LPAREN IDF RPAREN
+    (60) io_statement -> . WRITE LPAREN write_list RPAREN
 
     RBRACE          shift and go to state 51
     IDF             shift and go to state 43
@@ -656,21 +662,21 @@ state 44
 
 state 45
 
-    (43) for_loop -> FOR . LPAREN assignment COLOM condition COLOM assignment RPAREN LBRACE instructions RBRACE
+    (43) for_loop -> FOR . LPAREN assignment COLOM for_pas COLOM for_condition RPAREN LBRACE instructions RBRACE
 
     LPAREN          shift and go to state 59
 
 
 state 46
 
-    (55) io_statement -> READ . LPAREN IDF RPAREN
+    (59) io_statement -> READ . LPAREN IDF RPAREN
 
     LPAREN          shift and go to state 60
 
 
 state 47
 
-    (56) io_statement -> WRITE . LPAREN write_list RPAREN
+    (60) io_statement -> WRITE . LPAREN write_list RPAREN
 
     LPAREN          shift and go to state 61
 
@@ -800,11 +806,11 @@ state 58
 
     (41) if_statement -> IF LPAREN . condition RPAREN LBRACE instructions RBRACE
     (42) if_statement -> IF LPAREN . condition RPAREN LBRACE instructions RBRACE ELSE LBRACE instructions RBRACE
-    (44) condition -> . expression comparison_op expression
-    (45) condition -> . condition AND condition
-    (46) condition -> . condition OR condition
-    (47) condition -> . NOT condition
-    (48) condition -> . LPAREN condition RPAREN
+    (48) condition -> . expression comparison_op expression
+    (49) condition -> . condition AND condition
+    (50) condition -> . condition OR condition
+    (51) condition -> . NOT condition
+    (52) condition -> . LPAREN condition RPAREN
     (31) expression -> . expression PLUS expression
     (32) expression -> . expression MINUS expression
     (33) expression -> . expression MULTIPLY expression
@@ -828,7 +834,7 @@ state 58
 
 state 59
 
-    (43) for_loop -> FOR LPAREN . assignment COLOM condition COLOM assignment RPAREN LBRACE instructions RBRACE
+    (43) for_loop -> FOR LPAREN . assignment COLOM for_pas COLOM for_condition RPAREN LBRACE instructions RBRACE
     (29) assignment -> . IDF EQUALS expression
 
     IDF             shift and go to state 76
@@ -837,18 +843,18 @@ state 59
 
 state 60
 
-    (55) io_statement -> READ LPAREN . IDF RPAREN
+    (59) io_statement -> READ LPAREN . IDF RPAREN
 
     IDF             shift and go to state 77
 
 
 state 61
 
-    (56) io_statement -> WRITE LPAREN . write_list RPAREN
-    (57) write_list -> . write_list COMMA expression
-    (58) write_list -> . expression
-    (59) write_list -> . STRING
-    (60) write_list -> . write_list COMMA STRING
+    (60) io_statement -> WRITE LPAREN . write_list RPAREN
+    (61) write_list -> . write_list COMMA expression
+    (62) write_list -> . expression
+    (63) write_list -> . STRING
+    (64) write_list -> . write_list COMMA STRING
     (31) expression -> . expression PLUS expression
     (32) expression -> . expression MINUS expression
     (33) expression -> . expression MULTIPLY expression
@@ -900,7 +906,6 @@ state 64
     DIVIDE          reduce using rule 36 (expression -> IDF .)
     SEMICOL         reduce using rule 36 (expression -> IDF .)
     COLOM           reduce using rule 36 (expression -> IDF .)
-    RPAREN          reduce using rule 36 (expression -> IDF .)
     RBRACKET        reduce using rule 36 (expression -> IDF .)
     GT              reduce using rule 36 (expression -> IDF .)
     LT              reduce using rule 36 (expression -> IDF .)
@@ -908,6 +913,7 @@ state 64
     LE              reduce using rule 36 (expression -> IDF .)
     EQ              reduce using rule 36 (expression -> IDF .)
     NE              reduce using rule 36 (expression -> IDF .)
+    RPAREN          reduce using rule 36 (expression -> IDF .)
     COMMA           reduce using rule 36 (expression -> IDF .)
     AND             reduce using rule 36 (expression -> IDF .)
     OR              reduce using rule 36 (expression -> IDF .)
@@ -924,7 +930,6 @@ state 65
 
     SEMICOL         reduce using rule 29 (assignment -> IDF EQUALS expression .)
     COLOM           reduce using rule 29 (assignment -> IDF EQUALS expression .)
-    RPAREN          reduce using rule 29 (assignment -> IDF EQUALS expression .)
     PLUS            shift and go to state 82
     MINUS           shift and go to state 83
     MULTIPLY        shift and go to state 84
@@ -963,7 +968,6 @@ state 67
     DIVIDE          reduce using rule 38 (expression -> INTEGER .)
     SEMICOL         reduce using rule 38 (expression -> INTEGER .)
     COLOM           reduce using rule 38 (expression -> INTEGER .)
-    RPAREN          reduce using rule 38 (expression -> INTEGER .)
     RBRACKET        reduce using rule 38 (expression -> INTEGER .)
     GT              reduce using rule 38 (expression -> INTEGER .)
     LT              reduce using rule 38 (expression -> INTEGER .)
@@ -971,6 +975,7 @@ state 67
     LE              reduce using rule 38 (expression -> INTEGER .)
     EQ              reduce using rule 38 (expression -> INTEGER .)
     NE              reduce using rule 38 (expression -> INTEGER .)
+    RPAREN          reduce using rule 38 (expression -> INTEGER .)
     COMMA           reduce using rule 38 (expression -> INTEGER .)
     AND             reduce using rule 38 (expression -> INTEGER .)
     OR              reduce using rule 38 (expression -> INTEGER .)
@@ -986,7 +991,6 @@ state 68
     DIVIDE          reduce using rule 39 (expression -> FLOAT .)
     SEMICOL         reduce using rule 39 (expression -> FLOAT .)
     COLOM           reduce using rule 39 (expression -> FLOAT .)
-    RPAREN          reduce using rule 39 (expression -> FLOAT .)
     RBRACKET        reduce using rule 39 (expression -> FLOAT .)
     GT              reduce using rule 39 (expression -> FLOAT .)
     LT              reduce using rule 39 (expression -> FLOAT .)
@@ -994,6 +998,7 @@ state 68
     LE              reduce using rule 39 (expression -> FLOAT .)
     EQ              reduce using rule 39 (expression -> FLOAT .)
     NE              reduce using rule 39 (expression -> FLOAT .)
+    RPAREN          reduce using rule 39 (expression -> FLOAT .)
     COMMA           reduce using rule 39 (expression -> FLOAT .)
     AND             reduce using rule 39 (expression -> FLOAT .)
     OR              reduce using rule 39 (expression -> FLOAT .)
@@ -1009,7 +1014,6 @@ state 69
     DIVIDE          reduce using rule 40 (expression -> CHAR .)
     SEMICOL         reduce using rule 40 (expression -> CHAR .)
     COLOM           reduce using rule 40 (expression -> CHAR .)
-    RPAREN          reduce using rule 40 (expression -> CHAR .)
     RBRACKET        reduce using rule 40 (expression -> CHAR .)
     GT              reduce using rule 40 (expression -> CHAR .)
     LT              reduce using rule 40 (expression -> CHAR .)
@@ -1017,6 +1021,7 @@ state 69
     LE              reduce using rule 40 (expression -> CHAR .)
     EQ              reduce using rule 40 (expression -> CHAR .)
     NE              reduce using rule 40 (expression -> CHAR .)
+    RPAREN          reduce using rule 40 (expression -> CHAR .)
     COMMA           reduce using rule 40 (expression -> CHAR .)
     AND             reduce using rule 40 (expression -> CHAR .)
     OR              reduce using rule 40 (expression -> CHAR .)
@@ -1039,13 +1044,13 @@ state 70
 
 state 71
 
-    (48) condition -> LPAREN . condition RPAREN
+    (52) condition -> LPAREN . condition RPAREN
     (35) expression -> LPAREN . expression RPAREN
-    (44) condition -> . expression comparison_op expression
-    (45) condition -> . condition AND condition
-    (46) condition -> . condition OR condition
-    (47) condition -> . NOT condition
-    (48) condition -> . LPAREN condition RPAREN
+    (48) condition -> . expression comparison_op expression
+    (49) condition -> . condition AND condition
+    (50) condition -> . condition OR condition
+    (51) condition -> . NOT condition
+    (52) condition -> . LPAREN condition RPAREN
     (31) expression -> . expression PLUS expression
     (32) expression -> . expression MINUS expression
     (33) expression -> . expression MULTIPLY expression
@@ -1071,8 +1076,8 @@ state 72
 
     (41) if_statement -> IF LPAREN condition . RPAREN LBRACE instructions RBRACE
     (42) if_statement -> IF LPAREN condition . RPAREN LBRACE instructions RBRACE ELSE LBRACE instructions RBRACE
-    (45) condition -> condition . AND condition
-    (46) condition -> condition . OR condition
+    (49) condition -> condition . AND condition
+    (50) condition -> condition . OR condition
 
     RPAREN          shift and go to state 90
     AND             shift and go to state 91
@@ -1081,17 +1086,17 @@ state 72
 
 state 73
 
-    (44) condition -> expression . comparison_op expression
+    (48) condition -> expression . comparison_op expression
     (31) expression -> expression . PLUS expression
     (32) expression -> expression . MINUS expression
     (33) expression -> expression . MULTIPLY expression
     (34) expression -> expression . DIVIDE expression
-    (49) comparison_op -> . GT
-    (50) comparison_op -> . LT
-    (51) comparison_op -> . GE
-    (52) comparison_op -> . LE
-    (53) comparison_op -> . EQ
-    (54) comparison_op -> . NE
+    (53) comparison_op -> . GT
+    (54) comparison_op -> . LT
+    (55) comparison_op -> . GE
+    (56) comparison_op -> . LE
+    (57) comparison_op -> . EQ
+    (58) comparison_op -> . NE
 
     PLUS            shift and go to state 82
     MINUS           shift and go to state 83
@@ -1108,12 +1113,12 @@ state 73
 
 state 74
 
-    (47) condition -> NOT . condition
-    (44) condition -> . expression comparison_op expression
-    (45) condition -> . condition AND condition
-    (46) condition -> . condition OR condition
-    (47) condition -> . NOT condition
-    (48) condition -> . LPAREN condition RPAREN
+    (51) condition -> NOT . condition
+    (48) condition -> . expression comparison_op expression
+    (49) condition -> . condition AND condition
+    (50) condition -> . condition OR condition
+    (51) condition -> . NOT condition
+    (52) condition -> . LPAREN condition RPAREN
     (31) expression -> . expression PLUS expression
     (32) expression -> . expression MINUS expression
     (33) expression -> . expression MULTIPLY expression
@@ -1137,7 +1142,7 @@ state 74
 
 state 75
 
-    (43) for_loop -> FOR LPAREN assignment . COLOM condition COLOM assignment RPAREN LBRACE instructions RBRACE
+    (43) for_loop -> FOR LPAREN assignment . COLOM for_pas COLOM for_condition RPAREN LBRACE instructions RBRACE
 
     COLOM           shift and go to state 101
 
@@ -1151,16 +1156,16 @@ state 76
 
 state 77
 
-    (55) io_statement -> READ LPAREN IDF . RPAREN
+    (59) io_statement -> READ LPAREN IDF . RPAREN
 
     RPAREN          shift and go to state 102
 
 
 state 78
 
-    (56) io_statement -> WRITE LPAREN write_list . RPAREN
-    (57) write_list -> write_list . COMMA expression
-    (60) write_list -> write_list . COMMA STRING
+    (60) io_statement -> WRITE LPAREN write_list . RPAREN
+    (61) write_list -> write_list . COMMA expression
+    (64) write_list -> write_list . COMMA STRING
 
     RPAREN          shift and go to state 103
     COMMA           shift and go to state 104
@@ -1168,14 +1173,14 @@ state 78
 
 state 79
 
-    (58) write_list -> expression .
+    (62) write_list -> expression .
     (31) expression -> expression . PLUS expression
     (32) expression -> expression . MINUS expression
     (33) expression -> expression . MULTIPLY expression
     (34) expression -> expression . DIVIDE expression
 
-    RPAREN          reduce using rule 58 (write_list -> expression .)
-    COMMA           reduce using rule 58 (write_list -> expression .)
+    RPAREN          reduce using rule 62 (write_list -> expression .)
+    COMMA           reduce using rule 62 (write_list -> expression .)
     PLUS            shift and go to state 82
     MINUS           shift and go to state 83
     MULTIPLY        shift and go to state 84
@@ -1184,10 +1189,10 @@ state 79
 
 state 80
 
-    (59) write_list -> STRING .
+    (63) write_list -> STRING .
 
-    RPAREN          reduce using rule 59 (write_list -> STRING .)
-    COMMA           reduce using rule 59 (write_list -> STRING .)
+    RPAREN          reduce using rule 63 (write_list -> STRING .)
+    COMMA           reduce using rule 63 (write_list -> STRING .)
 
 
 state 81
@@ -1324,9 +1329,9 @@ state 87
 
 state 88
 
-    (48) condition -> LPAREN condition . RPAREN
-    (45) condition -> condition . AND condition
-    (46) condition -> condition . OR condition
+    (52) condition -> LPAREN condition . RPAREN
+    (49) condition -> condition . AND condition
+    (50) condition -> condition . OR condition
 
     RPAREN          shift and go to state 112
     AND             shift and go to state 91
@@ -1336,17 +1341,17 @@ state 88
 state 89
 
     (35) expression -> LPAREN expression . RPAREN
-    (44) condition -> expression . comparison_op expression
+    (48) condition -> expression . comparison_op expression
     (31) expression -> expression . PLUS expression
     (32) expression -> expression . MINUS expression
     (33) expression -> expression . MULTIPLY expression
     (34) expression -> expression . DIVIDE expression
-    (49) comparison_op -> . GT
-    (50) comparison_op -> . LT
-    (51) comparison_op -> . GE
-    (52) comparison_op -> . LE
-    (53) comparison_op -> . EQ
-    (54) comparison_op -> . NE
+    (53) comparison_op -> . GT
+    (54) comparison_op -> . LT
+    (55) comparison_op -> . GE
+    (56) comparison_op -> . LE
+    (57) comparison_op -> . EQ
+    (58) comparison_op -> . NE
 
     RPAREN          shift and go to state 110
     PLUS            shift and go to state 82
@@ -1372,12 +1377,12 @@ state 90
 
 state 91
 
-    (45) condition -> condition AND . condition
-    (44) condition -> . expression comparison_op expression
-    (45) condition -> . condition AND condition
-    (46) condition -> . condition OR condition
-    (47) condition -> . NOT condition
-    (48) condition -> . LPAREN condition RPAREN
+    (49) condition -> condition AND . condition
+    (48) condition -> . expression comparison_op expression
+    (49) condition -> . condition AND condition
+    (50) condition -> . condition OR condition
+    (51) condition -> . NOT condition
+    (52) condition -> . LPAREN condition RPAREN
     (31) expression -> . expression PLUS expression
     (32) expression -> . expression MINUS expression
     (33) expression -> . expression MULTIPLY expression
@@ -1401,12 +1406,12 @@ state 91
 
 state 92
 
-    (46) condition -> condition OR . condition
-    (44) condition -> . expression comparison_op expression
-    (45) condition -> . condition AND condition
-    (46) condition -> . condition OR condition
-    (47) condition -> . NOT condition
-    (48) condition -> . LPAREN condition RPAREN
+    (50) condition -> condition OR . condition
+    (48) condition -> . expression comparison_op expression
+    (49) condition -> . condition AND condition
+    (50) condition -> . condition OR condition
+    (51) condition -> . NOT condition
+    (52) condition -> . LPAREN condition RPAREN
     (31) expression -> . expression PLUS expression
     (32) expression -> . expression MINUS expression
     (33) expression -> . expression MULTIPLY expression
@@ -1430,7 +1435,7 @@ state 92
 
 state 93
 
-    (44) condition -> expression comparison_op . expression
+    (48) condition -> expression comparison_op . expression
     (31) expression -> . expression PLUS expression
     (32) expression -> . expression MINUS expression
     (33) expression -> . expression MULTIPLY expression
@@ -1452,80 +1457,79 @@ state 93
 
 state 94
 
-    (49) comparison_op -> GT .
+    (53) comparison_op -> GT .
 
-    LPAREN          reduce using rule 49 (comparison_op -> GT .)
-    IDF             reduce using rule 49 (comparison_op -> GT .)
-    INTEGER         reduce using rule 49 (comparison_op -> GT .)
-    FLOAT           reduce using rule 49 (comparison_op -> GT .)
-    CHAR            reduce using rule 49 (comparison_op -> GT .)
+    LPAREN          reduce using rule 53 (comparison_op -> GT .)
+    IDF             reduce using rule 53 (comparison_op -> GT .)
+    INTEGER         reduce using rule 53 (comparison_op -> GT .)
+    FLOAT           reduce using rule 53 (comparison_op -> GT .)
+    CHAR            reduce using rule 53 (comparison_op -> GT .)
 
 
 state 95
 
-    (50) comparison_op -> LT .
+    (54) comparison_op -> LT .
 
-    LPAREN          reduce using rule 50 (comparison_op -> LT .)
-    IDF             reduce using rule 50 (comparison_op -> LT .)
-    INTEGER         reduce using rule 50 (comparison_op -> LT .)
-    FLOAT           reduce using rule 50 (comparison_op -> LT .)
-    CHAR            reduce using rule 50 (comparison_op -> LT .)
+    LPAREN          reduce using rule 54 (comparison_op -> LT .)
+    IDF             reduce using rule 54 (comparison_op -> LT .)
+    INTEGER         reduce using rule 54 (comparison_op -> LT .)
+    FLOAT           reduce using rule 54 (comparison_op -> LT .)
+    CHAR            reduce using rule 54 (comparison_op -> LT .)
 
 
 state 96
 
-    (51) comparison_op -> GE .
+    (55) comparison_op -> GE .
 
-    LPAREN          reduce using rule 51 (comparison_op -> GE .)
-    IDF             reduce using rule 51 (comparison_op -> GE .)
-    INTEGER         reduce using rule 51 (comparison_op -> GE .)
-    FLOAT           reduce using rule 51 (comparison_op -> GE .)
-    CHAR            reduce using rule 51 (comparison_op -> GE .)
+    LPAREN          reduce using rule 55 (comparison_op -> GE .)
+    IDF             reduce using rule 55 (comparison_op -> GE .)
+    INTEGER         reduce using rule 55 (comparison_op -> GE .)
+    FLOAT           reduce using rule 55 (comparison_op -> GE .)
+    CHAR            reduce using rule 55 (comparison_op -> GE .)
 
 
 state 97
 
-    (52) comparison_op -> LE .
+    (56) comparison_op -> LE .
 
-    LPAREN          reduce using rule 52 (comparison_op -> LE .)
-    IDF             reduce using rule 52 (comparison_op -> LE .)
-    INTEGER         reduce using rule 52 (comparison_op -> LE .)
-    FLOAT           reduce using rule 52 (comparison_op -> LE .)
-    CHAR            reduce using rule 52 (comparison_op -> LE .)
+    LPAREN          reduce using rule 56 (comparison_op -> LE .)
+    IDF             reduce using rule 56 (comparison_op -> LE .)
+    INTEGER         reduce using rule 56 (comparison_op -> LE .)
+    FLOAT           reduce using rule 56 (comparison_op -> LE .)
+    CHAR            reduce using rule 56 (comparison_op -> LE .)
 
 
 state 98
 
-    (53) comparison_op -> EQ .
+    (57) comparison_op -> EQ .
 
-    LPAREN          reduce using rule 53 (comparison_op -> EQ .)
-    IDF             reduce using rule 53 (comparison_op -> EQ .)
-    INTEGER         reduce using rule 53 (comparison_op -> EQ .)
-    FLOAT           reduce using rule 53 (comparison_op -> EQ .)
-    CHAR            reduce using rule 53 (comparison_op -> EQ .)
+    LPAREN          reduce using rule 57 (comparison_op -> EQ .)
+    IDF             reduce using rule 57 (comparison_op -> EQ .)
+    INTEGER         reduce using rule 57 (comparison_op -> EQ .)
+    FLOAT           reduce using rule 57 (comparison_op -> EQ .)
+    CHAR            reduce using rule 57 (comparison_op -> EQ .)
 
 
 state 99
 
-    (54) comparison_op -> NE .
+    (58) comparison_op -> NE .
 
-    LPAREN          reduce using rule 54 (comparison_op -> NE .)
-    IDF             reduce using rule 54 (comparison_op -> NE .)
-    INTEGER         reduce using rule 54 (comparison_op -> NE .)
-    FLOAT           reduce using rule 54 (comparison_op -> NE .)
-    CHAR            reduce using rule 54 (comparison_op -> NE .)
+    LPAREN          reduce using rule 58 (comparison_op -> NE .)
+    IDF             reduce using rule 58 (comparison_op -> NE .)
+    INTEGER         reduce using rule 58 (comparison_op -> NE .)
+    FLOAT           reduce using rule 58 (comparison_op -> NE .)
+    CHAR            reduce using rule 58 (comparison_op -> NE .)
 
 
 state 100
 
-    (47) condition -> NOT condition .
-    (45) condition -> condition . AND condition
-    (46) condition -> condition . OR condition
+    (51) condition -> NOT condition .
+    (49) condition -> condition . AND condition
+    (50) condition -> condition . OR condition
 
-    RPAREN          reduce using rule 47 (condition -> NOT condition .)
-    AND             reduce using rule 47 (condition -> NOT condition .)
-    OR              reduce using rule 47 (condition -> NOT condition .)
-    COLOM           reduce using rule 47 (condition -> NOT condition .)
+    RPAREN          reduce using rule 51 (condition -> NOT condition .)
+    AND             reduce using rule 51 (condition -> NOT condition .)
+    OR              reduce using rule 51 (condition -> NOT condition .)
 
   ! AND             [ shift and go to state 91 ]
   ! OR              [ shift and go to state 92 ]
@@ -1533,51 +1537,33 @@ state 100
 
 state 101
 
-    (43) for_loop -> FOR LPAREN assignment COLOM . condition COLOM assignment RPAREN LBRACE instructions RBRACE
-    (44) condition -> . expression comparison_op expression
-    (45) condition -> . condition AND condition
-    (46) condition -> . condition OR condition
-    (47) condition -> . NOT condition
-    (48) condition -> . LPAREN condition RPAREN
-    (31) expression -> . expression PLUS expression
-    (32) expression -> . expression MINUS expression
-    (33) expression -> . expression MULTIPLY expression
-    (34) expression -> . expression DIVIDE expression
-    (35) expression -> . LPAREN expression RPAREN
-    (36) expression -> . IDF
-    (37) expression -> . IDF LBRACKET expression RBRACKET
-    (38) expression -> . INTEGER
-    (39) expression -> . FLOAT
-    (40) expression -> . CHAR
+    (43) for_loop -> FOR LPAREN assignment COLOM . for_pas COLOM for_condition RPAREN LBRACE instructions RBRACE
+    (44) for_pas -> . IDF
+    (45) for_pas -> . INTEGER
 
-    NOT             shift and go to state 74
-    LPAREN          shift and go to state 71
-    IDF             shift and go to state 64
-    INTEGER         shift and go to state 67
-    FLOAT           shift and go to state 68
-    CHAR            shift and go to state 69
+    IDF             shift and go to state 118
+    INTEGER         shift and go to state 119
 
-    condition                      shift and go to state 117
-    expression                     shift and go to state 73
+    for_pas                        shift and go to state 117
 
 state 102
 
-    (55) io_statement -> READ LPAREN IDF RPAREN .
+    (59) io_statement -> READ LPAREN IDF RPAREN .
 
-    SEMICOL         reduce using rule 55 (io_statement -> READ LPAREN IDF RPAREN .)
+    SEMICOL         reduce using rule 59 (io_statement -> READ LPAREN IDF RPAREN .)
 
 
 state 103
 
-    (56) io_statement -> WRITE LPAREN write_list RPAREN .
+    (60) io_statement -> WRITE LPAREN write_list RPAREN .
 
-    SEMICOL         reduce using rule 56 (io_statement -> WRITE LPAREN write_list RPAREN .)
+    SEMICOL         reduce using rule 60 (io_statement -> WRITE LPAREN write_list RPAREN .)
 
 
 state 104
 
-    (57) write_list -> write_list COMMA . expression
-    (60) write_list -> write_list COMMA . STRING
+    (61) write_list -> write_list COMMA . expression
+    (64) write_list -> write_list COMMA . STRING
     (31) expression -> . expression PLUS expression
     (32) expression -> . expression MINUS expression
     (33) expression -> . expression MULTIPLY expression
@@ -1589,14 +1575,14 @@ state 104
     (39) expression -> . FLOAT
     (40) expression -> . CHAR
 
-    STRING          shift and go to state 119
+    STRING          shift and go to state 121
     LPAREN          shift and go to state 66
     IDF             shift and go to state 64
     INTEGER         shift and go to state 67
     FLOAT           shift and go to state 68
     CHAR            shift and go to state 69
 
-    expression                     shift and go to state 118
+    expression                     shift and go to state 120
 
 state 105
 
@@ -1606,7 +1592,7 @@ state 105
     (33) expression -> expression . MULTIPLY expression
     (34) expression -> expression . DIVIDE expression
 
-    RBRACKET        shift and go to state 120
+    RBRACKET        shift and go to state 122
     PLUS            shift and go to state 82
     MINUS           shift and go to state 83
     MULTIPLY        shift and go to state 84
@@ -1625,7 +1611,6 @@ state 106
     MINUS           reduce using rule 31 (expression -> expression PLUS expression .)
     SEMICOL         reduce using rule 31 (expression -> expression PLUS expression .)
     COLOM           reduce using rule 31 (expression -> expression PLUS expression .)
-    RPAREN          reduce using rule 31 (expression -> expression PLUS expression .)
     RBRACKET        reduce using rule 31 (expression -> expression PLUS expression .)
     GT              reduce using rule 31 (expression -> expression PLUS expression .)
     LT              reduce using rule 31 (expression -> expression PLUS expression .)
@@ -1633,6 +1618,7 @@ state 106
     LE              reduce using rule 31 (expression -> expression PLUS expression .)
     EQ              reduce using rule 31 (expression -> expression PLUS expression .)
     NE              reduce using rule 31 (expression -> expression PLUS expression .)
+    RPAREN          reduce using rule 31 (expression -> expression PLUS expression .)
     COMMA           reduce using rule 31 (expression -> expression PLUS expression .)
     AND             reduce using rule 31 (expression -> expression PLUS expression .)
     OR              reduce using rule 31 (expression -> expression PLUS expression .)
@@ -1657,7 +1643,6 @@ state 107
     MINUS           reduce using rule 32 (expression -> expression MINUS expression .)
     SEMICOL         reduce using rule 32 (expression -> expression MINUS expression .)
     COLOM           reduce using rule 32 (expression -> expression MINUS expression .)
-    RPAREN          reduce using rule 32 (expression -> expression MINUS expression .)
     RBRACKET        reduce using rule 32 (expression -> expression MINUS expression .)
     GT              reduce using rule 32 (expression -> expression MINUS expression .)
     LT              reduce using rule 32 (expression -> expression MINUS expression .)
@@ -1665,6 +1650,7 @@ state 107
     LE              reduce using rule 32 (expression -> expression MINUS expression .)
     EQ              reduce using rule 32 (expression -> expression MINUS expression .)
     NE              reduce using rule 32 (expression -> expression MINUS expression .)
+    RPAREN          reduce using rule 32 (expression -> expression MINUS expression .)
     COMMA           reduce using rule 32 (expression -> expression MINUS expression .)
     AND             reduce using rule 32 (expression -> expression MINUS expression .)
     OR              reduce using rule 32 (expression -> expression MINUS expression .)
@@ -1691,7 +1677,6 @@ state 108
     DIVIDE          reduce using rule 33 (expression -> expression MULTIPLY expression .)
     SEMICOL         reduce using rule 33 (expression -> expression MULTIPLY expression .)
     COLOM           reduce using rule 33 (expression -> expression MULTIPLY expression .)
-    RPAREN          reduce using rule 33 (expression -> expression MULTIPLY expression .)
     RBRACKET        reduce using rule 33 (expression -> expression MULTIPLY expression .)
     GT              reduce using rule 33 (expression -> expression MULTIPLY expression .)
     LT              reduce using rule 33 (expression -> expression MULTIPLY expression .)
@@ -1699,6 +1684,7 @@ state 108
     LE              reduce using rule 33 (expression -> expression MULTIPLY expression .)
     EQ              reduce using rule 33 (expression -> expression MULTIPLY expression .)
     NE              reduce using rule 33 (expression -> expression MULTIPLY expression .)
+    RPAREN          reduce using rule 33 (expression -> expression MULTIPLY expression .)
     COMMA           reduce using rule 33 (expression -> expression MULTIPLY expression .)
     AND             reduce using rule 33 (expression -> expression MULTIPLY expression .)
     OR              reduce using rule 33 (expression -> expression MULTIPLY expression .)
@@ -1723,7 +1709,6 @@ state 109
     DIVIDE          reduce using rule 34 (expression -> expression DIVIDE expression .)
     SEMICOL         reduce using rule 34 (expression -> expression DIVIDE expression .)
     COLOM           reduce using rule 34 (expression -> expression DIVIDE expression .)
-    RPAREN          reduce using rule 34 (expression -> expression DIVIDE expression .)
     RBRACKET        reduce using rule 34 (expression -> expression DIVIDE expression .)
     GT              reduce using rule 34 (expression -> expression DIVIDE expression .)
     LT              reduce using rule 34 (expression -> expression DIVIDE expression .)
@@ -1731,6 +1716,7 @@ state 109
     LE              reduce using rule 34 (expression -> expression DIVIDE expression .)
     EQ              reduce using rule 34 (expression -> expression DIVIDE expression .)
     NE              reduce using rule 34 (expression -> expression DIVIDE expression .)
+    RPAREN          reduce using rule 34 (expression -> expression DIVIDE expression .)
     COMMA           reduce using rule 34 (expression -> expression DIVIDE expression .)
     AND             reduce using rule 34 (expression -> expression DIVIDE expression .)
     OR              reduce using rule 34 (expression -> expression DIVIDE expression .)
@@ -1751,7 +1737,6 @@ state 110
     DIVIDE          reduce using rule 35 (expression -> LPAREN expression RPAREN .)
     SEMICOL         reduce using rule 35 (expression -> LPAREN expression RPAREN .)
     COLOM           reduce using rule 35 (expression -> LPAREN expression RPAREN .)
-    RPAREN          reduce using rule 35 (expression -> LPAREN expression RPAREN .)
     RBRACKET        reduce using rule 35 (expression -> LPAREN expression RPAREN .)
     GT              reduce using rule 35 (expression -> LPAREN expression RPAREN .)
     LT              reduce using rule 35 (expression -> LPAREN expression RPAREN .)
@@ -1759,6 +1744,7 @@ state 110
     LE              reduce using rule 35 (expression -> LPAREN expression RPAREN .)
     EQ              reduce using rule 35 (expression -> LPAREN expression RPAREN .)
     NE              reduce using rule 35 (expression -> LPAREN expression RPAREN .)
+    RPAREN          reduce using rule 35 (expression -> LPAREN expression RPAREN .)
     COMMA           reduce using rule 35 (expression -> LPAREN expression RPAREN .)
     AND             reduce using rule 35 (expression -> LPAREN expression RPAREN .)
     OR              reduce using rule 35 (expression -> LPAREN expression RPAREN .)
@@ -1784,16 +1770,15 @@ state 111
     FLOAT           shift and go to state 68
     CHAR            shift and go to state 69
 
-    expression                     shift and go to state 121
+    expression                     shift and go to state 123
 
 state 112
 
-    (48) condition -> LPAREN condition RPAREN .
+    (52) condition -> LPAREN condition RPAREN .
 
-    RPAREN          reduce using rule 48 (condition -> LPAREN condition RPAREN .)
-    AND             reduce using rule 48 (condition -> LPAREN condition RPAREN .)
-    OR              reduce using rule 48 (condition -> LPAREN condition RPAREN .)
-    COLOM           reduce using rule 48 (condition -> LPAREN condition RPAREN .)
+    RPAREN          reduce using rule 52 (condition -> LPAREN condition RPAREN .)
+    AND             reduce using rule 52 (condition -> LPAREN condition RPAREN .)
+    OR              reduce using rule 52 (condition -> LPAREN condition RPAREN .)
 
 
 state 113
@@ -1808,34 +1793,34 @@ state 113
     (26) instruction -> . if_statement
     (27) instruction -> . for_loop
     (28) instruction -> . io_statement SEMICOL
-    (61) empty -> .
+    (65) empty -> .
     (29) assignment -> . IDF EQUALS expression
     (30) array_assignment -> . IDF LBRACKET expression RBRACKET EQUALS expression
     (41) if_statement -> . IF LPAREN condition RPAREN LBRACE instructions RBRACE
     (42) if_statement -> . IF LPAREN condition RPAREN LBRACE instructions RBRACE ELSE LBRACE instructions RBRACE
-    (43) for_loop -> . FOR LPAREN assignment COLOM condition COLOM assignment RPAREN LBRACE instructions RBRACE
-    (55) io_statement -> . READ LPAREN IDF RPAREN
-    (56) io_statement -> . WRITE LPAREN write_list RPAREN
+    (43) for_loop -> . FOR LPAREN assignment COLOM for_pas COLOM for_condition RPAREN LBRACE instructions RBRACE
+    (59) io_statement -> . READ LPAREN IDF RPAREN
+    (60) io_statement -> . WRITE LPAREN write_list RPAREN
 
   ! shift/reduce conflict for IDF resolved as shift
   ! shift/reduce conflict for IF resolved as shift
   ! shift/reduce conflict for FOR resolved as shift
   ! shift/reduce conflict for READ resolved as shift
   ! shift/reduce conflict for WRITE resolved as shift
-    RBRACE          reduce using rule 61 (empty -> .)
+    RBRACE          reduce using rule 65 (empty -> .)
     IDF             shift and go to state 43
     IF              shift and go to state 44
     FOR             shift and go to state 45
     READ            shift and go to state 46
     WRITE           shift and go to state 47
 
-  ! IDF             [ reduce using rule 61 (empty -> .) ]
-  ! IF              [ reduce using rule 61 (empty -> .) ]
-  ! FOR             [ reduce using rule 61 (empty -> .) ]
-  ! READ            [ reduce using rule 61 (empty -> .) ]
-  ! WRITE           [ reduce using rule 61 (empty -> .) ]
+  ! IDF             [ reduce using rule 65 (empty -> .) ]
+  ! IF              [ reduce using rule 65 (empty -> .) ]
+  ! FOR             [ reduce using rule 65 (empty -> .) ]
+  ! READ            [ reduce using rule 65 (empty -> .) ]
+  ! WRITE           [ reduce using rule 65 (empty -> .) ]
 
-    instructions                   shift and go to state 122
+    instructions                   shift and go to state 124
     instruction                    shift and go to state 36
     empty                          shift and go to state 37
     assignment                     shift and go to state 38
@@ -1846,14 +1831,13 @@ state 113
 
 state 114
 
-    (45) condition -> condition AND condition .
-    (45) condition -> condition . AND condition
-    (46) condition -> condition . OR condition
+    (49) condition -> condition AND condition .
+    (49) condition -> condition . AND condition
+    (50) condition -> condition . OR condition
 
-    RPAREN          reduce using rule 45 (condition -> condition AND condition .)
-    AND             reduce using rule 45 (condition -> condition AND condition .)
-    OR              reduce using rule 45 (condition -> condition AND condition .)
-    COLOM           reduce using rule 45 (condition -> condition AND condition .)
+    RPAREN          reduce using rule 49 (condition -> condition AND condition .)
+    AND             reduce using rule 49 (condition -> condition AND condition .)
+    OR              reduce using rule 49 (condition -> condition AND condition .)
 
   ! AND             [ shift and go to state 91 ]
   ! OR              [ shift and go to state 92 ]
@@ -1861,31 +1845,29 @@ state 114
 
 state 115
 
-    (46) condition -> condition OR condition .
-    (45) condition -> condition . AND condition
-    (46) condition -> condition . OR condition
+    (50) condition -> condition OR condition .
+    (49) condition -> condition . AND condition
+    (50) condition -> condition . OR condition
 
-    RPAREN          reduce using rule 46 (condition -> condition OR condition .)
-    OR              reduce using rule 46 (condition -> condition OR condition .)
-    COLOM           reduce using rule 46 (condition -> condition OR condition .)
+    RPAREN          reduce using rule 50 (condition -> condition OR condition .)
+    OR              reduce using rule 50 (condition -> condition OR condition .)
     AND             shift and go to state 91
 
-  ! AND             [ reduce using rule 46 (condition -> condition OR condition .) ]
+  ! AND             [ reduce using rule 50 (condition -> condition OR condition .) ]
   ! OR              [ shift and go to state 92 ]
 
 
 state 116
 
-    (44) condition -> expression comparison_op expression .
+    (48) condition -> expression comparison_op expression .
     (31) expression -> expression . PLUS expression
     (32) expression -> expression . MINUS expression
     (33) expression -> expression . MULTIPLY expression
     (34) expression -> expression . DIVIDE expression
 
-    RPAREN          reduce using rule 44 (condition -> expression comparison_op expression .)
-    AND             reduce using rule 44 (condition -> expression comparison_op expression .)
-    OR              reduce using rule 44 (condition -> expression comparison_op expression .)
-    COLOM           reduce using rule 44 (condition -> expression comparison_op expression .)
+    RPAREN          reduce using rule 48 (condition -> expression comparison_op expression .)
+    AND             reduce using rule 48 (condition -> expression comparison_op expression .)
+    OR              reduce using rule 48 (condition -> expression comparison_op expression .)
     PLUS            shift and go to state 82
     MINUS           shift and go to state 83
     MULTIPLY        shift and go to state 84
@@ -1894,40 +1876,50 @@ state 116
 
 state 117
 
-    (43) for_loop -> FOR LPAREN assignment COLOM condition . COLOM assignment RPAREN LBRACE instructions RBRACE
-    (45) condition -> condition . AND condition
-    (46) condition -> condition . OR condition
+    (43) for_loop -> FOR LPAREN assignment COLOM for_pas . COLOM for_condition RPAREN LBRACE instructions RBRACE
 
-    COLOM           shift and go to state 123
-    AND             shift and go to state 91
-    OR              shift and go to state 92
+    COLOM           shift and go to state 125
 
 
 state 118
 
-    (57) write_list -> write_list COMMA expression .
+    (44) for_pas -> IDF .
+
+    COLOM           reduce using rule 44 (for_pas -> IDF .)
+
+
+state 119
+
+    (45) for_pas -> INTEGER .
+
+    COLOM           reduce using rule 45 (for_pas -> INTEGER .)
+
+
+state 120
+
+    (61) write_list -> write_list COMMA expression .
     (31) expression -> expression . PLUS expression
     (32) expression -> expression . MINUS expression
     (33) expression -> expression . MULTIPLY expression
     (34) expression -> expression . DIVIDE expression
 
-    RPAREN          reduce using rule 57 (write_list -> write_list COMMA expression .)
-    COMMA           reduce using rule 57 (write_list -> write_list COMMA expression .)
+    RPAREN          reduce using rule 61 (write_list -> write_list COMMA expression .)
+    COMMA           reduce using rule 61 (write_list -> write_list COMMA expression .)
     PLUS            shift and go to state 82
     MINUS           shift and go to state 83
     MULTIPLY        shift and go to state 84
     DIVIDE          shift and go to state 85
 
 
-state 119
+state 121
 
-    (60) write_list -> write_list COMMA STRING .
+    (64) write_list -> write_list COMMA STRING .
 
-    RPAREN          reduce using rule 60 (write_list -> write_list COMMA STRING .)
-    COMMA           reduce using rule 60 (write_list -> write_list COMMA STRING .)
+    RPAREN          reduce using rule 64 (write_list -> write_list COMMA STRING .)
+    COMMA           reduce using rule 64 (write_list -> write_list COMMA STRING .)
 
 
-state 120
+state 122
 
     (37) expression -> IDF LBRACKET expression RBRACKET .
 
@@ -1937,7 +1929,6 @@ state 120
     DIVIDE          reduce using rule 37 (expression -> IDF LBRACKET expression RBRACKET .)
     SEMICOL         reduce using rule 37 (expression -> IDF LBRACKET expression RBRACKET .)
     COLOM           reduce using rule 37 (expression -> IDF LBRACKET expression RBRACKET .)
-    RPAREN          reduce using rule 37 (expression -> IDF LBRACKET expression RBRACKET .)
     RBRACKET        reduce using rule 37 (expression -> IDF LBRACKET expression RBRACKET .)
     GT              reduce using rule 37 (expression -> IDF LBRACKET expression RBRACKET .)
     LT              reduce using rule 37 (expression -> IDF LBRACKET expression RBRACKET .)
@@ -1945,12 +1936,13 @@ state 120
     LE              reduce using rule 37 (expression -> IDF LBRACKET expression RBRACKET .)
     EQ              reduce using rule 37 (expression -> IDF LBRACKET expression RBRACKET .)
     NE              reduce using rule 37 (expression -> IDF LBRACKET expression RBRACKET .)
+    RPAREN          reduce using rule 37 (expression -> IDF LBRACKET expression RBRACKET .)
     COMMA           reduce using rule 37 (expression -> IDF LBRACKET expression RBRACKET .)
     AND             reduce using rule 37 (expression -> IDF LBRACKET expression RBRACKET .)
     OR              reduce using rule 37 (expression -> IDF LBRACKET expression RBRACKET .)
 
 
-state 121
+state 123
 
     (30) array_assignment -> IDF LBRACKET expression RBRACKET EQUALS expression .
     (31) expression -> expression . PLUS expression
@@ -1965,7 +1957,7 @@ state 121
     DIVIDE          shift and go to state 85
 
 
-state 122
+state 124
 
     (41) if_statement -> IF LPAREN condition RPAREN LBRACE instructions . RBRACE
     (42) if_statement -> IF LPAREN condition RPAREN LBRACE instructions . RBRACE ELSE LBRACE instructions RBRACE
@@ -1979,11 +1971,11 @@ state 122
     (30) array_assignment -> . IDF LBRACKET expression RBRACKET EQUALS expression
     (41) if_statement -> . IF LPAREN condition RPAREN LBRACE instructions RBRACE
     (42) if_statement -> . IF LPAREN condition RPAREN LBRACE instructions RBRACE ELSE LBRACE instructions RBRACE
-    (43) for_loop -> . FOR LPAREN assignment COLOM condition COLOM assignment RPAREN LBRACE instructions RBRACE
-    (55) io_statement -> . READ LPAREN IDF RPAREN
-    (56) io_statement -> . WRITE LPAREN write_list RPAREN
+    (43) for_loop -> . FOR LPAREN assignment COLOM for_pas COLOM for_condition RPAREN LBRACE instructions RBRACE
+    (59) io_statement -> . READ LPAREN IDF RPAREN
+    (60) io_statement -> . WRITE LPAREN write_list RPAREN
 
-    RBRACE          shift and go to state 124
+    RBRACE          shift and go to state 126
     IDF             shift and go to state 43
     IF              shift and go to state 44
     FOR             shift and go to state 45
@@ -1997,16 +1989,18 @@ state 122
     for_loop                       shift and go to state 41
     io_statement                   shift and go to state 42
 
-state 123
+state 125
 
-    (43) for_loop -> FOR LPAREN assignment COLOM condition COLOM . assignment RPAREN LBRACE instructions RBRACE
-    (29) assignment -> . IDF EQUALS expression
+    (43) for_loop -> FOR LPAREN assignment COLOM for_pas COLOM . for_condition RPAREN LBRACE instructions RBRACE
+    (46) for_condition -> . IDF
+    (47) for_condition -> . INTEGER
 
-    IDF             shift and go to state 76
+    IDF             shift and go to state 128
+    INTEGER         shift and go to state 129
 
-    assignment                     shift and go to state 125
+    for_condition                  shift and go to state 127
 
-state 124
+state 126
 
     (41) if_statement -> IF LPAREN condition RPAREN LBRACE instructions RBRACE .
     (42) if_statement -> IF LPAREN condition RPAREN LBRACE instructions RBRACE . ELSE LBRACE instructions RBRACE
@@ -2017,31 +2011,45 @@ state 124
     FOR             reduce using rule 41 (if_statement -> IF LPAREN condition RPAREN LBRACE instructions RBRACE .)
     READ            reduce using rule 41 (if_statement -> IF LPAREN condition RPAREN LBRACE instructions RBRACE .)
     WRITE           reduce using rule 41 (if_statement -> IF LPAREN condition RPAREN LBRACE instructions RBRACE .)
-    ELSE            shift and go to state 126
-
-
-state 125
-
-    (43) for_loop -> FOR LPAREN assignment COLOM condition COLOM assignment . RPAREN LBRACE instructions RBRACE
-
-    RPAREN          shift and go to state 127
-
-
-state 126
-
-    (42) if_statement -> IF LPAREN condition RPAREN LBRACE instructions RBRACE ELSE . LBRACE instructions RBRACE
-
-    LBRACE          shift and go to state 128
+    ELSE            shift and go to state 130
 
 
 state 127
 
-    (43) for_loop -> FOR LPAREN assignment COLOM condition COLOM assignment RPAREN . LBRACE instructions RBRACE
+    (43) for_loop -> FOR LPAREN assignment COLOM for_pas COLOM for_condition . RPAREN LBRACE instructions RBRACE
 
-    LBRACE          shift and go to state 129
+    RPAREN          shift and go to state 131
 
 
 state 128
+
+    (46) for_condition -> IDF .
+
+    RPAREN          reduce using rule 46 (for_condition -> IDF .)
+
+
+state 129
+
+    (47) for_condition -> INTEGER .
+
+    RPAREN          reduce using rule 47 (for_condition -> INTEGER .)
+
+
+state 130
+
+    (42) if_statement -> IF LPAREN condition RPAREN LBRACE instructions RBRACE ELSE . LBRACE instructions RBRACE
+
+    LBRACE          shift and go to state 132
+
+
+state 131
+
+    (43) for_loop -> FOR LPAREN assignment COLOM for_pas COLOM for_condition RPAREN . LBRACE instructions RBRACE
+
+    LBRACE          shift and go to state 133
+
+
+state 132
 
     (42) if_statement -> IF LPAREN condition RPAREN LBRACE instructions RBRACE ELSE LBRACE . instructions RBRACE
     (21) instructions -> . instructions instruction
@@ -2052,34 +2060,34 @@ state 128
     (26) instruction -> . if_statement
     (27) instruction -> . for_loop
     (28) instruction -> . io_statement SEMICOL
-    (61) empty -> .
+    (65) empty -> .
     (29) assignment -> . IDF EQUALS expression
     (30) array_assignment -> . IDF LBRACKET expression RBRACKET EQUALS expression
     (41) if_statement -> . IF LPAREN condition RPAREN LBRACE instructions RBRACE
     (42) if_statement -> . IF LPAREN condition RPAREN LBRACE instructions RBRACE ELSE LBRACE instructions RBRACE
-    (43) for_loop -> . FOR LPAREN assignment COLOM condition COLOM assignment RPAREN LBRACE instructions RBRACE
-    (55) io_statement -> . READ LPAREN IDF RPAREN
-    (56) io_statement -> . WRITE LPAREN write_list RPAREN
+    (43) for_loop -> . FOR LPAREN assignment COLOM for_pas COLOM for_condition RPAREN LBRACE instructions RBRACE
+    (59) io_statement -> . READ LPAREN IDF RPAREN
+    (60) io_statement -> . WRITE LPAREN write_list RPAREN
 
   ! shift/reduce conflict for IDF resolved as shift
   ! shift/reduce conflict for IF resolved as shift
   ! shift/reduce conflict for FOR resolved as shift
   ! shift/reduce conflict for READ resolved as shift
   ! shift/reduce conflict for WRITE resolved as shift
-    RBRACE          reduce using rule 61 (empty -> .)
+    RBRACE          reduce using rule 65 (empty -> .)
     IDF             shift and go to state 43
     IF              shift and go to state 44
     FOR             shift and go to state 45
     READ            shift and go to state 46
     WRITE           shift and go to state 47
 
-  ! IDF             [ reduce using rule 61 (empty -> .) ]
-  ! IF              [ reduce using rule 61 (empty -> .) ]
-  ! FOR             [ reduce using rule 61 (empty -> .) ]
-  ! READ            [ reduce using rule 61 (empty -> .) ]
-  ! WRITE           [ reduce using rule 61 (empty -> .) ]
+  ! IDF             [ reduce using rule 65 (empty -> .) ]
+  ! IF              [ reduce using rule 65 (empty -> .) ]
+  ! FOR             [ reduce using rule 65 (empty -> .) ]
+  ! READ            [ reduce using rule 65 (empty -> .) ]
+  ! WRITE           [ reduce using rule 65 (empty -> .) ]
 
-    instructions                   shift and go to state 130
+    instructions                   shift and go to state 134
     instruction                    shift and go to state 36
     empty                          shift and go to state 37
     assignment                     shift and go to state 38
@@ -2088,9 +2096,9 @@ state 128
     for_loop                       shift and go to state 41
     io_statement                   shift and go to state 42
 
-state 129
+state 133
 
-    (43) for_loop -> FOR LPAREN assignment COLOM condition COLOM assignment RPAREN LBRACE . instructions RBRACE
+    (43) for_loop -> FOR LPAREN assignment COLOM for_pas COLOM for_condition RPAREN LBRACE . instructions RBRACE
     (21) instructions -> . instructions instruction
     (22) instructions -> . instruction
     (23) instructions -> . empty
@@ -2099,35 +2107,35 @@ state 129
     (26) instruction -> . if_statement
     (27) instruction -> . for_loop
     (28) instruction -> . io_statement SEMICOL
-    (61) empty -> .
+    (65) empty -> .
     (29) assignment -> . IDF EQUALS expression
     (30) array_assignment -> . IDF LBRACKET expression RBRACKET EQUALS expression
     (41) if_statement -> . IF LPAREN condition RPAREN LBRACE instructions RBRACE
     (42) if_statement -> . IF LPAREN condition RPAREN LBRACE instructions RBRACE ELSE LBRACE instructions RBRACE
-    (43) for_loop -> . FOR LPAREN assignment COLOM condition COLOM assignment RPAREN LBRACE instructions RBRACE
-    (55) io_statement -> . READ LPAREN IDF RPAREN
-    (56) io_statement -> . WRITE LPAREN write_list RPAREN
+    (43) for_loop -> . FOR LPAREN assignment COLOM for_pas COLOM for_condition RPAREN LBRACE instructions RBRACE
+    (59) io_statement -> . READ LPAREN IDF RPAREN
+    (60) io_statement -> . WRITE LPAREN write_list RPAREN
 
   ! shift/reduce conflict for IDF resolved as shift
   ! shift/reduce conflict for IF resolved as shift
   ! shift/reduce conflict for FOR resolved as shift
   ! shift/reduce conflict for READ resolved as shift
   ! shift/reduce conflict for WRITE resolved as shift
-    RBRACE          reduce using rule 61 (empty -> .)
+    RBRACE          reduce using rule 65 (empty -> .)
     IDF             shift and go to state 43
     IF              shift and go to state 44
     FOR             shift and go to state 45
     READ            shift and go to state 46
     WRITE           shift and go to state 47
 
-  ! IDF             [ reduce using rule 61 (empty -> .) ]
-  ! IF              [ reduce using rule 61 (empty -> .) ]
-  ! FOR             [ reduce using rule 61 (empty -> .) ]
-  ! READ            [ reduce using rule 61 (empty -> .) ]
-  ! WRITE           [ reduce using rule 61 (empty -> .) ]
+  ! IDF             [ reduce using rule 65 (empty -> .) ]
+  ! IF              [ reduce using rule 65 (empty -> .) ]
+  ! FOR             [ reduce using rule 65 (empty -> .) ]
+  ! READ            [ reduce using rule 65 (empty -> .) ]
+  ! WRITE           [ reduce using rule 65 (empty -> .) ]
 
     assignment                     shift and go to state 38
-    instructions                   shift and go to state 131
+    instructions                   shift and go to state 135
     instruction                    shift and go to state 36
     empty                          shift and go to state 37
     array_assignment               shift and go to state 39
@@ -2135,7 +2143,7 @@ state 129
     for_loop                       shift and go to state 41
     io_statement                   shift and go to state 42
 
-state 130
+state 134
 
     (42) if_statement -> IF LPAREN condition RPAREN LBRACE instructions RBRACE ELSE LBRACE instructions . RBRACE
     (21) instructions -> instructions . instruction
@@ -2148,11 +2156,11 @@ state 130
     (30) array_assignment -> . IDF LBRACKET expression RBRACKET EQUALS expression
     (41) if_statement -> . IF LPAREN condition RPAREN LBRACE instructions RBRACE
     (42) if_statement -> . IF LPAREN condition RPAREN LBRACE instructions RBRACE ELSE LBRACE instructions RBRACE
-    (43) for_loop -> . FOR LPAREN assignment COLOM condition COLOM assignment RPAREN LBRACE instructions RBRACE
-    (55) io_statement -> . READ LPAREN IDF RPAREN
-    (56) io_statement -> . WRITE LPAREN write_list RPAREN
+    (43) for_loop -> . FOR LPAREN assignment COLOM for_pas COLOM for_condition RPAREN LBRACE instructions RBRACE
+    (59) io_statement -> . READ LPAREN IDF RPAREN
+    (60) io_statement -> . WRITE LPAREN write_list RPAREN
 
-    RBRACE          shift and go to state 132
+    RBRACE          shift and go to state 136
     IDF             shift and go to state 43
     IF              shift and go to state 44
     FOR             shift and go to state 45
@@ -2166,9 +2174,9 @@ state 130
     for_loop                       shift and go to state 41
     io_statement                   shift and go to state 42
 
-state 131
+state 135
 
-    (43) for_loop -> FOR LPAREN assignment COLOM condition COLOM assignment RPAREN LBRACE instructions . RBRACE
+    (43) for_loop -> FOR LPAREN assignment COLOM for_pas COLOM for_condition RPAREN LBRACE instructions . RBRACE
     (21) instructions -> instructions . instruction
     (24) instruction -> . assignment SEMICOL
     (25) instruction -> . array_assignment SEMICOL
@@ -2179,11 +2187,11 @@ state 131
     (30) array_assignment -> . IDF LBRACKET expression RBRACKET EQUALS expression
     (41) if_statement -> . IF LPAREN condition RPAREN LBRACE instructions RBRACE
     (42) if_statement -> . IF LPAREN condition RPAREN LBRACE instructions RBRACE ELSE LBRACE instructions RBRACE
-    (43) for_loop -> . FOR LPAREN assignment COLOM condition COLOM assignment RPAREN LBRACE instructions RBRACE
-    (55) io_statement -> . READ LPAREN IDF RPAREN
-    (56) io_statement -> . WRITE LPAREN write_list RPAREN
+    (43) for_loop -> . FOR LPAREN assignment COLOM for_pas COLOM for_condition RPAREN LBRACE instructions RBRACE
+    (59) io_statement -> . READ LPAREN IDF RPAREN
+    (60) io_statement -> . WRITE LPAREN write_list RPAREN
 
-    RBRACE          shift and go to state 133
+    RBRACE          shift and go to state 137
     IDF             shift and go to state 43
     IF              shift and go to state 44
     FOR             shift and go to state 45
@@ -2197,7 +2205,7 @@ state 131
     for_loop                       shift and go to state 41
     io_statement                   shift and go to state 42
 
-state 132
+state 136
 
     (42) if_statement -> IF LPAREN condition RPAREN LBRACE instructions RBRACE ELSE LBRACE instructions RBRACE .
 
@@ -2209,16 +2217,16 @@ state 132
     WRITE           reduce using rule 42 (if_statement -> IF LPAREN condition RPAREN LBRACE instructions RBRACE ELSE LBRACE instructions RBRACE .)
 
 
-state 133
+state 137
 
-    (43) for_loop -> FOR LPAREN assignment COLOM condition COLOM assignment RPAREN LBRACE instructions RBRACE .
+    (43) for_loop -> FOR LPAREN assignment COLOM for_pas COLOM for_condition RPAREN LBRACE instructions RBRACE .
 
-    RBRACE          reduce using rule 43 (for_loop -> FOR LPAREN assignment COLOM condition COLOM assignment RPAREN LBRACE instructions RBRACE .)
-    IDF             reduce using rule 43 (for_loop -> FOR LPAREN assignment COLOM condition COLOM assignment RPAREN LBRACE instructions RBRACE .)
-    IF              reduce using rule 43 (for_loop -> FOR LPAREN assignment COLOM condition COLOM assignment RPAREN LBRACE instructions RBRACE .)
-    FOR             reduce using rule 43 (for_loop -> FOR LPAREN assignment COLOM condition COLOM assignment RPAREN LBRACE instructions RBRACE .)
-    READ            reduce using rule 43 (for_loop -> FOR LPAREN assignment COLOM condition COLOM assignment RPAREN LBRACE instructions RBRACE .)
-    WRITE           reduce using rule 43 (for_loop -> FOR LPAREN assignment COLOM condition COLOM assignment RPAREN LBRACE instructions RBRACE .)
+    RBRACE          reduce using rule 43 (for_loop -> FOR LPAREN assignment COLOM for_pas COLOM for_condition RPAREN LBRACE instructions RBRACE .)
+    IDF             reduce using rule 43 (for_loop -> FOR LPAREN assignment COLOM for_pas COLOM for_condition RPAREN LBRACE instructions RBRACE .)
+    IF              reduce using rule 43 (for_loop -> FOR LPAREN assignment COLOM for_pas COLOM for_condition RPAREN LBRACE instructions RBRACE .)
+    FOR             reduce using rule 43 (for_loop -> FOR LPAREN assignment COLOM for_pas COLOM for_condition RPAREN LBRACE instructions RBRACE .)
+    READ            reduce using rule 43 (for_loop -> FOR LPAREN assignment COLOM for_pas COLOM for_condition RPAREN LBRACE instructions RBRACE .)
+    WRITE           reduce using rule 43 (for_loop -> FOR LPAREN assignment COLOM for_pas COLOM for_condition RPAREN LBRACE instructions RBRACE .)
 
 WARNING: 
 WARNING: Conflicts:
@@ -2237,13 +2245,13 @@ WARNING: shift/reduce conflict for IF in state 113 resolved as shift
 WARNING: shift/reduce conflict for FOR in state 113 resolved as shift
 WARNING: shift/reduce conflict for READ in state 113 resolved as shift
 WARNING: shift/reduce conflict for WRITE in state 113 resolved as shift
-WARNING: shift/reduce conflict for IDF in state 128 resolved as shift
-WARNING: shift/reduce conflict for IF in state 128 resolved as shift
-WARNING: shift/reduce conflict for FOR in state 128 resolved as shift
-WARNING: shift/reduce conflict for READ in state 128 resolved as shift
-WARNING: shift/reduce conflict for WRITE in state 128 resolved as shift
-WARNING: shift/reduce conflict for IDF in state 129 resolved as shift
-WARNING: shift/reduce conflict for IF in state 129 resolved as shift
-WARNING: shift/reduce conflict for FOR in state 129 resolved as shift
-WARNING: shift/reduce conflict for READ in state 129 resolved as shift
-WARNING: shift/reduce conflict for WRITE in state 129 resolved as shift
+WARNING: shift/reduce conflict for IDF in state 132 resolved as shift
+WARNING: shift/reduce conflict for IF in state 132 resolved as shift
+WARNING: shift/reduce conflict for FOR in state 132 resolved as shift
+WARNING: shift/reduce conflict for READ in state 132 resolved as shift
+WARNING: shift/reduce conflict for WRITE in state 132 resolved as shift
+WARNING: shift/reduce conflict for IDF in state 133 resolved as shift
+WARNING: shift/reduce conflict for IF in state 133 resolved as shift
+WARNING: shift/reduce conflict for FOR in state 133 resolved as shift
+WARNING: shift/reduce conflict for READ in state 133 resolved as shift
+WARNING: shift/reduce conflict for WRITE in state 133 resolved as shift
