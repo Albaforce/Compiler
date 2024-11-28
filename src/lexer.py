@@ -64,21 +64,10 @@ class MinINGLexer:
         self.tokens_list = []  # To store tokens in the required format
         self.errors = []       # List of errors
 
-    def t_OPERATOR(self, t):
-        r'\+|\-|\*|\/|==|!=|<=|>=|>|<|='
-        self.tokens_list.append(("OPERATOR", str(t.value)))
-        exit
-
-    # Generic rule to capture delimiters
-    def t_DELIMITER(self, t):
-        r';|,|:|\(|\)|\{|\}|\[|\]'
-        self.tokens_list.append(("DELIMITER", str(t.value)))
-        exit
     
     def t_FLOAT(self, t):
         r'\(\s*[+-]\s*\d+\.\d+\s*\)|\d+\.\d+'
         t.value = float(t.value.replace(' ', '').strip('()'))
-        self.tokens_list.append(("NUMBER", str(t.value)))
         return t
 
     def t_INTEGER(self, t):
@@ -87,33 +76,28 @@ class MinINGLexer:
         if not (-32768 <= t.value <= 32767):
             self.errors.append(f"Integer {t.value} is out of range [-32768, 32767].")
             return None
-        self.tokens_list.append(("NUMBER", str(t.value)))
         return t
 
     def t_IDF(self, t):
         r'[A-Z][A-Za-z0-9]*'
         if t.value in self.reserved:
             t.type = self.reserved[t.value]
-            self.tokens_list.append(("KEYWORD", t.value))
         else:
             if '_' in t.value:
                 self.errors.append(f"Error: Identifier {t.value} contains underscores, which are not allowed.")
             if len(t.value) > 8:
                 self.errors.append(f"Warning: Identifier {t.value} is too long (max 8 chars).")
                 t.value = t.value[:8]
-            self.tokens_list.append(("IDENTIFIER", t.value))
         return t
 
     def t_CHAR(self, t):
         r"'\S'"
         t.value = t.value[1]
-        self.tokens_list.append(("CHAR", t.value))
         return t
 
     def t_STRING(self, t):
         r'"[^"]*"'
         t.value = str(t.value[1:-1])
-        self.tokens_list.append(("STRING", t.value))
         return t
 
     def t_newline(self, t):
@@ -133,9 +117,11 @@ class MinINGLexer:
         self.lexer.input(data)
         while True:
             tok = self.lexer.token()
+            
             if not tok:
                 break
-
+            self.tokens_list.append((f"type:{tok.type} ", f'Value: {str(tok.value)}', f'Line: {tok.lineno}'))
+                    
         # save the output in json file
         with open("src/lexer.json", 'w') as file :
             file.write(json.dumps(self.tokens_list, indent=4))
@@ -162,8 +148,30 @@ if __name__ == "__main__":
     
     # Test input
     data = '''
-    INTEGER X = 42; INTEGER P = 2;
-    a b c ; 
+    DECLARATION {
+        INTEGER A, B[10], C = 15, D, E[5] ;
+        FLOAT Var6, Var7[20];
+        CHAR Var8 = 'A', Var9[100], Chaine[100], Ch[] = "test";
+        CONST INTEGER MAX = 100;
+        CHAR Lettre;
+    }
+    INSTRUCTION {
+        A = 10;
+        B[3] = 2;
+        Ch[0] = 'E';
+        Lettre = 'Z'; 
+        IF (A > 5) {
+            A = B[2] + 1;
+        } ELSE {
+            A = 1;
+        }
+        FOR(I = 0: 2: N) {
+            A = A + 1;
+        }
+        WRITE(A, B[2], Ch, Lettre);
+        WRITE("Hello World !");
+        WRITE("test",A+2,"test");
+        READ(A);
     }
     '''
     
