@@ -1,0 +1,30 @@
+{
+    "String": {
+        "value": "ABC",
+        "type": "CHAR",
+        "is_array": true,
+        "size": 3,
+        "const": false
+    },
+    "floatVar": {
+        "value": 3.14,
+        "type": "FLOAT",
+        "is_array": false,
+        "size": null,
+        "const": true
+    },
+    "Idf": {
+        "value": 0,
+        "type": "INTEGER",
+        "is_array": false,
+        "size": null,
+        "const": false
+    },
+    "charVar": {
+        "value": "A",
+        "type": "CHAR",
+        "is_array": false,
+        "size": null,
+        "const": false
+    }
+}
