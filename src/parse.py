@@ -1,6 +1,7 @@
 from ply import yacc
 from lexer import MinINGLexer
-
+import json
+test = ""
 class MinINGParser:
     def __init__(self):
         # Initialiser le lexer correctement
@@ -71,10 +72,7 @@ class MinINGParser:
         elif len(p) == 4:  # Variable with initialization
             p[0] = ('var_init', p[1], p[3])
         elif len(p) == 5:  # array Declaraion 
-            if p[3] <= 0 : 
-                raise yacc.YaccError(f"Erreur de syntaxe dans la déclaration de tableau La taille du tableau doit être positive. Taille: {p[3]}")
-            else:
-                p[0] = ('array', p[1], p[3])
+            p[0] = ('array', p[1], p[3])
         elif len(p) == 6:  # String initialisation
             p[0] = ('var_init',p[1],p[5])
 
@@ -231,40 +229,49 @@ class MinINGParser:
 
     def parse(self, data):
         return self.parser.parse(data, lexer=self.lexer)
-    
-    
+       
+     
+    def build_program_from_lexer_output(self ,lexer_output):
+            """
+            Parse directement les tokens extraits du lexer.
+            """
+            program = ''''''
+            
+            i = int(lexer_output[0][2].split(": ")[1]) # recuper le numero de ligne 
+            
+            # Extraire les valeurs des tokens
+            for token in lexer_output:  
+                type = str(token[0].split(": ")[1])  
+                value = str(token[1].split(": ")[1])
+                line = int(token[2].split(": ")[1])
+                
+                # Le cas de signed INTEGER ou FLOAT surtout le negative
+                if (type == 'INTEGER' and int(value) < 0) or (type == 'FLOAT' and float(value) < 0):
+                    value = "(" + value + ")"
+
+                if i != line : 
+                    program += "\n" + value + " "
+                    i += 1
+                else :
+                    program += value + " "
+            return program
 
 # Test
 if __name__ == "__main__":
+    # Charger les tokens depuis le fichier lexer.json
+    with open("src/lexer.json", 'r') as file:
+        lexer_output = json.load(file)
+
+    # Initialiser le parser
     parser = MinINGParser()
-    test_program = '''
-    DECLARATION {
-        INTEGER A, B[10], C = 15, D, E[5] ;
-        FLOAT Var6, Var7[20];
-        CHAR Var8 = 'A', Var9[100], Chaine[100], Ch[] = "test";
-        CONST INTEGER MAX = 100;
-        CHAR Lettre;
-    }
-    INSTRUCTION {
-        A = 10;
-        B[3] = 2;
-        Ch[0] = 'E';  
-        Lettre = 'Z'; 
-        IF (A > 5) {
-            A = B[2] + 1;
-        } ELSE {
-            A = 1;
-        }
-        FOR(I = 0: 2: N) {
-            A = A + 1;
-        }
-        WRITE(A, B[2], Ch, Lettre);
-        WRITE("Hello World !");
-        WRITE("test",A+2,"test");
-        READ(A);
-    }
-    '''
-    result = parser.parse(test_program)
-    print(result)
 
+    # Effectuer le parsing
+    data = parser.build_program_from_lexer_output(lexer_output)
+    with open("src/programme.txt", 'w') as file :
+        file.write(data)
+    result = parser.parse(data)
 
+    # Sauvegarder le resultat
+    with open("src/parse.json", 'w') as file:
+        file.write(json.dumps(result, indent=4))
+    
