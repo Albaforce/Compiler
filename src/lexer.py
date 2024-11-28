@@ -121,11 +121,11 @@ class MinINGLexer:
             if not tok:
                 break
             if tok.type == 'CHAR':
-                self.tokens_list.append((f"type:{tok.type} ", f"Value: '{str(tok.value)}'", f'Line: {tok.lineno}'))
+                self.tokens_list.append((f"type: {tok.type}", f"Value: '{str(tok.value)}'", f'Line: {tok.lineno}'))
             elif tok.type == 'STRING' :
-                self.tokens_list.append((f"type:{tok.type} ", f'Value: "{str(tok.value)}"', f'Line: {tok.lineno}'))
+                self.tokens_list.append((f"type: {tok.type}", f'Value: "{str(tok.value)}"', f'Line: {tok.lineno}'))
             else :   
-                self.tokens_list.append((f"type:{tok.type} ", f'Value: {str(tok.value)}', f'Line: {tok.lineno}'))
+                self.tokens_list.append((f"type: {tok.type}", f'Value: {str(tok.value)}', f'Line: {tok.lineno}'))
                     
         # save the output in json file
         with open("src/lexer.json", 'w') as file :
@@ -154,7 +154,7 @@ if __name__ == "__main__":
     # Test input
     data = '''
     DECLARATION {
-        INTEGER A, B[10], C = 15, D, E[5] ;
+        INTEGER A, B[(-10)], C = 15, D, E[5] ;
         FLOAT Var6, Var7[20];
         CHAR Var8 = 'A', Var9[100], Chaine[100], Ch[] = "test";
         CONST INTEGER MAX = 100;
@@ -177,7 +177,7 @@ if __name__ == "__main__":
         WRITE("Hello World !");
         WRITE("test",A+2,"test");
         READ(A);
-        
+        X = (+5.8) - (-3.6) + 12 + (-62) * (+12) ;
     }
     '''
     
