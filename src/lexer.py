@@ -1,4 +1,5 @@
 from ply import lex
+import json
 
 class MinINGLexer:
     # Liste des tokens
@@ -134,6 +135,10 @@ class MinINGLexer:
             tok = self.lexer.token()
             if not tok:
                 break
+
+        # save the output in json file
+        with open("src/lexer.json", 'w') as file :
+            file.write(json.dumps(self.tokens_list, indent=4))
         self.print_tokens()
 
         # Print errors, if any
@@ -147,7 +152,9 @@ class MinINGLexer:
         for token in self.tokens_list:
             print(f"    {token},")
         print("]")
-
+        
+            
+        
 # Example usage
 if __name__ == "__main__":
     lexer = MinINGLexer()
@@ -161,3 +168,4 @@ if __name__ == "__main__":
     '''
     
     lexer.test(data)
+  
