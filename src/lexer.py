@@ -3,15 +3,16 @@ from ply import lex
 class MinINGLexer:
     # Liste des tokens
     tokens = [
-        'IDF', 'INTEGER', 'FLOAT', 'CHAR', 'STRING' ,
+        'IDF', 'INTEGER', 'FLOAT', 'CHAR', 'STRING',
         'PLUS', 'MINUS', 'MULTIPLY', 'DIVIDE',
         'LPAREN', 'RPAREN', 'LBRACE', 'RBRACE',
         'LBRACKET', 'RBRACKET', 'EQUALS', 'SEMICOL',
         'COMMA', 'GT', 'LT', 'GE', 'LE', 'EQ', 'NE',
-        'AND', 'OR', 'NOT', 'COLOM' 
+        'AND', 'OR', 'NOT', 'COLOM'
     ]
 
     # Mots réservés
+  
     reserved = {
         'DECLARATION': 'DECLARATION',
         'INSTRUCTION': 'INSTRUCTION',
@@ -25,7 +26,6 @@ class MinINGLexer:
         'READ': 'READ',
         'WRITE': 'WRITE'
     }
-
     tokens = tokens + list(reserved.values())
 
     # Règles pour les tokens simples
@@ -60,53 +60,59 @@ class MinINGLexer:
     t_ignore_COMMENT = r'%%.*'
 
     def __init__(self):
-        self.symbol_table = {}  # Symbol table to track identifiers and constants
-        self.errors = []        # List of errors
+        self.tokens_list = []  # To store tokens in the required format
+        self.errors = []       # List of errors
 
+    def t_OPERATOR(self, t):
+        r'\+|\-|\*|\/|==|!=|<=|>=|>|<|='
+        self.tokens_list.append(("OPERATOR", str(t.value)))
+        exit
+
+    # Generic rule to capture delimiters
+    def t_DELIMITER(self, t):
+        r';|,|:|\(|\)|\{|\}|\[|\]'
+        self.tokens_list.append(("DELIMITER", str(t.value)))
+        exit
+    
     def t_FLOAT(self, t):
         r'\(\s*[+-]\s*\d+\.\d+\s*\)|\d+\.\d+'
-        t.value = t.value.replace(' ', '')  # Remove spaces within parentheses
-        t.value = float(t.value.strip('()'))  # Strip parentheses for the value
-        self.symbol_table[t.value] = {'type': 'FLOAT'}
+        t.value = float(t.value.replace(' ', '').strip('()'))
+        self.tokens_list.append(("NUMBER", str(t.value)))
         return t
 
     def t_INTEGER(self, t):
         r'\(\s*[+-]\s*\d+\s*\)|\d+'
-        t.value = t.value.replace(' ', '')  # Remove spaces within parentheses
-        t.value = int(t.value.strip('()'))  # Strip parentheses for the value
-        
+        t.value = int(t.value.replace(' ', '').strip('()'))
         if not (-32768 <= t.value <= 32767):
             self.errors.append(f"Integer {t.value} is out of range [-32768, 32767].")
             return None
-        self.symbol_table[t.value] = {'type': 'INTEGER'}
+        self.tokens_list.append(("NUMBER", str(t.value)))
         return t
-    
+
     def t_IDF(self, t):
         r'[A-Z][A-Za-z0-9]*'
-        # Check if it's a reserved word
         if t.value in self.reserved:
             t.type = self.reserved[t.value]
-            return t
+            self.tokens_list.append(("KEYWORD", t.value))
         else:
             if '_' in t.value:
-                print(f"Error: Identifier {t.value} contains underscores, which are not allowed.")
-                t.type = 'ERROR'
+                self.errors.append(f"Error: Identifier {t.value} contains underscores, which are not allowed.")
             if len(t.value) > 8:
-                print(f"Warning: Identifier {t.value} is too long (max 8 chars). It will be truncated.")
+                self.errors.append(f"Warning: Identifier {t.value} is too long (max 8 chars).")
                 t.value = t.value[:8]
-        self.symbol_table[t.value] = {'type': 'IDF'}
+            self.tokens_list.append(("IDENTIFIER", t.value))
         return t
-    
+
     def t_CHAR(self, t):
         r"'\S'"
-        t.value = t.value[1]  # Extract the character
-        self.symbol_table[t.value] = {'type': 'CHAR'}
+        t.value = t.value[1]
+        self.tokens_list.append(("CHAR", t.value))
         return t
-    
+
     def t_STRING(self, t):
         r'"[^"]*"'
-        # Enlever les guillemets et convertir en liste de caractères
         t.value = str(t.value[1:-1])
+        self.tokens_list.append(("STRING", t.value))
         return t
 
     def t_newline(self, t):
@@ -124,14 +130,11 @@ class MinINGLexer:
 
     def test(self, data):
         self.lexer.input(data)
-        
         while True:
             tok = self.lexer.token()
             if not tok:
                 break
-            self.symbol_table[tok.value] = {'type': tok.type, 'line': tok.lineno}
-        
-        self.print_symbol_table()
+        self.print_tokens()
 
         # Print errors, if any
         if self.errors:
@@ -139,14 +142,12 @@ class MinINGLexer:
             for error in self.errors:
                 print(error)
 
-    def print_symbol_table(self):
-        # Printing symbol table in a table format
-        print(f"{'Token':<15} {'Token Name':<20} {'Line'}")
-        print("-" * 50)
-        for token, data in self.symbol_table.items():
-            print(f"{token:<15} {data['type']:<20} {data['line']}")
-            
-        
+    def print_tokens(self):
+        print("[")
+        for token in self.tokens_list:
+            print(f"    {token},")
+        print("]")
+
 # Example usage
 if __name__ == "__main__":
     lexer = MinINGLexer()
@@ -154,13 +155,8 @@ if __name__ == "__main__":
     
     # Test input
     data = '''
-    DECLARATION {
-        INTEGER Var1, Var2[10], Var3 = 15, Var4[5], Var5;
-        FLOAT Va_r6, Var7[20]; 'A'
-        CHAR Var8; "te_st"
-        %% Ceci est un commentaire
-        CONST INTEGER a = (12345); 3222222 :
-        ( +5 ) 5 ( +12.34 ) (-3.14) ; +5 (-7)
+    INTEGER X = 42; INTEGER P = 2;
+    a b c ; 
     }
     '''
     
