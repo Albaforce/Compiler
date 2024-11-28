@@ -161,7 +161,7 @@
     ],
     [
         "type:CHAR ",
-        "Value: A",
+        "Value: 'A'",
         "Line: 5"
     ],
     [
@@ -241,7 +241,7 @@
     ],
     [
         "type:STRING ",
-        "Value: test",
+        "Value: \"test\"",
         "Line: 5"
     ],
     [
@@ -391,7 +391,7 @@
     ],
     [
         "type:CHAR ",
-        "Value: E",
+        "Value: 'E'",
         "Line: 12"
     ],
     [
@@ -411,7 +411,7 @@
     ],
     [
         "type:CHAR ",
-        "Value: Z",
+        "Value: 'Z'",
         "Line: 13"
     ],
     [
@@ -711,7 +711,7 @@
     ],
     [
         "type:STRING ",
-        "Value: Hello World !",
+        "Value: \"Hello World !\"",
         "Line: 23"
     ],
     [
@@ -736,7 +736,7 @@
     ],
     [
         "type:STRING ",
-        "Value: test",
+        "Value: \"test\"",
         "Line: 24"
     ],
     [
@@ -766,7 +766,7 @@
     ],
     [
         "type:STRING ",
-        "Value: test",
+        "Value: \"test\"",
         "Line: 24"
     ],
     [
@@ -805,8 +805,23 @@
         "Line: 25"
     ],
     [
+        "type:MINUS ",
+        "Value: -",
+        "Line: 26"
+    ],
+    [
+        "type:INTEGER ",
+        "Value: 10",
+        "Line: 26"
+    ],
+    [
+        "type:SEMICOL ",
+        "Value: ;",
+        "Line: 26"
+    ],
+    [
         "type:RBRACE ",
         "Value: }",
-        "Line: 26"
+        "Line: 27"
     ]
 ]
