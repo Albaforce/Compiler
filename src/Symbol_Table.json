@@ -1,0 +1,47 @@
+{
+    "arr": {
+        "value": [
+            null,
+            null,
+            null
+        ],
+        "type": "FLOAT",
+        "is_array": true,
+        "size": 3,
+        "const": true
+    },
+    "P": {
+        "value": "X",
+        "type": "CHAR",
+        "is_array": false,
+        "size": null,
+        "const": false
+    },
+    "C": {
+        "value": "",
+        "type": "CHAR",
+        "is_array": false,
+        "size": null,
+        "const": true
+    },
+    "T": {
+        "value": [
+            null,
+            null,
+            null,
+            null,
+            null
+        ],
+        "type": "INTEGER",
+        "is_array": true,
+        "size": 5,
+        "const": false
+    },
+    "Array": {
+        "value": "A C  ",
+        "type": "CHAR",
+        "is_array": true,
+        "size": 5,
+        "const": false
+    }
+}

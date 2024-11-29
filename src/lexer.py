@@ -1,6 +1,6 @@
 from ply import lex
 import json
-
+import HashTable
 class MinINGLexer:
     # Liste des tokens
     tokens = [
@@ -128,8 +128,10 @@ class MinINGLexer:
                 self.tokens_list.append((f"type: {tok.type}", f'Value: {str(tok.value)}', f'Line: {tok.lineno}'))
                     
         # save the output in json file
-        with open("src/lexer.json", 'w') as file :
+        with open("lexer.json", 'w') as file :
             file.write(json.dumps(self.tokens_list, indent=4))
+            #symbol_table = HashTable()
+            #code = file[""]
         self.print_tokens()
 
         # Print errors, if any
@@ -156,7 +158,7 @@ if __name__ == "__main__":
     DECLARATION {
         INTEGER A, B[(-10)], C = 15, D, E[5] ;
         FLOAT Var6, Var7[20];
-        CHAR Var8 = 'A', Var9[100], Chaine[100], Ch[] = "test";
+        CHAR Var8 = 'A', Var9[100], Chaine[100], Ch[] = "t";
         CONST INTEGER MAX = 100;
         CHAR Lettre;
     }
