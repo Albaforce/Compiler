@@ -184,4 +184,26 @@ if __name__ == "__main__":
     '''
     
     lexer.test(data)
+    
+    with open('lexer.json','r') as f:
+        data = json.load(f)
+    
+    
+    idfs = []
+    for entry in data:
+        if 'IDF' in entry[0]:
+            x = entry[1].split(': ')[1]
+            idfs.append(x)
+        
+    print(idfs)
+    
+    # inserting all IDFs into symbol table
+    
+    symbol_table = HashTable.HashTable()
+ 
+    for idf in idfs:
+        symbol_table.insert(idf)
+        
+    symbol_table.save_to_json('Symbol_Table.json')
+    
   

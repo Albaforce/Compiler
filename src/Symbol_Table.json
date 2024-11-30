@@ -1,20 +1,50 @@
 {
-    "arr": {
-        "value": [
-            null,
-            null,
-            null
-        ],
+    "B": {
+        "value": null,
         "type": "FLOAT",
-        "is_array": true,
-        "size": 3,
-        "const": true
+        "is_array": false,
+        "size": null,
+        "const": false
     },
     "P": {
         "value": "X",
         "type": "CHAR",
         "is_array": false,
         "size": null,
+        "const": false
+    },
+    "Z": {
+        "value": 12.6,
+        "type": "FLOAT",
+        "is_array": false,
+        "size": null,
+        "const": false
+    },
+    "T": {
+        "value": [
+            1,
+            null,
+            null,
+            null,
+            1
+        ],
+        "type": "INTEGER",
+        "is_array": true,
+        "size": 5,
+        "const": false
+    },
+    "arr": {
+        "value": null,
+        "type": null,
+        "is_array": false,
+        "size": null,
+        "const": null
+    },
+    "Array": {
+        "value": "A C  ",
+        "type": "CHAR",
+        "is_array": true,
+        "size": 5,
         "const": false
     },
     "C": {
@@ -24,24 +54,11 @@
         "size": null,
         "const": true
     },
-    "T": {
-        "value": [
-            null,
-            null,
-            null,
-            null,
-            null
-        ],
-        "type": "INTEGER",
-        "is_array": true,
-        "size": 5,
-        "const": false
-    },
-    "Array": {
-        "value": "A C  ",
-        "type": "CHAR",
-        "is_array": true,
-        "size": 5,
-        "const": false
+    "W": {
+        "value": null,
+        "type": null,
+        "is_array": false,
+        "size": null,
+        "const": null
     }
 }

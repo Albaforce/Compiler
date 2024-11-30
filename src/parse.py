@@ -259,7 +259,7 @@ class MinINGParser:
 # Test
 if __name__ == "__main__":
     # Charger les tokens depuis le fichier lexer.json
-    with open("src/lexer.json", 'r') as file:
+    with open("lexer.json", 'r') as file:
         lexer_output = json.load(file)
 
     # Initialiser le parser
@@ -267,11 +267,12 @@ if __name__ == "__main__":
 
     # Effectuer le parsing
     data = parser.build_program_from_lexer_output(lexer_output)
-    with open("src/programme.txt", 'w') as file :
+    with open("programme.txt", 'w') as file :
         file.write(data)
     result = parser.parse(data)
 
     # Sauvegarder le resultat
-    with open("src/parse.json", 'w') as file:
+    with open("parse.json", 'w') as file:
         file.write(json.dumps(result, indent=4))
     
+# add code to iterate over Symbol_Table and update the variables

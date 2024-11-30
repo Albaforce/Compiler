@@ -2,24 +2,25 @@ import json
 import mmh3
 
 class HashTable:
-    def __init__(self, size=100):
+    def __init__(self, size=500):
         # Initialize the hash table with a list of empty buckets
         self.size = size
         self.table = [[] for _ in range(self.size)]  # Using a list of lists for chaining
 
-    # TO DO : mmh3 + chaining , but for now FNV-1a works 
+    
     # Add a scenario where 2 inputs map to the same key 
     def hash_function(self, key):
         """
         Simple hash function using Python's built-in hash() and FNV-1a for better distribution.
         """
         # FNV-1a Hashing function
-        fnv_prime = 16777619
-        hash_value = 2166136261
-        for char in key:
-            hash_value ^= ord(char)
-            hash_value *= fnv_prime
-        return hash_value % self.size
+        # fnv_prime = 16777619
+        # hash_value = 2166136261
+        # for char in key:
+        #     hash_value ^= ord(char)
+        #     hash_value *= fnv_prime
+        # return hash_value % self.size
+        return mmh3.hash(key) % self.size
 
     # Inserting variables (Lexer's role)
     def insert(self, key):
@@ -54,7 +55,7 @@ class HashTable:
         # getting the index
         index = self.hash_function(key)
         if(index is None):
-            ValueError(f"{key} is undeclared")
+            ValueError(f"{key} was not declared")
         
         if var_type == "CHAR":  # can be a char array or a single char
         # All cases:
@@ -75,7 +76,7 @@ class HashTable:
                 is_array = False
                 # value from parameters
                 if (value is None):
-                    ValueError("Missing value")
+                    ValueError("Missing CHAR value")
                 # size is none
                 
             elif up_type == "array":
@@ -87,7 +88,6 @@ class HashTable:
                 # get ix from parameters
                 is_array = True # kept as True
                 index, pos, entry = self.search(key)
-                print("found entry --------->" , entry)
                 
                 if ix is None or not (0 <= ix < entry['size']) or not (entry["is_array"]):
                     raise IndexError(f"Index {ix} is out of bounds for variable {key}")
@@ -102,22 +102,55 @@ class HashTable:
                 
 
         elif var_type in ["INTEGER", "FLOAT"]:
-            # Case 2: Integer or Float arrays
-            if isinstance(value, list):
-                if size is None:
-                    size = len(value)  # Size should be given or calculated based on list length
+            """
+            INTEGER A ; A = 5; INTEGER N[5]; N[2] = 5;
+            var ,     , var_init ,  array , array_assign
+            """
+            if up_type == "var":
+                is_array = False
+                value = None
+            
+            elif up_type == "var_init":
+                is_array = False
+                # value from parameters
+                if(value is None):
+                    ValueError("Missing INTEGER value")
+                # size is none
+                
+            elif up_type == "array":
                 is_array = True
-            else:
-                # For scalar values, we need to initialize the array with a default value
-                if size is None:
-                    raise ValueError(f"Array size must be specified for {var_type} array.")
-                value = [value] * size  # Fill the array with the value
-                is_array = True
+                value = [None] * size # padding with none
+                # size from parameters
+                
+            elif up_type == "array_assign":
+                #get ix from parameters
+                is_array = True # keep it as true
+                index, pos, entry = self.search(key)
+                
+                if entry["type"] == None:
+                    raise ValueError(f"{key} was not declared")
+                
+                # type_checks = {
+                # "INTEGER": lambda value: all(isinstance(item, int) for item in value),
+                # "FLOAT": lambda value: all(isinstance(item, float) for item in value)
+                # }
 
-        else:
-            # Case 3: Scalars (non-array variables)
-            is_array = False
-            size = None  # Scalars don't need size
+                # CONDITION = type_checks.get(var_type, lambda _: False)(entry['value'])
+                
+                if ix is None or not (0 <= ix < entry['size']) or not (entry["is_array"]):
+                    raise IndexError(f"Index {ix} is out of bounds for variable {key}")
+                
+                # if not (isinstance(entry['value'], list) and CONDITION):
+                #     raise ValueError(f"Variable {key} is not a list of {var_type} and cannot be indexed")
+
+                tmp = entry['value']  
+                tmp[ix] = value
+                value = tmp
+                
+        
+        if (is_const == True and value == None):
+            raise ValueError(f"{var_type} {key} is CONST and has to be initialized")
+        
         
         # Update the entry with the provided information
         for idx, (existing_key, entry) in enumerate(self.table[index]):
@@ -197,10 +230,19 @@ if __name__ == "__main__":
     hash_table.insert("P")
     hash_table.insert("Array")
     
-    # update(self, key, var_type, up_type,value=None, size=None, is_const=False, index=None):
-    hash_table.update("T", "INTEGER", 6, size=5, is_const=False)  # Declares T as an array of size 5 with value 6
-    hash_table.update("arr", "FLOAT", [1.0, 2.0, 3.0], size=3, is_const=True)  # Declares arr as a float array of size 3
+    # testing int / float
+    hash_table.insert("B")
+    hash_table.insert("W")
+    hash_table.insert("Z")
     
+    # update(self, key, var_type, up_type,value=None, size=None, is_const=False, index=None):
+    hash_table.update("T","INTEGER","array",size=5)  # Declares T as an array of size 5
+    hash_table.update("B","FLOAT","var")
+    hash_table.update("Z","FLOAT","var_init",value=12.6)
+    hash_table.update("T","INTEGER","array_assign",value=1,ix=0)
+    
+    hash_table.update("T","INTEGER","array_assign",value=1,ix=4)
+
     # CHAR C var
     hash_table.update("C","CHAR","var",is_const=True)
     #  P = 'X' var_init
