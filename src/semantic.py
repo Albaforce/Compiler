@@ -23,18 +23,19 @@ class SemanticAnalyzer:
         for item in decl[2]:
             item_type = item[0]
             if item_type == "var":
-                self.symbol_table[item[1]] = var_type
+                self.symbol_table[item[1]] = var_type #----------- Recherche si deja existe dans TS
             elif item_type == "array":
                 if item[2] <= 0:
                     raise ValueError(f"Taille invalide pour le tableau {item[1]}")
-                self.symbol_table[item[1]] = (var_type, "array", item[2])
+                self.symbol_table[item[1]] = (var_type, "array", item[2]) #----------- Recherche si deja existe dans TS
             elif item_type == "var_init":
-                self.symbol_table[item[1]] = var_type
+                self.symbol_table[item[1]] = var_type #----------- Recherche si deja existe dans TS
                 self.validate_value_type(item[2], var_type)
 
     def process_const_decl(self, decl):
         const_type = decl[1]
         const_name = decl[2]
+        #------------- Recherche si deja existe dans TS
         const_value = decl[3]
         self.symbol_table[const_name] = const_type
         self.validate_value_type(const_value, const_type)
@@ -59,7 +60,7 @@ class SemanticAnalyzer:
         var_name = stmt[1]
         if var_name not in self.symbol_table:
             raise ValueError(f"Variable non déclarée : {var_name}")
-        var_type = self.symbol_table[var_name]
+        var_type = self.symbol_table[var_name] #------------- recuperer le type de var 
         value = stmt[2]
         self.validate_expression(value, var_type)
 
@@ -186,11 +187,12 @@ class SemanticAnalyzer:
         return None
 
 # Exemple d'utilisation avec l'AST fourni
-with open("parse.json", 'r') as file:
-        ast = json.load(file)  # Remplacez par l'AST donné
-analyzer = SemanticAnalyzer(ast)
-try:
-    analyzer.analyze()
-    print("Analyse sémantique réussie.")
-except ValueError as e:
-    print(f"Erreur sémantique : {e}")
+if __name__ == "__main__":
+    with open("parse.json", 'r') as file:
+            ast = json.load(file)  # Remplacez par l'AST donné
+    analyzer = SemanticAnalyzer(ast)
+    try:
+        analyzer.analyze()
+        print("Analyse sémantique réussie.")
+    except ValueError as e:
+        print(f"Erreur sémantique : {e}")

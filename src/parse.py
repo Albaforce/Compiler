@@ -1,7 +1,8 @@
 from ply import yacc
+from HashTable import HashTable
 from lexer import MinINGLexer
 import json
-test = ""
+
 class MinINGParser:
     def __init__(self):
         # Initialiser le lexer correctement
@@ -14,8 +15,8 @@ class MinINGParser:
         self.precedence = (
             ('left', 'OR'),
             ('left', 'AND'),
-            ('right', 'NOT'),
-            ('nonassoc', 'GT', 'LT', 'GE', 'LE', 'EQ', 'NE'),
+            ('nonassoc', 'NOT'),
+            ('left', 'GT', 'LT', 'GE', 'LE', 'EQ', 'NE'),
             ('left', 'PLUS', 'MINUS'),
             ('left', 'MULTIPLY', 'DIVIDE'),
             ('right', 'EQUALS')
@@ -23,6 +24,9 @@ class MinINGParser:
         
         # Construire le parser
         self.parser = yacc.yacc(module=self)
+
+        #Initialiser le type
+        self.type = None
 
     # Programme principal
     def p_program(self, p):
@@ -51,6 +55,8 @@ class MinINGParser:
     def p_type_declaration(self, p):
         '''type_declaration : type var_list SEMICOL'''
         p[0] = ('type_decl', p[1], p[2])
+        #Recuperer le type
+        self.type = p[1]
 
     # Liste de variables
     def p_var_list(self, p):
@@ -65,16 +71,16 @@ class MinINGParser:
     def p_var_item(self, p):
         '''var_item : IDF
                    | IDF LBRACKET INTEGER RBRACKET
-                   | IDF EQUALS const_value
-                   | IDF LBRACKET RBRACKET EQUALS STRING'''
+                   | IDF EQUALS const_value'''
+                   #| IDF LBRACKET RBRACKET EQUALS STRING
         if len(p) == 2:  # Simple variable
             p[0] = ('var', p[1])
         elif len(p) == 4:  # Variable with initialization
             p[0] = ('var_init', p[1], p[3])
         elif len(p) == 5:  # array Declaraion 
             p[0] = ('array', p[1], p[3])
-        elif len(p) == 6:  # String initialisation
-            p[0] = ('var_init',p[1],p[5])
+        #elif len(p) == 6:  # String initialisation
+            #p[0] = ('var_init',p[1],p[5])
 
     # Types
     def p_type(self, p):
@@ -93,6 +99,8 @@ class MinINGParser:
         '''const_value : INTEGER
                       | FLOAT
                       | CHAR'''
+        if p.slice[1].type == 'CHAR':
+                p[1] = "'" + p[1] + "'"
         p[0] = p[1]
 
     # Instructions
@@ -129,16 +137,40 @@ class MinINGParser:
     
     # Expression
     def p_expression(self, p):
-        '''expression : expression PLUS expression
-                     | expression MINUS expression
-                     | expression MULTIPLY expression
-                     | expression DIVIDE expression
-                     | LPAREN expression RPAREN
+        '''expression : expression2 PLUS expression2
+                     | expression2 MINUS expression2
+                     | expression2 MULTIPLY expression2
+                     | expression2 DIVIDE expression2
+                     | LPAREN expression2 RPAREN
                      | IDF
-                     | IDF LBRACKET expression RBRACKET
+                     | IDF LBRACKET expression2 RBRACKET
                      | INTEGER
                      | FLOAT
                      | CHAR'''
+        if len(p) == 4:
+            if p[1] == '(':
+                p[0] = p[2]
+            else:
+                p[0] = ('binop', p[2], p[1], p[3])
+        elif len(p) == 2:
+            # si la valeur est de type CHAR : valeur ==> 'valeur'
+            if p.slice[1].type == 'CHAR':
+                p[1] = "'" + p[1] + "'"
+            p[0] = ('value', p[1])
+        elif len(p) == 5:  # Accès à un élément de tableau
+            p[0] = ('array_access', p[1], p[3])
+    
+    #Expression2 pour eviter CHAR op CHAR
+    def p_expression2(self, p):
+        '''expression2 : expression2 PLUS expression2
+                     | expression2 MINUS expression2
+                     | expression2 MULTIPLY expression2
+                     | expression2 DIVIDE expression2
+                     | LPAREN expression2 RPAREN
+                     | IDF
+                     | IDF LBRACKET expression2 RBRACKET
+                     | INTEGER
+                     | FLOAT'''
         if len(p) == 4:
             if p[1] == '(':
                 p[0] = p[2]
@@ -263,7 +295,18 @@ if __name__ == "__main__":
         lexer_output = json.load(file)
 
     # Initialiser le parser
+
+    # init hash_table 
+    hash_table = HashTable()
     parser = MinINGParser()
+    with open("Symbol_Table.json", 'r') as file:
+        table = json.load(file)
+    
+    # Fill the hash table with the lexer's output 
+    for identifier, attributes in table.items():
+        hash_table.insert(identifier)
+    
+    hash_table.display()
 
     # Effectuer le parsing
     data = parser.build_program_from_lexer_output(lexer_output)

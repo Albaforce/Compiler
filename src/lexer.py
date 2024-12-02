@@ -128,7 +128,7 @@ class MinINGLexer:
                 self.tokens_list.append((f"type: {tok.type}", f'Value: {str(tok.value)}', f'Line: {tok.lineno}'))
                     
         # save the output in json file
-        with open("lexer.json", 'w') as file :
+        with open("src/JSON/lexer.json", 'w') as file :
             file.write(json.dumps(self.tokens_list, indent=4))
             #symbol_table = HashTable()
             #code = file[""]
