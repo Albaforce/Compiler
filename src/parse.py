@@ -73,13 +73,13 @@ class MinINGParser:
                    | IDF EQUALS const_value'''
                    #| IDF LBRACKET RBRACKET EQUALS STRING
         if len(p) == 2:  # Simple variable
-            p[0] = ('var', p[1])
+            p[0] = ('var', p[1],p.lineno(1))
             self.hash_table.update(p[1] , self.type , 'var')
         elif len(p) == 4:  # Variable with initialization
-            p[0] = ('var_init', p[1], p[3])
+            p[0] = ('var_init', p[1], p[3],p.lineno(1))
             self.hash_table.update(p[1] , self.type , 'var_init' , p[3])
         elif len(p) == 5:  # array Declaraion 
-            p[0] = ('array', p[1], p[3])
+            p[0] = ('array', p[1], p[3],p.lineno(1))
             self.hash_table.update(p[1] , self.type , 'array' , size=p[3])
         #elif len(p) == 6:  # String initialisation
             #p[0] = ('var_init',p[1],p[5])
@@ -96,7 +96,7 @@ class MinINGParser:
     # Déclaration de constante
     def p_const_declaration(self, p):
         '''const_declaration : CONST type IDF EQUALS const_value SEMICOL'''
-        p[0] = ('const_decl', p[2], p[3], p[5])
+        p[0] = ('const_decl', p[2], p[3], p[5],p.lineno(3))
         self.hash_table.update(p[3] , self.type , 'var_init' , p[5] , is_const=True)
 
     # Valeur constante
@@ -132,13 +132,13 @@ class MinINGParser:
     # Affectation pour variables simples
     def p_assignment(self, p):
         '''assignment : IDF EQUALS expression'''
-        p[0] = ('assign', p[1], p[3])
+        p[0] = ('assign', p[1], p[3],p.lineno(1))
     
     # Affectation pour tableaux
     def p_array_assignment(self, p):
         '''array_assignment : IDF LBRACKET expression RBRACKET EQUALS expression'''  
         if len(p) == 7:
-            p[0] = ('array_assign', p[1], p[3], p[6])
+            p[0] = ('array_assign', p[1], p[3], p[6],p.lineno(1))
     
     # Expression
     def p_expression(self, p):
@@ -191,14 +191,14 @@ class MinINGParser:
         '''if_statement : IF LPAREN condition RPAREN LBRACE instructions RBRACE
                        | IF LPAREN condition RPAREN LBRACE instructions RBRACE ELSE LBRACE instructions RBRACE'''
         if len(p) == 8:
-            p[0] = ('if', p[3], p[6])
+            p[0] = ('if', p[3], p[6],p.lineno(1))
         else:
-            p[0] = ('if_else', p[3], p[6], p[10])
+            p[0] = ('if_else', p[3], p[6], p[10],p.lineno(1))
 
     # Boucle FOR
     def p_for_loop(self, p):
         '''for_loop : FOR LPAREN assignment COLOM expression2 COLOM expression2 RPAREN LBRACE instructions RBRACE'''
-        p[0] = ('for', p[3], p[5], p[7], p[10])
+        p[0] = ('for', p[3], p[5], p[7], p[10],p.lineno(1))
 
     #for_pas
     #def p_for_pas(self,p):
@@ -240,9 +240,9 @@ class MinINGParser:
         '''io_statement : READ LPAREN IDF RPAREN
                        | WRITE LPAREN write_list RPAREN'''
         if p[1] == 'READ':
-            p[0] = ('read', p[3])
+            p[0] = ('read', p[3],p.lineno(1))
         else:
-            p[0] = ('write', p[3])
+            p[0] = ('write', p[3],p.lineno(1))
 
     def p_write_list(self, p):
         '''write_list : write_list COMMA expression
