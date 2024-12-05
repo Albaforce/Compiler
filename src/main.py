@@ -12,7 +12,7 @@ lexer.build()
 # Test input
 data = '''
 DECLARATION {
-    INTEGER A, B[(+10)], C = 15, D, E[5] , Var6;
+    INTEGER A, B[(+10)], C = 15, D, E[5];
     FLOAT Var6, Var7[20];
     CHAR Var8 = 'A', Var9[100], Chaine[100];
     CONST INTEGER MAX = 100;
@@ -20,30 +20,36 @@ DECLARATION {
 }
 INSTRUCTION {
     A = 10;
-    B[3] = 2;
-    Chaine[0] = 'A';
+    B[2] = A ;
+    Chaine[0] = 'A' ;
     Lettre = 'Z'; 
     IF (A > 5) {
-        A = B[2+2] + 1;
+        A = B[(+5) - (-3) * 12 + (-62) + (+12) + 9] + 1;
     } ELSE {
         A = 1;
     }
-    FOR(I = 0: 2: N) {
+    FOR(A = 0 : 1: A) {
         A = A + 1;
     }
-    WRITE(A, B[2], Ch, Lettre);
+    WRITE(2);
+    WRITE(A, B[2], Lettre);
     WRITE("Hello World !");
     WRITE("test",A+2,"test");
     READ(A);
-    X = (+5.8) - (-3.6) * 12 + (-62) + (+12) ;
+    A = (+5) - (-3) * 12 + (-62) + (+12) ;
 }
 '''
 
-lexer.test(data)
+
+try : 
+    lexer.test(data)
+except ValueError as e:
+    print(f"{e}")
+    exit()
+
 
 with open('src/JSON/lexer.json','r') as f:
-    data = json.load(f)
-
+        data = json.load(f)
 
 idfs = []
 for entry in data:
@@ -72,11 +78,11 @@ symbol_table.save_to_json('src/JSON/Symbol_Table.json')
 with open("src/JSON/lexer.json", 'r') as file:
     lexer_output = json.load(file)
 
-# Initialiser le parser
 
 # init hash_table 
 hash_table = HashTable()
-parser = MinINGParser()
+# Initialiser le parser
+parser = MinINGParser(hash_table)
 with open("src/JSON/Symbol_Table.json", 'r') as file:
     table = json.load(file)
 
@@ -84,24 +90,41 @@ with open("src/JSON/Symbol_Table.json", 'r') as file:
 for identifier, attributes in table.items():
     hash_table.insert(identifier)
 
-hash_table.display()
+#hash_table.display()
 
 # Effectuer le parsing
 data = parser.build_program_from_lexer_output(lexer_output)
 with open("programme.txt", 'w') as file :
     file.write(data)
-result = parser.parse(data)
+try :
+    result = parser.parse(data)
+except ValueError as e :
+    print(e)
+    exit()
 
 # Sauvegarder le resultat
 with open("src/JSON/parse.json", 'w') as file:
     file.write(json.dumps(result, indent=4))
+
+hash_table.save_to_json("src/JSON/Symbol_Table.json")
 
 
 # -------------------------- Analyse Semantique -------------------------------
 
 with open("src/JSON/parse.json", 'r') as file:
         ast = json.load(file)  # Remplacez par l'AST donné
-analyzer = SemanticAnalyzer(ast)
+
+# Cas d'erreur Syntaxique
+if not ast :
+    exit()
+# init hash_table 
+with open("src/JSON/Symbol_Table.json", 'r') as file:
+    table = json.load(file)
+
+hash_table = HashTable()
+hash_table.load_from_dict(table)
+
+analyzer = SemanticAnalyzer(ast , hash_table)
 try:
     analyzer.analyze()
     print("Analyse sémantique réussie.")

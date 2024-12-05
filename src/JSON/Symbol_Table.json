@@ -1,114 +1,124 @@
 {
     "Chaine": {
-        "value": null,
-        "type": null,
-        "is_array": false,
-        "size": null,
-        "const": null
+        "value": "                                                                                                    ",
+        "type": "CHAR",
+        "is_array": true,
+        "size": 100,
+        "const": false
     },
     "A": {
         "value": null,
-        "type": null,
+        "type": "INTEGER",
         "is_array": false,
         "size": null,
-        "const": null
+        "const": false
     },
     "Var6": {
         "value": null,
-        "type": null,
+        "type": "FLOAT",
         "is_array": false,
         "size": null,
-        "const": null
+        "const": false
     },
     "B": {
-        "value": null,
-        "type": null,
-        "is_array": false,
-        "size": null,
-        "const": null
-    },
-    "N": {
-        "value": null,
-        "type": null,
-        "is_array": false,
-        "size": null,
-        "const": null
+        "value": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+        ],
+        "type": "INTEGER",
+        "is_array": true,
+        "size": 10,
+        "const": false
     },
     "D": {
         "value": null,
-        "type": null,
+        "type": "INTEGER",
         "is_array": false,
         "size": null,
-        "const": null
-    },
-    "I": {
-        "value": null,
-        "type": null,
-        "is_array": false,
-        "size": null,
-        "const": null
+        "const": false
     },
     "Var8": {
-        "value": null,
-        "type": null,
+        "value": "'A'",
+        "type": "CHAR",
         "is_array": false,
         "size": null,
-        "const": null
+        "const": false
     },
     "Lettre": {
-        "value": null,
-        "type": null,
+        "value": "",
+        "type": "CHAR",
         "is_array": false,
         "size": null,
-        "const": null
+        "const": false
     },
     "E": {
-        "value": null,
-        "type": null,
-        "is_array": false,
-        "size": null,
-        "const": null
+        "value": [
+            null,
+            null,
+            null,
+            null,
+            null
+        ],
+        "type": "INTEGER",
+        "is_array": true,
+        "size": 5,
+        "const": false
     },
     "Var7": {
-        "value": null,
-        "type": null,
-        "is_array": false,
-        "size": null,
-        "const": null
+        "value": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+        ],
+        "type": "FLOAT",
+        "is_array": true,
+        "size": 20,
+        "const": false
     },
     "Var9": {
-        "value": null,
-        "type": null,
-        "is_array": false,
-        "size": null,
-        "const": null
-    },
-    "X": {
-        "value": null,
-        "type": null,
-        "is_array": false,
-        "size": null,
-        "const": null
+        "value": "                                                                                                    ",
+        "type": "CHAR",
+        "is_array": true,
+        "size": 100,
+        "const": false
     },
     "C": {
-        "value": null,
-        "type": null,
+        "value": 15,
+        "type": "INTEGER",
         "is_array": false,
         "size": null,
-        "const": null
+        "const": false
     },
     "MAX": {
-        "value": null,
-        "type": null,
+        "value": 100,
+        "type": "INTEGER",
         "is_array": false,
         "size": null,
-        "const": null
-    },
-    "Ch": {
-        "value": null,
-        "type": null,
-        "is_array": false,
-        "size": null,
-        "const": null
+        "const": true
     }
 }

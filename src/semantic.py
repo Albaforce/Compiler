@@ -1,10 +1,8 @@
-import json
-
 
 class SemanticAnalyzer:
-    def __init__(self, ast):
+    def __init__(self, ast , TS):
         self.ast = ast
-        self.symbol_table = {}  # Stocke les déclarations des variables, constantes et tableaux
+        self.hash_table = TS
 
     def analyze(self):
         self.process_declarations(self.ast[1])  # Analyse des déclarations
@@ -23,21 +21,40 @@ class SemanticAnalyzer:
         for item in decl[2]:
             item_type = item[0]
             if item_type == "var":
-                self.symbol_table[item[1]] = var_type #----------- Recherche si deja existe dans TS
+                x = self.hash_table.search(item[1])
+                if not x :
+                    raise ValueError(f"Var non declarer : {item[1]}")
+                if x[2]['type'] != var_type : 
+                    raise ValueError(f"Var {item[1]} deja declarer !!")
             elif item_type == "array":
                 if item[2] <= 0:
                     raise ValueError(f"Taille invalide pour le tableau {item[1]}")
-                self.symbol_table[item[1]] = (var_type, "array", item[2]) #----------- Recherche si deja existe dans TS
+                x = self.hash_table.search(item[1])
+                if not x :
+                    raise ValueError(f"Var non declarer : {item[1]}")
+                if x[2]['type'] != var_type : 
+                    raise ValueError(f"Var {item[1]} deja declarer ")
+                if not x[2]['is_array'] :
+                    raise ValueError(f"Var n'est pas bien inserer dans la TS (is_array = {x[2]['is_array']})")
             elif item_type == "var_init":
-                self.symbol_table[item[1]] = var_type #----------- Recherche si deja existe dans TS
-                self.validate_value_type(item[2], var_type)
+                x = self.hash_table.search(item[1])
+                if not x :
+                    raise ValueError(f"Var non declarer : {item[1]}")
+                if x[2]['type'] != var_type : 
+                    raise ValueError(f"Var {item[1]} deja declarer ")
+                self.validate_value_type(x[2]['value'], var_type)
 
     def process_const_decl(self, decl):
         const_type = decl[1]
         const_name = decl[2]
-        #------------- Recherche si deja existe dans TS
         const_value = decl[3]
-        self.symbol_table[const_name] = const_type
+        x = self.hash_table.search(const_name)
+        if not x :
+            raise ValueError(f"Var non declarer : {const_name}")
+        if x[2]['type'] != const_type : 
+            raise ValueError(f"Var {const_name} deja declarer ")
+        if not x[2]['const'] :
+            raise ValueError(f"Var n'est pas bien inserer dans la TS (const = {x[2]['const']})")
         self.validate_value_type(const_value, const_type)
 
     def process_statements(self, statements):
@@ -49,6 +66,8 @@ class SemanticAnalyzer:
                 self.process_array_assignment(stmt)
             elif stmt_type == "if_else":
                 self.process_if_else(stmt)
+            elif stmt_type == "if":
+                self.process_if(stmt)
             elif stmt_type == "for":
                 self.process_for_loop(stmt)
             elif stmt_type == "write":
@@ -58,21 +77,34 @@ class SemanticAnalyzer:
 
     def process_assignment(self, stmt):
         var_name = stmt[1]
-        if var_name not in self.symbol_table:
+        x = self.hash_table.search(var_name)
+        if x and not x[2]['type']:
             raise ValueError(f"Variable non déclarée : {var_name}")
-        var_type = self.symbol_table[var_name] #------------- recuperer le type de var 
+        if x and x[2]['is_array']:
+            raise ValueError(f"Erreur Affectation")
+        var_type = x[2]['type']
         value = stmt[2]
         self.validate_expression(value, var_type)
 
     def process_array_assignment(self, stmt):
         array_name = stmt[1]
-        if array_name not in self.symbol_table or self.symbol_table[array_name][1] != "array":
+        x = self.hash_table.search(array_name)
+        if not x or not x[2]['is_array']:
             raise ValueError(f"Tableau non déclaré ou incorrect : {array_name}")
-        index = stmt[2][1]
-        if not isinstance(index, int) or index < 0 :
+        size = x[2]['size']
+        index_expr = stmt[2]
+        if index_expr[0] == 'value' :
+            x = self.hash_table.search(index_expr[1])
+            if x and x[2]['type'] != "INTEGER" :
+                raise ValueError(f"Indice de tableau {array_name} doit etre INTEGER")
+        else :
+            self.validate_expression(index_expr, "INTEGER")
+        index = self.evaluate_expression(index_expr)
+        if not isinstance(index, int) or index < 0 or index >= size:
             raise ValueError(f"Indice invalide pour le tableau {array_name}")
-        value = stmt[3][1]
-        array_type = self.symbol_table[array_name][0]
+        value = stmt[3]
+        x = self.hash_table.search(array_name)
+        array_type = x[2]['type']
         self.validate_expression(value, array_type)
 
     def process_if_else(self, stmt):
@@ -82,31 +114,69 @@ class SemanticAnalyzer:
             self.process_statements([true_stmt])
         for false_stmt in stmt[3]:
             self.process_statements([false_stmt])
+    
+    def process_if(self, stmt):
+        condition = stmt[1]
+        self.validate_condition(condition)
+        for true_stmt in stmt[2]:
+            self.process_statements([true_stmt])
+
 
     def process_for_loop(self, stmt):
         assign = stmt[1]
         self.process_assignment(assign)
-        step = stmt[2][1]
-        if not isinstance(step, int):
-            raise ValueError("Le pas de la boucle for doit être un entier")
-        condition_var = stmt[3][1]
-        if condition_var not in self.symbol_table:
-            raise ValueError(f"Variable de condition non déclarée dans la boucle : {condition_var}")
+        step_expr = stmt[2]
+        if step_expr[0] == 'value' :
+            if not isinstance(step_expr[1] ,str) and not isinstance(step_expr[1] , int):
+                raise ValueError(f"le pas de la boucle doit etre INTEGER")
+            if isinstance(step_expr[1] ,str) :
+                x = self.hash_table.search(step_expr[1])
+                if x and not x[2]['type']:
+                    raise ValueError(f"la var {step_expr[1]} n'est pas declarer pas")
+                elif x[2]['type'] != "INTEGER" :
+                    raise ValueError(f"le pas de la boucle doit etre INTEGER !")
+                elif x[2]['is_array'] :
+                    raise ValueError(f"le pas de la boucle doit etre INTEGER et non pas un tableau")
+        else :
+            self.validate_expression(step_expr , "INTEGER")
+        step = self.evaluate_expression(step_expr)
+
+        condition_expr = stmt[3]
+        if condition_expr[0] == 'value' :
+            if not isinstance(condition_expr[1] ,str) and not isinstance(condition_expr[1] , int):
+                raise ValueError(f"la condition de la boucle doit etre INTEGER")
+            if isinstance(condition_expr[1] ,str) :
+                x = self.hash_table.search(condition_expr[1])
+                if x and not x[2]['type']:
+                    raise ValueError(f"la var {condition_expr[1]} n'est pas declarer cond")
+                elif x[2]['type'] != "INTEGER" :
+                    raise ValueError(f"la condition de la boucle doit etre INTEGER !")
+                elif x[2]['is_array'] :
+                    raise ValueError(f"la condition de la boucle doit etre INTEGER et non pas un tableau")
+            
+        else :
+            self.validate_expression(condition_expr , "INTEGER")
+        condition_value = self.evaluate_expression(condition_expr)
+
         for stmt_in_for in stmt[4]:
             self.process_statements([stmt_in_for])
 
     def process_write(self, stmt):
         for item in stmt[1]:
+            if not self.get_expression_type(item) :
+                raise ValueError(f"Variable non déclarée dans WRITE")
             if isinstance(item, list) and item[0] == "value":
                 value = item[1]
-                if isinstance(value, str) and value not in self.symbol_table:
+                x = self.hash_table.search(value)
+                if isinstance(value, str) and not x[2]['type']:
                     raise ValueError(f"Variable non déclarée dans WRITE : {value}")
             elif isinstance(item, list) and item[0] == "binop":
                 self.validate_expression(item, None)
 
     def process_read(self, stmt):
         var_name = stmt[1]
-        if var_name not in self.symbol_table:
+        x = self.hash_table.search(var_name)
+        if not x:
             raise ValueError(f"Variable non déclarée dans READ : {var_name}")
 
     def validate_expression(self, expr, expected_type):
@@ -129,13 +199,18 @@ class SemanticAnalyzer:
 
     def validate_value_type(self, value, expected_type):
         if isinstance(value, int) and expected_type != "INTEGER":
-            raise ValueError(f"Type incorrect : attendu {expected_type}, obtenu INTEGER")
+            raise ValueError(f"Type incorrect : attendu {expected_type}, obtenu INTEGER !!!!!!")
         if isinstance(value, float) and expected_type != "FLOAT":
-            raise ValueError(f"Type incorrect : attendu {expected_type}, obtenu FLOAT")
-        if isinstance(value, str) and len(value) == 1 and expected_type != "CHAR":
-            raise ValueError(f"Type incorrect : attendu {expected_type}, obtenu CHAR" , value)
+            raise ValueError(f"Type incorrect : attendu {expected_type}, obtenu FLOAT !!!!!!!!")
+        x = self.hash_table.search(value)
+        if x and x[2]['type'] != expected_type :
+            raise ValueError(f"Type incorrect : attendu {expected_type}, obtenu {x[2]['type']}")
+        #if value in self.symbol_table and self.symbol_table[value] != expected_type:
+            #raise ValueError(f"Type incorrect : attendu {expected_type}, obtenu {self.symbol_table[value]} !!!!!!! {value}")
+        if isinstance(value, str) and len(value) == 3 and expected_type != "CHAR":
+            raise ValueError(f"Type incorrect : attendu {expected_type}, obtenu CHAR !!!!!!!!" , value)
         if isinstance(value, str) and len(value) > 1 and expected_type != "CHAR":
-            raise ValueError(f"Type incorrect : attendu {expected_type}, obtenu STRING")
+            raise ValueError(f"Type incorrect : attendu {expected_type}, obtenu STRING !!!!!!!!")
 
     def validate_condition(self, condition):
         if condition[0] != "condition":
@@ -165,10 +240,12 @@ class SemanticAnalyzer:
                 return "INTEGER"
             elif isinstance(value, float):
                 return "FLOAT"
-            elif isinstance(value, str) and value not in self.symbol_table:
-                return "CHAR"
-            else: 
-                return self.symbol_table[value]
+            else : 
+                x = self.hash_table.search(value)
+                if x :
+                    return x[2]['type']
+                elif isinstance(value, str):
+                    return "CHAR"
 
             #elif isinstance(value, str):
                 #return "CHAR"
@@ -176,16 +253,59 @@ class SemanticAnalyzer:
             operator = expr[1]
             left_type = self.get_expression_type(expr[2])
             right_type = self.get_expression_type(expr[3])
+            if not right_type :
+                raise ValueError(f"var non decl R : {expr[3][1]}")
+            if not left_type :
+                raise ValueError(f"var non decl L : {expr[2][1]}")
             if left_type != right_type:
                 raise ValueError(f"Types incompatibles dans binop : {left_type} {operator} {right_type}")
             return left_type
         elif expr[0] == "array_access":
             array_name = expr[1]
-            if array_name not in self.symbol_table:
+            y = self.hash_table.search(array_name)
+            if y and not y[2]['type']:
                 raise ValueError(f"Tableau non déclaré : {array_name}")
-            return self.symbol_table[array_name][0]
+            size = y[2]['size']
+            index_expr = expr[2]
+            if index_expr[0] == 'value' :
+                x = self.hash_table.search(index_expr[1])
+                if x and x[2]['type'] != "INTEGER" :
+                    raise ValueError(f"Indice de tableau {array_name} doit etre INTEGER")
+            else :
+                self.validate_expression(index_expr, "INTEGER")
+            index = self.evaluate_expression(index_expr)
+            if not isinstance(index, int) or index < 0 or index >= size:
+                raise ValueError(f"Indice invalide pour le tableau {array_name}")
+            return y[2]['type']
+        elif isinstance(expr ,str) :
+            return "CHAR"
         return None
+    
+    def evaluate_expression(self, expr):
+        if expr[0] == "value":  # Si c'est une valeur simple
+            return expr[1]
+        elif expr[0] == "binop":  # Si c'est une opération binaire
+            operator = expr[1]
+            left_value = self.evaluate_expression(expr[2])
+            right_value = self.evaluate_expression(expr[3])
 
+            # Effectuer l'opération en fonction de l'opérateur
+            if operator == "+":
+                return left_value + right_value
+            elif operator == "-":
+                return left_value - right_value
+            elif operator == "*":
+                return left_value * right_value
+            elif operator == "/":
+                if right_value == 0:
+                    raise ValueError("Division par zéro")
+                return left_value / right_value
+            else:
+                raise ValueError(f"Opérateur inconnu : {operator}")
+        else:
+            raise ValueError(f"Type d'expression inconnu : {expr[0]}")
+
+"""
 # Exemple d'utilisation avec l'AST fourni
 if __name__ == "__main__":
     with open("parse.json", 'r') as file:
@@ -196,3 +316,4 @@ if __name__ == "__main__":
         print("Analyse sémantique réussie.")
     except ValueError as e:
         print(f"Erreur sémantique : {e}")
+"""

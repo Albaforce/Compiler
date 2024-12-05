@@ -20,7 +20,7 @@ class HashTable:
         #     hash_value ^= ord(char)
         #     hash_value *= fnv_prime
         # return hash_value % self.size
-        return mmh3.hash(key) % self.size
+        return mmh3.hash(str(key)) % self.size
 
     # Inserting variables (Lexer's role)
     def insert(self, key):
@@ -215,8 +215,16 @@ class HashTable:
 
         with open(filename, 'w') as f:
             json.dump(hash_table_dict, f, indent=4)
+    
+    def load_from_dict(self, data):
+        """
+        Populate the hash table from a dictionary.
+        """
+        for key, entry in data.items():
+            index = self.hash_function(key)
+            self.table[index].append((key, entry))
 
-
+"""
 # Example usage
 if __name__ == "__main__":
     # Create a new hash table
@@ -268,3 +276,4 @@ if __name__ == "__main__":
 
     # Save the contents to a JSON file
     hash_table.save_to_json('Symbol_Table.json')
+"""

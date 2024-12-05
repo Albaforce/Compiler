@@ -4,13 +4,14 @@ from lexer import MinINGLexer
 import json
 
 class MinINGParser:
-    def __init__(self):
+    def __init__(self , TS):
         # Initialiser le lexer correctement
         self.lexer_obj = MinINGLexer()
         self.lexer_obj.build()  # Construire le lexer
         self.lexer = self.lexer_obj.lexer
         self.tokens = self.lexer_obj.tokens
-
+        #Initailiser TS
+        self.hash_table = TS
         # Niveaux de précédence pour résoudre les conflits shift/reduce
         self.precedence = (
             ('left', 'OR'),
@@ -55,8 +56,6 @@ class MinINGParser:
     def p_type_declaration(self, p):
         '''type_declaration : type var_list SEMICOL'''
         p[0] = ('type_decl', p[1], p[2])
-        #Recuperer le type
-        self.type = p[1]
 
     # Liste de variables
     def p_var_list(self, p):
@@ -75,10 +74,13 @@ class MinINGParser:
                    #| IDF LBRACKET RBRACKET EQUALS STRING
         if len(p) == 2:  # Simple variable
             p[0] = ('var', p[1])
+            self.hash_table.update(p[1] , self.type , 'var')
         elif len(p) == 4:  # Variable with initialization
             p[0] = ('var_init', p[1], p[3])
+            self.hash_table.update(p[1] , self.type , 'var_init' , p[3])
         elif len(p) == 5:  # array Declaraion 
             p[0] = ('array', p[1], p[3])
+            self.hash_table.update(p[1] , self.type , 'array' , size=p[3])
         #elif len(p) == 6:  # String initialisation
             #p[0] = ('var_init',p[1],p[5])
 
@@ -88,11 +90,14 @@ class MinINGParser:
                | TYPE_FLOAT
                | TYPE_CHAR'''
         p[0] = p[1]
+        #Recuperer le type
+        self.type = p[1]
 
     # Déclaration de constante
     def p_const_declaration(self, p):
         '''const_declaration : CONST type IDF EQUALS const_value SEMICOL'''
         p[0] = ('const_decl', p[2], p[3], p[5])
+        self.hash_table.update(p[3] , self.type , 'var_init' , p[5] , is_const=True)
 
     # Valeur constante
     def p_const_value(self, p):
@@ -192,20 +197,20 @@ class MinINGParser:
 
     # Boucle FOR
     def p_for_loop(self, p):
-        '''for_loop : FOR LPAREN assignment COLOM for_pas COLOM for_condition RPAREN LBRACE instructions RBRACE'''
+        '''for_loop : FOR LPAREN assignment COLOM expression2 COLOM expression2 RPAREN LBRACE instructions RBRACE'''
         p[0] = ('for', p[3], p[5], p[7], p[10])
 
     #for_pas
-    def p_for_pas(self,p):
-        '''for_pas : IDF
-                  | INTEGER'''
-        p[0] = ('for_pas' , p[1])
+    #def p_for_pas(self,p):
+        #'''for_pas : IDF
+                  #| INTEGER'''
+        #p[0] = ('for_pas' , p[1])
 
     #for_condition
-    def p_for_condition(self,p):
-        '''for_condition : IDF
-                  | INTEGER'''
-        p[0] = ('for_condition' , p[1])
+    #def p_for_condition(self,p):
+        #'''for_condition : IDF
+                  #| INTEGER'''
+        #p[0] = ('for_condition' , p[1])
 
     # Condition
     def p_condition(self, p):
@@ -255,9 +260,9 @@ class MinINGParser:
 
     def p_error(self, p):
         if p:
-            print(f"Syntax error at '{p.value}' (line {p.lineno})")
+            raise ValueError(f"Syntax error at '{p.value}' (line {p.lineno})")
         else:
-            print("Syntax error at EOF")
+            raise ValueError("Syntax error at EOF")
 
     def parse(self, data):
         return self.parser.parse(data, lexer=self.lexer)
@@ -288,17 +293,18 @@ class MinINGParser:
                     program += value + " "
             return program
 
+"""
 # Test
 if __name__ == "__main__":
     # Charger les tokens depuis le fichier lexer.json
-    with open("lexer.json", 'r') as file:
+    with open("src/JSON/lexer.json", 'r') as file:
         lexer_output = json.load(file)
 
     # Initialiser le parser
 
     # init hash_table 
     hash_table = HashTable()
-    parser = MinINGParser()
+    parser = MinINGParser(hash_table)
     with open("Symbol_Table.json", 'r') as file:
         table = json.load(file)
     
@@ -318,4 +324,7 @@ if __name__ == "__main__":
     with open("parse.json", 'w') as file:
         file.write(json.dumps(result, indent=4))
     
+    hash_table.save_to_json("Symbol_Table.json")
 # add code to iterate over Symbol_Table and update the variables
+
+"""
