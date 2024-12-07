@@ -146,8 +146,40 @@
                 "condition",
                 ">",
                 [
-                    "value",
-                    "A"
+                    "array_access",
+                    "B",
+                    [
+                        "binop",
+                        "+",
+                        [
+                            "binop",
+                            "/",
+                            [
+                                "array_access",
+                                "E",
+                                [
+                                    "binop",
+                                    "+",
+                                    [
+                                        "value",
+                                        3
+                                    ],
+                                    [
+                                        "value",
+                                        1
+                                    ]
+                                ]
+                            ],
+                            [
+                                "value",
+                                12
+                            ]
+                        ],
+                        [
+                            "value",
+                            2
+                        ]
+                    ]
                 ],
                 [
                     "value",
@@ -169,33 +201,21 @@
                                 "+",
                                 [
                                     "binop",
-                                    "+",
+                                    "/",
                                     [
-                                        "binop",
-                                        "+",
+                                        "array_access",
+                                        "E",
                                         [
                                             "binop",
-                                            "-",
+                                            "+",
                                             [
                                                 "value",
-                                                5
+                                                3
                                             ],
                                             [
-                                                "binop",
-                                                "*",
-                                                [
-                                                    "value",
-                                                    -3
-                                                ],
-                                                [
-                                                    "value",
-                                                    12
-                                                ]
+                                                "value",
+                                                1
                                             ]
-                                        ],
-                                        [
-                                            "value",
-                                            -62
                                         ]
                                     ],
                                     [
@@ -205,7 +225,7 @@
                                 ],
                                 [
                                     "value",
-                                    9
+                                    2
                                 ]
                             ]
                         ],
@@ -246,8 +266,40 @@
                 1
             ],
             [
-                "value",
-                "A"
+                "array_access",
+                "B",
+                [
+                    "binop",
+                    "+",
+                    [
+                        "binop",
+                        "/",
+                        [
+                            "array_access",
+                            "E",
+                            [
+                                "binop",
+                                "+",
+                                [
+                                    "value",
+                                    3
+                                ],
+                                [
+                                    "value",
+                                    1
+                                ]
+                            ]
+                        ],
+                        [
+                            "value",
+                            12
+                        ]
+                    ],
+                    [
+                        "value",
+                        2
+                    ]
+                ]
             ],
             [
                 [

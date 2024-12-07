@@ -401,7 +401,67 @@
     ],
     [
         "type: IDF",
-        "Value: A",
+        "Value: B",
+        "Line: 14"
+    ],
+    [
+        "type: LBRACKET",
+        "Value: [",
+        "Line: 14"
+    ],
+    [
+        "type: IDF",
+        "Value: E",
+        "Line: 14"
+    ],
+    [
+        "type: LBRACKET",
+        "Value: [",
+        "Line: 14"
+    ],
+    [
+        "type: INTEGER",
+        "Value: 3",
+        "Line: 14"
+    ],
+    [
+        "type: PLUS",
+        "Value: +",
+        "Line: 14"
+    ],
+    [
+        "type: INTEGER",
+        "Value: 1",
+        "Line: 14"
+    ],
+    [
+        "type: RBRACKET",
+        "Value: ]",
+        "Line: 14"
+    ],
+    [
+        "type: DIVIDE",
+        "Value: /",
+        "Line: 14"
+    ],
+    [
+        "type: INTEGER",
+        "Value: 12",
+        "Line: 14"
+    ],
+    [
+        "type: PLUS",
+        "Value: +",
+        "Line: 14"
+    ],
+    [
+        "type: INTEGER",
+        "Value: 2",
+        "Line: 14"
+    ],
+    [
+        "type: RBRACKET",
+        "Value: ]",
         "Line: 14"
     ],
     [
@@ -445,23 +505,38 @@
         "Line: 15"
     ],
     [
+        "type: IDF",
+        "Value: E",
+        "Line: 15"
+    ],
+    [
+        "type: LBRACKET",
+        "Value: [",
+        "Line: 15"
+    ],
+    [
         "type: INTEGER",
-        "Value: 5",
+        "Value: 3",
         "Line: 15"
     ],
     [
-        "type: MINUS",
-        "Value: -",
+        "type: PLUS",
+        "Value: +",
         "Line: 15"
     ],
     [
         "type: INTEGER",
-        "Value: -3",
+        "Value: 1",
         "Line: 15"
     ],
     [
-        "type: MULTIPLY",
-        "Value: *",
+        "type: RBRACKET",
+        "Value: ]",
+        "Line: 15"
+    ],
+    [
+        "type: DIVIDE",
+        "Value: /",
         "Line: 15"
     ],
     [
@@ -476,27 +551,7 @@
     ],
     [
         "type: INTEGER",
-        "Value: -62",
-        "Line: 15"
-    ],
-    [
-        "type: PLUS",
-        "Value: +",
-        "Line: 15"
-    ],
-    [
-        "type: INTEGER",
-        "Value: 12",
-        "Line: 15"
-    ],
-    [
-        "type: PLUS",
-        "Value: +",
-        "Line: 15"
-    ],
-    [
-        "type: INTEGER",
-        "Value: 9",
+        "Value: 2",
         "Line: 15"
     ],
     [
@@ -601,7 +656,67 @@
     ],
     [
         "type: IDF",
-        "Value: A",
+        "Value: B",
+        "Line: 19"
+    ],
+    [
+        "type: LBRACKET",
+        "Value: [",
+        "Line: 19"
+    ],
+    [
+        "type: IDF",
+        "Value: E",
+        "Line: 19"
+    ],
+    [
+        "type: LBRACKET",
+        "Value: [",
+        "Line: 19"
+    ],
+    [
+        "type: INTEGER",
+        "Value: 3",
+        "Line: 19"
+    ],
+    [
+        "type: PLUS",
+        "Value: +",
+        "Line: 19"
+    ],
+    [
+        "type: INTEGER",
+        "Value: 1",
+        "Line: 19"
+    ],
+    [
+        "type: RBRACKET",
+        "Value: ]",
+        "Line: 19"
+    ],
+    [
+        "type: DIVIDE",
+        "Value: /",
+        "Line: 19"
+    ],
+    [
+        "type: INTEGER",
+        "Value: 12",
+        "Line: 19"
+    ],
+    [
+        "type: PLUS",
+        "Value: +",
+        "Line: 19"
+    ],
+    [
+        "type: INTEGER",
+        "Value: 2",
+        "Line: 19"
+    ],
+    [
+        "type: RBRACKET",
+        "Value: ]",
         "Line: 19"
     ],
     [

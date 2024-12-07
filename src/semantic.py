@@ -85,6 +85,8 @@ class SemanticAnalyzer:
             raise ValueError(f"Variable non déclarée : {var_name} , line = {line}")
         if x and x[2]['is_array']:
             raise ValueError(f"Erreur Affectation : {var_name} is array , line = {line}")
+        if x and x[2]['const']:
+            raise ValueError(f"Erreur Affectation : {var_name} is const , line = {line}")
         var_type = x[2]['type']
         value = stmt[2]
         self.validate_expression(value, var_type ,line)
@@ -191,6 +193,9 @@ class SemanticAnalyzer:
     def validate_expression(self, expr, expected_type ,line):
         if isinstance(expr, list):  # Si c'est une structure comme ["value", ...]
             if expr[0] == "value":
+                x = self.hash_table.search(expr[1])
+                if x and x[2]['is_array']:
+                    raise ValueError(f"Manque indice du tableau {expr[1]} , line = {line}")
                 self.validate_value_type(expr[1], expected_type ,line)
             elif expr[0] == "binop":
                 left = expr[2]
@@ -202,6 +207,10 @@ class SemanticAnalyzer:
                     raise ValueError(f"Incompatibilité de types dans binop : {left_type} {operator} {right_type} , line = {line}")
                 if expected_type and left_type != expected_type:
                     raise ValueError(f"Type incorrect dans binop : attendu {expected_type}, obtenu {left_type} , line = {line}")
+            elif expr[0] == "array_access":
+                type = self.get_expression_type(expr , line)
+                if type != expected_type : 
+                    raise ValueError(f"Type incorrect : attendu {expected_type}, obtenu {type} !!!!!!!! , line = {line}")
         else:  # Si c'est une valeur simple (int, float, etc.)
             self.validate_value_type(expr, expected_type ,line)
 
@@ -245,6 +254,9 @@ class SemanticAnalyzer:
     def get_expression_type(self, expr ,line):
         if expr[0] == "value":
             value = expr[1]
+            x = self.hash_table.search(expr[1])
+            if x and x[2]['is_array']:
+                raise ValueError(f"Manque indice du tableau {expr[1]} , line = {line}")
             if isinstance(value, int):
                 return "INTEGER"
             elif isinstance(value, float):
@@ -308,10 +320,18 @@ class SemanticAnalyzer:
             elif operator == "/":
                 if right_value == 0:
                     raise ValueError(f"Division par zéro , line = {line}")
-                return left_value / right_value
+                if isinstance(left_value , int) :
+                    return left_value // right_value # division entiere 
+                elif isinstance(left_value , float):
+                    return left_value / right_value 
             else:
                 raise ValueError(f"Opérateur inconnu : {operator} , line = {line}")
         else:
+            if expr[0] == "array_access" : 
+                #x = self.hash_table.search(expr[1])
+                #if x :
+                    #return x[2]['value'][index]
+                return 1 # recuperer la valeur depuis la TS (1 juste pour ne pas avoire une erreur)
             raise ValueError(f"Type d'expression inconnu : {expr[0]} , line = {line}")
 
 """
