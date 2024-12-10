@@ -46,7 +46,7 @@ def generate_code(node):
     elif node_type == "assign":
         _, idf, expression, _ = node
         expr_result = generate_code(expression)
-        quadruplets.append([":=", expr_result, None, idf])
+        quadruplets.append(["=", expr_result, None, idf])
 
     elif node_type == "array_assign":
         _, idf, index, value, _ = node
