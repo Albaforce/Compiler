@@ -11,13 +11,18 @@ quadruplets = []
 temp_var_count = 0
 label_count = 0
 
+# Generate a new temporary variable
+def new_temp():
+    global temp_var_count
+    temp_var_count += 1
+    return f"T{temp_var_count}"
+
 # Generate a new label
 def new_label():
     global label_count
     label_count += 1
     return f"L{label_count}"
 
-# Recursive function to process AST and generate quadruplets
 def generate_code(node):
     if not isinstance(node, list):
         return node  # Base case: Return literals or variable names directly
@@ -58,7 +63,7 @@ def generate_code(node):
         _, operator, left, right = node
         left_result = generate_code(left)
         right_result = generate_code(right)
-        temp_var = f"T{len(quadruplets) + 1}"  # Allocate a temporary name
+        temp_var = new_temp()  # Allocate a temporary name
         quadruplets.append([operator, left_result, right_result, temp_var])
         return temp_var
 
@@ -68,7 +73,7 @@ def generate_code(node):
     elif node_type == "array_access":
         _, idf, index = node
         index_result = generate_code(index)
-        temp_var = f"T{len(quadruplets) + 1}"  # Allocate a temporary name
+        temp_var = new_temp()  # Allocate a temporary name
         quadruplets.append(["SUBS", idf, index_result, temp_var])
         return temp_var
 
@@ -104,74 +109,41 @@ def generate_code(node):
         # Generate the "end" label
         quadruplets.append(["label", end_label, None, None])
 
-    elif node_type == "if_else":
-        # Extract condition, if block, and else block
-        _, condition, if_block, else_block, _ = node
-
-        # Extract condition components
-        condition_operator = condition[1]
-        condition_left = generate_code(condition[2])  # Left operand
-        condition_right = generate_code(condition[3])  # Right operand
-
-        # Determine the inverse operator for branching
-        inverse_operator = {
-            ">": "BLE",  # Branch if <=
-            "<": "BGE",  # Branch if >=
-            ">=": "BL",  # Branch if <
-            "<=": "BG",  # Branch if >
-            "==": "BNE",  # Branch if !=
-            "!=": "BE"   # Branch if ==
-        }[condition_operator]
-
-        # Generate labels
-        else_label = new_label()
-        end_label = new_label()
-
-        # Conditional branch to the else block
-        quadruplets.append([inverse_operator, else_label, condition_left, condition_right])
-
-        # Generate quadruplets for the "then" block
-        for instruction in if_block:
-            generate_code(instruction)
-
-        # Unconditional branch to the end of the if_else
-        quadruplets.append(["BR", end_label, None, None])
-
-        # Generate the "else" label
-        quadruplets.append(["label", else_label, None, None])
-
-        # Generate quadruplets for the "else" block
-        for instruction in else_block:
-            generate_code(instruction)
-
-        # Generate the "end" label
-        quadruplets.append(["label", end_label, None, None])
-
     elif node_type == "for":
-        _, initialization, step, condition, body, _ = node
+        # Extract loop components
+        _, initialization, step, stop_condition, body, _ = node
+
+        # Extract initialization
+        loop_var = initialization[1]  # Variable being initialized
+        init_value = generate_code(initialization[2])  # Initial value
+
+        # Extract step and stop condition
+        step_value = generate_code(step)
+        stop_value = generate_code(stop_condition)
 
         # Generate labels for loop start and end
         start_label = new_label()
         end_label = new_label()
 
         # Initialization
-        generate_code(initialization)
+        quadruplets.append(["=", init_value, None, loop_var])
 
         # Start label for the loop
         quadruplets.append(["label", start_label, None, None])
 
-        # Loop condition
-        condition_result = generate_code(condition)
-        quadruplets.append(["BZ", end_label, condition_result, None])
+        # Stop condition: Compare loop variable with stop value
+        quadruplets.append(["BG", end_label, loop_var, stop_value])  # Branch if loop_var > stop_value
 
-        # Loop body
+        # Generate quadruplets for the loop body
         for instruction in body:
             generate_code(instruction)
 
-        # Step (increment)
-        generate_code(step)
+        # Increment the loop variable by the step value
+        temp_step = new_temp()
+        quadruplets.append(["+", loop_var, step_value, temp_step])
+        quadruplets.append(["=", temp_step, None, loop_var])
 
-        # GOTO to the start of the loop
+        # Unconditionally branch back to the start of the loop
         quadruplets.append(["BR", start_label, None, None])
 
         # End label for the loop
