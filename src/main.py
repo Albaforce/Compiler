@@ -2,7 +2,7 @@ from lexer import MinINGLexer
 from parse import MinINGParser
 from semantic import SemanticAnalyzer
 from HashTable import HashTable
-import quads
+#import quads
 import json
 
 
@@ -21,7 +21,7 @@ DECLARATION {
 }
 INSTRUCTION {
     A = 10;
-    B[2] = A ;
+    B[2+A] = A ;
     Chaine[0] = 'A' ;
     Lettre = 'Z'; 
     IF (A == 0 && (C == 5 || C != 2)) {
@@ -29,7 +29,7 @@ INSTRUCTION {
     } ELSE {
         A = 1;
     }
-    FOR(A = 0 : 1+2: B[E[3+1] / 12 + 2 ]) {
+    FOR(A = 0 : 1+A: B[E[3+1] / 12 + 2 ]) {
         A = A + 1;
     } 
     WRITE(2);
@@ -135,9 +135,9 @@ except ValueError as e:
 
 
 # -------------------------- Quadruplets -------------------------------
-
+"""
 quads.generate_code(ast)
 print("Generated Quadruplets:")
 for quad in quads.quadruplets:
     print(quad)
-
+"""

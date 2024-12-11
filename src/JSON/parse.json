@@ -109,8 +109,16 @@
             "array_assign",
             "B",
             [
-                "value",
-                2
+                "binop",
+                "+",
+                [
+                    "value",
+                    2
+                ],
+                [
+                    "value",
+                    "A"
+                ]
             ],
             [
                 "value",
@@ -270,7 +278,7 @@
                 ],
                 [
                     "value",
-                    2
+                    "A"
                 ]
             ],
             [

@@ -315,6 +315,16 @@
         "Line: 11"
     ],
     [
+        "type: PLUS",
+        "Value: +",
+        "Line: 11"
+    ],
+    [
+        "type: IDF",
+        "Value: A",
+        "Line: 11"
+    ],
+    [
         "type: RBRACKET",
         "Value: ]",
         "Line: 11"
@@ -645,8 +655,8 @@
         "Line: 19"
     ],
     [
-        "type: INTEGER",
-        "Value: 2",
+        "type: IDF",
+        "Value: A",
         "Line: 19"
     ],
     [

@@ -105,9 +105,9 @@ class SemanticAnalyzer:
                 raise ValueError(f"Indice de tableau {array_name} doit etre INTEGER , line = {line}")
         else :
             self.validate_expression(index_expr, "INTEGER" ,line)
-        index = self.evaluate_expression(index_expr ,line)
-        if not isinstance(index, int) or index < 0 or index >= size:
-            raise ValueError(f"Indice invalide pour le tableau {array_name} , line = {line}")
+        #index = self.evaluate_expression(index_expr ,line)
+        #if not isinstance(index, int) or index < 0 or index >= size:
+            #raise ValueError(f"Indice invalide pour le tableau {array_name} , line = {line}")
         value = stmt[3]
         x = self.hash_table.search(array_name)
         array_type = x[2]['type']
@@ -148,7 +148,7 @@ class SemanticAnalyzer:
                     raise ValueError(f"le pas de la boucle doit etre INTEGER et non pas un tableau , line = {line}")
         else :
             self.validate_expression(step_expr , "INTEGER", line)
-        step = self.evaluate_expression(step_expr ,line)
+        #step = self.evaluate_expression(step_expr ,line)
 
         condition_expr = stmt[3]
         if condition_expr[0] == 'value' :
@@ -165,7 +165,7 @@ class SemanticAnalyzer:
             
         else :
             self.validate_expression(condition_expr , "INTEGER" ,line)
-        condition_value = self.evaluate_expression(condition_expr, line)
+        #condition_value = self.evaluate_expression(condition_expr, line)
 
         for stmt_in_for in stmt[4]:
             self.process_statements([stmt_in_for])
@@ -296,9 +296,9 @@ class SemanticAnalyzer:
                     raise ValueError(f"Indice de tableau {array_name} doit etre INTEGER , line = {line}")
             else :
                 self.validate_expression(index_expr, "INTEGER" ,line)
-            index = self.evaluate_expression(index_expr ,line)
-            if not isinstance(index, int) or index < 0 or index >= size:
-                raise ValueError(f"Indice invalide pour le tableau {array_name} , line = {line}")
+            #index = self.evaluate_expression(index_expr ,line)
+            #if not isinstance(index, int) or index < 0 or index >= size:
+                #raise ValueError(f"Indice invalide pour le tableau {array_name} , line = {line}")
             return y[2]['type']
         elif isinstance(expr ,str) :
             return "CHAR"
