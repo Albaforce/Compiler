@@ -144,46 +144,46 @@
             "if_else",
             [
                 "condition",
-                ">",
+                "&&",
                 [
-                    "array_access",
-                    "B",
+                    "condition",
+                    "==",
                     [
-                        "binop",
-                        "+",
+                        "value",
+                        "A"
+                    ],
+                    [
+                        "value",
+                        0
+                    ]
+                ],
+                [
+                    "condition",
+                    "||",
+                    [
+                        "condition",
+                        "==",
                         [
-                            "binop",
-                            "/",
-                            [
-                                "array_access",
-                                "E",
-                                [
-                                    "binop",
-                                    "+",
-                                    [
-                                        "value",
-                                        3
-                                    ],
-                                    [
-                                        "value",
-                                        1
-                                    ]
-                                ]
-                            ],
-                            [
-                                "value",
-                                12
-                            ]
+                            "value",
+                            "C"
+                        ],
+                        [
+                            "value",
+                            5
+                        ]
+                    ],
+                    [
+                        "condition",
+                        "!=",
+                        [
+                            "value",
+                            "C"
                         ],
                         [
                             "value",
                             2
                         ]
                     ]
-                ],
-                [
-                    "value",
-                    5
                 ]
             ],
             [
@@ -262,8 +262,16 @@
                 18
             ],
             [
-                "value",
-                1
+                "binop",
+                "+",
+                [
+                    "value",
+                    1
+                ],
+                [
+                    "value",
+                    2
+                ]
             ],
             [
                 "array_access",

@@ -401,57 +401,57 @@
     ],
     [
         "type: IDF",
-        "Value: B",
+        "Value: A",
         "Line: 14"
     ],
     [
-        "type: LBRACKET",
-        "Value: [",
+        "type: EQ",
+        "Value: ==",
+        "Line: 14"
+    ],
+    [
+        "type: INTEGER",
+        "Value: 0",
+        "Line: 14"
+    ],
+    [
+        "type: AND",
+        "Value: &&",
+        "Line: 14"
+    ],
+    [
+        "type: LPAREN",
+        "Value: (",
         "Line: 14"
     ],
     [
         "type: IDF",
-        "Value: E",
+        "Value: C",
         "Line: 14"
     ],
     [
-        "type: LBRACKET",
-        "Value: [",
-        "Line: 14"
-    ],
-    [
-        "type: INTEGER",
-        "Value: 3",
-        "Line: 14"
-    ],
-    [
-        "type: PLUS",
-        "Value: +",
+        "type: EQ",
+        "Value: ==",
         "Line: 14"
     ],
     [
         "type: INTEGER",
-        "Value: 1",
+        "Value: 5",
         "Line: 14"
     ],
     [
-        "type: RBRACKET",
-        "Value: ]",
+        "type: OR",
+        "Value: ||",
         "Line: 14"
     ],
     [
-        "type: DIVIDE",
-        "Value: /",
+        "type: IDF",
+        "Value: C",
         "Line: 14"
     ],
     [
-        "type: INTEGER",
-        "Value: 12",
-        "Line: 14"
-    ],
-    [
-        "type: PLUS",
-        "Value: +",
+        "type: NE",
+        "Value: !=",
         "Line: 14"
     ],
     [
@@ -460,18 +460,8 @@
         "Line: 14"
     ],
     [
-        "type: RBRACKET",
-        "Value: ]",
-        "Line: 14"
-    ],
-    [
-        "type: GT",
-        "Value: >",
-        "Line: 14"
-    ],
-    [
-        "type: INTEGER",
-        "Value: 5",
+        "type: RPAREN",
+        "Value: )",
         "Line: 14"
     ],
     [
@@ -647,6 +637,16 @@
     [
         "type: INTEGER",
         "Value: 1",
+        "Line: 19"
+    ],
+    [
+        "type: PLUS",
+        "Value: +",
+        "Line: 19"
+    ],
+    [
+        "type: INTEGER",
+        "Value: 2",
         "Line: 19"
     ],
     [

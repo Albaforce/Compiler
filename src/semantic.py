@@ -248,7 +248,9 @@ class SemanticAnalyzer:
 
         # Les conditions logiques ne sont valables que pour des types numériques
         if left_type not in ["INTEGER", "FLOAT"]:
-            raise ValueError(f"Condition invalide : {operator} n'est pas applicable au type {left_type} , line = {line}")
+            raise ValueError(f"Condition invalide : {operator} n'est pas applicable au type {left_type} !!, line = {line}")
+        
+        return left_type
 
         
     def get_expression_type(self, expr ,line):
@@ -300,6 +302,9 @@ class SemanticAnalyzer:
             return y[2]['type']
         elif isinstance(expr ,str) :
             return "CHAR"
+        elif expr[0] == 'condition' :
+            return self.validate_condition(expr , line)
+            
         return None
     
     def evaluate_expression(self, expr ,line):
