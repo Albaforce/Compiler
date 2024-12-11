@@ -1,7 +1,7 @@
 import json
 
 # Load the AST from parse.json
-with open("parse.json", "r") as file:
+with open("src/JSON/parse.json", "r") as file:
     ast = json.load(file)
 
 # List to store quadruplets
@@ -39,10 +39,14 @@ def generate_code(node):
         for var in node[2]:
             if var[0] == "var":
                 _, name, _ = var
-                quadruplets.append(["DECLARE", name, None, None])
+                quadruplets.append(["DECLARE", name, None, None]) 
             elif var[0] == "array":
                 _, name, size, _ = var
                 quadruplets.append(["ADEC", name, size, None])
+            elif var[0] == "var_init" :
+                _, name, value, _ = var
+                quadruplets.append(["DECLARE_init",value,None,name]) 
+                
 
     elif node_type == "const_decl":
         _, _, idf, value, _ = node
