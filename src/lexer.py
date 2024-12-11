@@ -86,6 +86,7 @@ class MinINGLexer:
             if '_' in t.value:
                 self.errors.append(f"Error: Identifier {t.value} contains underscores, which are not allowed.")
             if len(t.value) > 8:
+                #raise ValueError(f"Erreur lexical : Identifier {t.value} is too long (max 8 chars) at line {t.lexer.lineno}")
                 self.errors.append(f"Warning: Identifier {t.value} is too long (max 8 chars).")
                 t.value = t.value[:8]
         return t
@@ -107,6 +108,7 @@ class MinINGLexer:
     def t_error(self, t):
         line_start = self.lexer.lexdata.rfind('\n', 0, t.lexpos) + 1
         column = t.lexpos - line_start + 1
+        raise ValueError(f"Erreur lexical : '{t.value[0]}' at line {t.lexer.lineno}, column {column}")
         self.errors.append(f"Illegal character '{t.value[0]}' at line {t.lexer.lineno}, column {column}")
         t.lexer.skip(1)
 
@@ -128,7 +130,7 @@ class MinINGLexer:
                 self.tokens_list.append((f"type: {tok.type}", f'Value: {str(tok.value)}', f'Line: {tok.lineno}'))
                     
         # save the output in json file
-        with open("lexer.json", 'w') as file :
+        with open("src/JSON/lexer.json", 'w') as file :
             file.write(json.dumps(self.tokens_list, indent=4))
             #symbol_table = HashTable()
             #code = file[""]
@@ -147,7 +149,7 @@ class MinINGLexer:
         print("]")
         
             
-        
+"""     
 # Example usage
 if __name__ == "__main__":
     lexer = MinINGLexer()
@@ -185,7 +187,7 @@ if __name__ == "__main__":
     
     lexer.test(data)
     
-    with open('JSON\lexer.json','r') as f:
+    with open('src/JSON/lexer.json','r') as f:
         data = json.load(f)
     
     
@@ -207,3 +209,4 @@ if __name__ == "__main__":
     symbol_table.save_to_json('Symbol_Table.json')
     
   
+"""

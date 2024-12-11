@@ -1,0 +1,124 @@
+{
+    "Chaine": {
+        "value": "                                                                                                    ",
+        "type": "CHAR",
+        "is_array": true,
+        "size": 100,
+        "const": false
+    },
+    "A": {
+        "value": null,
+        "type": "INTEGER",
+        "is_array": false,
+        "size": null,
+        "const": false
+    },
+    "Var6": {
+        "value": null,
+        "type": "FLOAT",
+        "is_array": false,
+        "size": null,
+        "const": false
+    },
+    "B": {
+        "value": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+        ],
+        "type": "INTEGER",
+        "is_array": true,
+        "size": 10,
+        "const": false
+    },
+    "D": {
+        "value": null,
+        "type": "INTEGER",
+        "is_array": false,
+        "size": null,
+        "const": false
+    },
+    "Var8": {
+        "value": "'A'",
+        "type": "CHAR",
+        "is_array": false,
+        "size": null,
+        "const": false
+    },
+    "Lettre": {
+        "value": "",
+        "type": "CHAR",
+        "is_array": false,
+        "size": null,
+        "const": false
+    },
+    "E": {
+        "value": [
+            null,
+            null,
+            null,
+            null,
+            null
+        ],
+        "type": "INTEGER",
+        "is_array": true,
+        "size": 5,
+        "const": false
+    },
+    "Var7": {
+        "value": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+        ],
+        "type": "FLOAT",
+        "is_array": true,
+        "size": 20,
+        "const": false
+    },
+    "Var9": {
+        "value": "                                                                                                    ",
+        "type": "CHAR",
+        "is_array": true,
+        "size": 100,
+        "const": false
+    },
+    "C": {
+        "value": 15,
+        "type": "INTEGER",
+        "is_array": false,
+        "size": null,
+        "const": false
+    },
+    "MAX": {
+        "value": 100,
+        "type": "INTEGER",
+        "is_array": false,
+        "size": null,
+        "const": true
+    }
+}
