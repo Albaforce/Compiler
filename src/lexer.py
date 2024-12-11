@@ -1,6 +1,6 @@
 from ply import lex
 import json
-
+import HashTable
 class MinINGLexer:
     # Liste des tokens
     tokens = [
@@ -86,6 +86,7 @@ class MinINGLexer:
             if '_' in t.value:
                 self.errors.append(f"Error: Identifier {t.value} contains underscores, which are not allowed.")
             if len(t.value) > 8:
+                #raise ValueError(f"Erreur lexical : Identifier {t.value} is too long (max 8 chars) at line {t.lexer.lineno}")
                 self.errors.append(f"Warning: Identifier {t.value} is too long (max 8 chars).")
                 t.value = t.value[:8]
         return t
@@ -107,6 +108,7 @@ class MinINGLexer:
     def t_error(self, t):
         line_start = self.lexer.lexdata.rfind('\n', 0, t.lexpos) + 1
         column = t.lexpos - line_start + 1
+        raise ValueError(f"Erreur lexical : '{t.value[0]}' at line {t.lexer.lineno}, column {column}")
         self.errors.append(f"Illegal character '{t.value[0]}' at line {t.lexer.lineno}, column {column}")
         t.lexer.skip(1)
 
@@ -121,15 +123,17 @@ class MinINGLexer:
             if not tok:
                 break
             if tok.type == 'CHAR':
-                self.tokens_list.append((f"type:{tok.type} ", f"Value: '{str(tok.value)}'", f'Line: {tok.lineno}'))
+                self.tokens_list.append((f"type: {tok.type}", f"Value: '{str(tok.value)}'", f'Line: {tok.lineno}'))
             elif tok.type == 'STRING' :
-                self.tokens_list.append((f"type:{tok.type} ", f'Value: "{str(tok.value)}"', f'Line: {tok.lineno}'))
+                self.tokens_list.append((f"type: {tok.type}", f'Value: "{str(tok.value)}"', f'Line: {tok.lineno}'))
             else :   
-                self.tokens_list.append((f"type:{tok.type} ", f'Value: {str(tok.value)}', f'Line: {tok.lineno}'))
+                self.tokens_list.append((f"type: {tok.type}", f'Value: {str(tok.value)}', f'Line: {tok.lineno}'))
                     
         # save the output in json file
-        with open("src/lexer.json", 'w') as file :
+        with open("src/JSON/lexer.json", 'w') as file :
             file.write(json.dumps(self.tokens_list, indent=4))
+            #symbol_table = HashTable()
+            #code = file[""]
         self.print_tokens()
 
         # Print errors, if any
@@ -145,7 +149,7 @@ class MinINGLexer:
         print("]")
         
             
-        
+"""     
 # Example usage
 if __name__ == "__main__":
     lexer = MinINGLexer()
@@ -154,9 +158,9 @@ if __name__ == "__main__":
     # Test input
     data = '''
     DECLARATION {
-        INTEGER A, B[10], C = 15, D, E[5] ;
+        INTEGER A, B[(-10)], C = 15, D, E[5] ;
         FLOAT Var6, Var7[20];
-        CHAR Var8 = 'A', Var9[100], Chaine[100], Ch[] = "test";
+        CHAR Var8 = 'A', Var9[100], Chaine[100], Ch[] = "t";
         CONST INTEGER MAX = 100;
         CHAR Lettre;
     }
@@ -177,9 +181,32 @@ if __name__ == "__main__":
         WRITE("Hello World !");
         WRITE("test",A+2,"test");
         READ(A);
-        
+        X = (+5.8) - (-3.6) + 12 + (-62) * (+12) ;
     }
     '''
     
     lexer.test(data)
+    
+    with open('src/JSON/lexer.json','r') as f:
+        data = json.load(f)
+    
+    
+    idfs = []
+    for entry in data:
+        if 'IDF' in entry[0]:
+            x = entry[1].split(': ')[1]
+            idfs.append(x)
+        
+    print(idfs)
+    
+    # inserting all IDFs into symbol table
+    
+    symbol_table = HashTable.HashTable()
+ 
+    for idf in idfs:
+        symbol_table.insert(idf)
+        
+    symbol_table.save_to_json('Symbol_Table.json')
+    
   
+"""

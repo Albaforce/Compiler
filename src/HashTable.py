@@ -2,86 +2,188 @@ import json
 import mmh3
 
 class HashTable:
-    def __init__(self, size=100):
+    def __init__(self, size=500):
         # Initialize the hash table with a list of empty buckets
         self.size = size
         self.table = [[] for _ in range(self.size)]  # Using a list of lists for chaining
 
-    # TO DO : mmh3 + chaining , but for now FNV-1a works  
+    
+    # Add a scenario where 2 inputs map to the same key 
     def hash_function(self, key):
         """
         Simple hash function using Python's built-in hash() and FNV-1a for better distribution.
         """
         # FNV-1a Hashing function
-        fnv_prime = 16777619
-        hash_value = 2166136261
-        for char in key:
-            hash_value ^= ord(char)
-            hash_value *= fnv_prime
-        return hash_value % self.size
+        # fnv_prime = 16777619
+        # hash_value = 2166136261
+        # for char in key:
+        #     hash_value ^= ord(char)
+        #     hash_value *= fnv_prime
+        # return hash_value % self.size
+        return mmh3.hash(str(key)) % self.size
 
-    def insert(self, key, value, var_type, size=None, is_const=False):
+    # Inserting variables (Lexer's role)
+    def insert(self, key):
         """
-        Insert a key-value pair into the hash table.
-        value: actual value (either scalar or array)
-        var_type: type of the variable ('CHAR', 'FLOAT', 'INTEGER')
-        size: size of the array (only for CHAR arrays)
-        is_const: whether it's a constant
-        """
-        # Default is_array is False and size is None unless a size is provided.
-        is_array = False
-        if size is not None:  # If size is given, assume it's an array
-            is_array = True
-
-        # Handle insertion for CHAR arrays
-        if var_type == 'CHAR' and size is not None:
-            entry = {
-                'value': value,  # CHAR array
-                'type': var_type,
-                'is_array': True,
-                'size': size,
-                'const': is_const
-            }
-        # Handle insertion for INTEGER and FLOAT
-        elif var_type in ['INTEGER', 'FLOAT']:
-            entry = {
-                'value': value,  # scalar values
-                'type': var_type,
-                'is_array': False,
-                'size': None,
-                'const': is_const
-            }
-        # Handle CHAR type without size (single character)
-        elif var_type == 'CHAR' and size is None:
-            entry = {
-                'value': value,  # single CHAR
-                'type': var_type,
-                'is_array': False,
-                'size': None,
-                'const': is_const
-            }
-        else:
-            raise ValueError("Unsupported type or parameters")
+        Insert a key (variable name) into the hash table.
+        This function only inserts the name of the variable initially.
+        """ 
+        
+        entry = {
+        'value': None,      # Placeholder for the value (to be updated later)
+        'type': None,       # Placeholder for the type (to be updated later)
+        'is_array': False,  # Placeholder for whether it's an array (to be updated later)
+        'size': None,       # Placeholder for the array size (to be updated later)
+        'const': None,       # Placeholder for the constant status (to be updated later)
+    }
 
         # Insert into hash table with proper handling of collisions
         index = self.hash_function(key)
         for idx, existing_entry in enumerate(self.table[index]):
             if existing_entry[0] == key:
-                self.table[index][idx] = (key, entry)  # Update existing entry
+                # Avoid inserting duplicates
                 return
         self.table[index].append((key, entry))  # Add new entry
 
+   
+    def update(self, key, var_type, up_type=None,value=None, size=None, is_const=False, ix=None):
+        # ix is the index inside an array 
+        """
+        Update the entry for an existing variable in the symbol table with
+        its type, value, array size, and constant status.
+        """
+        # getting the index
+        index = self.hash_function(key)
+        if(index is None):
+            ValueError(f"{key} was not declared")
+        
+        if var_type == "CHAR":  # can be a char array or a single char
+        # All cases:
+            """
+            DECLARATION
+            CHAR T var
+            T = 'X' var_init
+            CHAR T[5] array
+            INSTRUCTION
+            T[2] = 'w' array_assign
+        """
+            if up_type == "var":
+                is_array = False
+                value = ''
+                # size is none
+                
+            elif up_type == "var_init":
+                is_array = False
+                # value from parameters
+                if (value is None):
+                    ValueError("Missing CHAR value")
+                # size is none
+                
+            elif up_type == "array":
+                is_array = True    
+                value = ' ' * size
+                # size from parameters
+                 
+            elif up_type == "array_assign":
+                # get ix from parameters
+                is_array = True # kept as True
+                index, pos, entry = self.search(key)
+                
+                if ix is None or not (0 <= ix < entry['size']) or not (entry["is_array"]):
+                    raise IndexError(f"Index {ix} is out of bounds for variable {key}")
+                
+                if not isinstance(entry['value'], str):
+                    raise ValueError(f"Variable {key} is not a string and cannot be indexed")
+                
+                value_as_list = list(entry['value'])  # Convert string to list for mutability
+                value_as_list[ix] = value  # Update the character at the specified index
+                updated_value = ''.join(value_as_list)  # Convert back to a string
+                value = updated_value
+                
+
+        elif var_type in ["INTEGER", "FLOAT"]:
+            """
+            INTEGER A ; A = 5; INTEGER N[5]; N[2] = 5;
+            var ,     , var_init ,  array , array_assign
+            """
+            if up_type == "var":
+                is_array = False
+                value = None
+            
+            elif up_type == "var_init":
+                is_array = False
+                # value from parameters
+                if(value is None):
+                    ValueError("Missing INTEGER value")
+                # size is none
+                
+            elif up_type == "array":
+                is_array = True
+                value = [None] * size # padding with none
+                # size from parameters
+                
+            elif up_type == "array_assign":
+                #get ix from parameters
+                is_array = True # keep it as true
+                index, pos, entry = self.search(key)
+                
+                if entry["type"] == None:
+                    raise ValueError(f"{key} was not declared")
+                
+                # type_checks = {
+                # "INTEGER": lambda value: all(isinstance(item, int) for item in value),
+                # "FLOAT": lambda value: all(isinstance(item, float) for item in value)
+                # }
+
+                # CONDITION = type_checks.get(var_type, lambda _: False)(entry['value'])
+                
+                if ix is None or not (0 <= ix < entry['size']) or not (entry["is_array"]):
+                    raise IndexError(f"Index {ix} is out of bounds for variable {key}")
+                
+                # if not (isinstance(entry['value'], list) and CONDITION):
+                #     raise ValueError(f"Variable {key} is not a list of {var_type} and cannot be indexed")
+
+                tmp = entry['value']  
+                tmp[ix] = value
+                value = tmp
+                
+        
+        if (is_const == True and value == None):
+            raise ValueError(f"{var_type} {key} is CONST and has to be initialized")
+        
+        
+        # Update the entry with the provided information
+        for idx, (existing_key, entry) in enumerate(self.table[index]):
+            if existing_key == key:
+                entry['value'] = value
+                entry['type'] = var_type
+                entry['is_array'] = is_array
+                entry['size'] = size if up_type != "array_assign" else entry['size']
+                entry['const'] = is_const
+                return
+       
+
+        # Update the entry in the symbol table
+        for idx, existing_entry in enumerate(self.table[index]):
+            if existing_entry[0] == key:
+                self.table[index][idx] = (key, entry)  # Update the entry
+                return
+
+    
     def search(self, key):
         """
         Search for a value by key in the hash table.
         Returns None if the key is not found.
         """
+        
         index = self.hash_function(key)
-        for entry in self.table[index]:
+        
+        for pos, entry in enumerate(self.table[index]):
             if entry[0] == key:
-                return entry[1]  # Return the value associated with the key
+                 return (index, pos, entry[1])  # (bucket index, position in bucket, entry)
         return None  # Key not found
 
+    
     def delete(self, key):
         """
         Delete a key-value pair from the hash table.
@@ -113,30 +215,65 @@ class HashTable:
 
         with open(filename, 'w') as f:
             json.dump(hash_table_dict, f, indent=4)
+    
+    def load_from_dict(self, data):
+        """
+        Populate the hash table from a dictionary.
+        """
+        for key, entry in data.items():
+            index = self.hash_function(key)
+            self.table[index].append((key, entry))
 
-
+"""
 # Example usage
 if __name__ == "__main__":
     # Create a new hash table
     hash_table = HashTable()
 
-    # Insert some key-value pairs
-    hash_table.insert("intVar", 10, "INTEGER", is_const=True)
-    hash_table.insert("charVar", "A", "CHAR", is_const=False)
-    hash_table.insert("String", "ABC", "CHAR", size=3, is_const=False)
-    hash_table.insert("floatVar", 3.14, "FLOAT", is_const=True)
-    hash_table.insert("Idf", 0, "INTEGER", is_const=False)
+    # Insert some keys
+    hash_table.insert("T")
+    hash_table.insert("arr")
+    # testing chars
+    hash_table.insert("C")
+    hash_table.insert("P")
+    hash_table.insert("Array")
+    
+    # testing int / float
+    hash_table.insert("B")
+    hash_table.insert("W")
+    hash_table.insert("Z")
+    
+    # update(self, key, var_type, up_type,value=None, size=None, is_const=False, index=None):
+    hash_table.update("T","INTEGER","array",size=5)  # Declares T as an array of size 5
+    hash_table.update("B","FLOAT","var")
+    hash_table.update("Z","FLOAT","var_init",value=12.6)
+    hash_table.update("T","INTEGER","array_assign",value=1,ix=0)
+    
+    hash_table.update("T","INTEGER","array_assign",value=1,ix=4)
 
-    # Search for keys
-    print(f"charVar: {hash_table.search('charVar')}")
-    print(f"charArray: {hash_table.search('charArray')}")
-    print(f"intVar: {hash_table.search('intVar')}")
-
-    # Delete a key
-    print("Deleting 'intVar':", hash_table.delete("intVar"))
+    # CHAR C var
+    hash_table.update("C","CHAR","var",is_const=True)
+    #  P = 'X' var_init
+    hash_table.update("P","CHAR","var_init",'X')
+    # CHAR Array[5]  array
+    hash_table.update("Array","CHAR","array",size=5)
+    
+    # Array[0] = "A"  array_assign
+    hash_table.update("Array","CHAR","array_assign",value="A",ix=0)
+    hash_table.update("Array","CHAR","array_assign",value="C",ix=2)
+    
+    # Test search functionality
+    print("Searching for T:")
+    t_entry = hash_table.search("T")
+    if t_entry:
+        print(f"T: {t_entry}")
+    else:
+        print("T not found.")
+    
 
     # Display the contents of the hash table
     hash_table.display()
 
     # Save the contents to a JSON file
-    hash_table.save_to_json('hash_table.json')
+    hash_table.save_to_json('Symbol_Table.json')
+"""
