@@ -2,7 +2,7 @@ import json
 import mmh3
 
 class HashTable:
-    def __init__(self, size=500):
+    def __init__(self, size=100):
         # Initialize the hash table with a list of empty buckets
         self.size = size
         self.table = [[] for _ in range(self.size)]  # Using a list of lists for chaining
@@ -13,6 +13,7 @@ class HashTable:
         """
         Simple hash function using Python's built-in hash() and FNV-1a for better distribution.
         """
+
         # FNV-1a Hashing function
         # fnv_prime = 16777619
         # hash_value = 2166136261

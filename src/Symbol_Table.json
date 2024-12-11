@@ -1,60 +1,110 @@
 {
-    "B": {
-        "value": null,
-        "type": "FLOAT",
-        "is_array": false,
-        "size": null,
-        "const": false
-    },
-    "P": {
-        "value": "X",
-        "type": "CHAR",
-        "is_array": false,
-        "size": null,
-        "const": false
-    },
-    "Z": {
-        "value": 12.6,
-        "type": "FLOAT",
-        "is_array": false,
-        "size": null,
-        "const": false
-    },
-    "T": {
-        "value": [
-            1,
-            null,
-            null,
-            null,
-            1
-        ],
-        "type": "INTEGER",
-        "is_array": true,
-        "size": 5,
-        "const": false
-    },
-    "arr": {
+    "Chaine": {
         "value": null,
         "type": null,
         "is_array": false,
         "size": null,
         "const": null
     },
-    "Array": {
-        "value": "A C  ",
-        "type": "CHAR",
-        "is_array": true,
-        "size": 5,
-        "const": false
-    },
-    "C": {
-        "value": "",
-        "type": "CHAR",
+    "Var9": {
+        "value": null,
+        "type": null,
         "is_array": false,
         "size": null,
-        "const": true
+        "const": null
     },
-    "W": {
+    "A": {
+        "value": null,
+        "type": null,
+        "is_array": false,
+        "size": null,
+        "const": null
+    },
+    "X": {
+        "value": null,
+        "type": null,
+        "is_array": false,
+        "size": null,
+        "const": null
+    },
+    "Var6": {
+        "value": null,
+        "type": null,
+        "is_array": false,
+        "size": null,
+        "const": null
+    },
+    "B": {
+        "value": null,
+        "type": null,
+        "is_array": false,
+        "size": null,
+        "const": null
+    },
+    "C": {
+        "value": null,
+        "type": null,
+        "is_array": false,
+        "size": null,
+        "const": null
+    },
+    "MAX": {
+        "value": null,
+        "type": null,
+        "is_array": false,
+        "size": null,
+        "const": null
+    },
+    "Var8": {
+        "value": null,
+        "type": null,
+        "is_array": false,
+        "size": null,
+        "const": null
+    },
+    "N": {
+        "value": null,
+        "type": null,
+        "is_array": false,
+        "size": null,
+        "const": null
+    },
+    "Ch": {
+        "value": null,
+        "type": null,
+        "is_array": false,
+        "size": null,
+        "const": null
+    },
+    "Lettre": {
+        "value": null,
+        "type": null,
+        "is_array": false,
+        "size": null,
+        "const": null
+    },
+    "I": {
+        "value": null,
+        "type": null,
+        "is_array": false,
+        "size": null,
+        "const": null
+    },
+    "E": {
+        "value": null,
+        "type": null,
+        "is_array": false,
+        "size": null,
+        "const": null
+    },
+    "Var7": {
+        "value": null,
+        "type": null,
+        "is_array": false,
+        "size": null,
+        "const": null
+    },
+    "D": {
         "value": null,
         "type": null,
         "is_array": false,

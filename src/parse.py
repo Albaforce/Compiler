@@ -1,6 +1,8 @@
 from ply import yacc
 from lexer import MinINGLexer
 import json
+from HashTable import HashTable
+
 test = ""
 class MinINGParser:
     def __init__(self):
@@ -264,15 +266,26 @@ if __name__ == "__main__":
 
     # Initialiser le parser
     parser = MinINGParser()
-
+    
+    # init hash_table 
+    hash_table = HashTable()
+    with open("Symbol_Table.json", 'r') as file:
+        table = json.load(file)
+    
+    # Fill the hash table with the lexer's output 
+    for identifier, attributes in table.items():
+        hash_table.insert(identifier)
+    
+    hash_table.display()
+    
     # Effectuer le parsing
     data = parser.build_program_from_lexer_output(lexer_output)
     with open("programme.txt", 'w') as file :
         file.write(data)
     result = parser.parse(data)
-
+    
     # Sauvegarder le resultat
     with open("parse.json", 'w') as file:
         file.write(json.dumps(result, indent=4))
     
-# add code to iterate over Symbol_Table and update the variables
+

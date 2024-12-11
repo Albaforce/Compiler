@@ -185,7 +185,7 @@ if __name__ == "__main__":
     
     lexer.test(data)
     
-    with open('lexer.json','r') as f:
+    with open('JSON\lexer.json','r') as f:
         data = json.load(f)
     
     

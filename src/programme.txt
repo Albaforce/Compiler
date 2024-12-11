@@ -1,7 +1,7 @@
 DECLARATION { 
 INTEGER A , B [ (-10) ] , C = 15 , D , E [ 5 ] ; 
 FLOAT Var6 , Var7 [ 20 ] ; 
-CHAR Var8 = 'A' , Var9 [ 100 ] , Chaine [ 100 ] , Ch [ ] = "test" ; 
+CHAR Var8 = 'A' , Var9 [ 100 ] , Chaine [ 100 ] , Ch [ ] = "t" ; 
 CONST INTEGER MAX = 100 ; 
 CHAR Lettre ; 
 } 
