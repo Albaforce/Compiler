@@ -2,6 +2,7 @@ from lexer import MinINGLexer
 from parse import MinINGParser
 from semantic import SemanticAnalyzer
 from HashTable import HashTable
+import quads
 import json
 
 
@@ -20,17 +21,17 @@ DECLARATION {
 }
 INSTRUCTION {
     A = 10;
-    B[2] = A ;
+    B[2+A] = A ;
     Chaine[0] = 'A' ;
     Lettre = 'Z'; 
-    IF (B[E[3+1] / 12 + 2 ] > 5) {
+    IF (A == 0 && (C == 5 || C != 2)) {
         A = B[E[3+1] / 12 + 2 ] + 1;
     } ELSE {
         A = 1;
     }
-    FOR(A = 0 : 1: B[E[3+1] / 12 + 2 ]) {
+    FOR(A = 0 : 1+A: B[E[3+1] / 12 + 2 ]) {
         A = A + 1;
-    }
+    } 
     WRITE(2);
     WRITE(A, B[2], Lettre);
     WRITE("Hello World !");
@@ -130,3 +131,28 @@ try:
     print("Analyse sémantique réussie.")
 except ValueError as e:
     print(f"Erreur sémantique : {e}")
+    exit()
+
+
+# -------------------------- Quadruplets -------------------------------
+with open("JSON/parse.json", 'r') as file:
+        ast = json.load(file)  # Remplacez par l'AST donné
+
+# Cas d'erreur Syntaxique
+if not ast :
+    exit()
+try:
+    # Generate quadruplets
+    quads.generate_code(ast)
+    
+    # Print and save quadruplets
+    print("Generated Quadruplets:")
+    for quad, line in quads.quadruplets:
+        print(f"{quad} {line}")
+
+    with open("JSON/quadruplets.json", 'w') as file:
+        json.dump(quads.quadruplets, file, indent=4)
+
+except ValueError as e:
+    print(f"Erreur lors de la génération des quadruplets : {e}")
+    exit()

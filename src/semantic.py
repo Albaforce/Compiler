@@ -1,4 +1,3 @@
-
 class SemanticAnalyzer:
     def __init__(self, ast , TS):
         self.ast = ast
@@ -105,9 +104,9 @@ class SemanticAnalyzer:
                 raise ValueError(f"Indice de tableau {array_name} doit etre INTEGER , line = {line}")
         else :
             self.validate_expression(index_expr, "INTEGER" ,line)
-        index = self.evaluate_expression(index_expr ,line)
-        if not isinstance(index, int) or index < 0 or index >= size:
-            raise ValueError(f"Indice invalide pour le tableau {array_name} , line = {line}")
+        #index = self.evaluate_expression(index_expr ,line)
+        #if not isinstance(index, int) or index < 0 or index >= size:
+            #raise ValueError(f"Indice invalide pour le tableau {array_name} , line = {line}")
         value = stmt[3]
         x = self.hash_table.search(array_name)
         array_type = x[2]['type']
@@ -148,7 +147,7 @@ class SemanticAnalyzer:
                     raise ValueError(f"le pas de la boucle doit etre INTEGER et non pas un tableau , line = {line}")
         else :
             self.validate_expression(step_expr , "INTEGER", line)
-        step = self.evaluate_expression(step_expr ,line)
+        #step = self.evaluate_expression(step_expr ,line)
 
         condition_expr = stmt[3]
         if condition_expr[0] == 'value' :
@@ -165,7 +164,7 @@ class SemanticAnalyzer:
             
         else :
             self.validate_expression(condition_expr , "INTEGER" ,line)
-        condition_value = self.evaluate_expression(condition_expr, line)
+        #condition_value = self.evaluate_expression(condition_expr, line)
 
         for stmt_in_for in stmt[4]:
             self.process_statements([stmt_in_for])
@@ -231,24 +230,27 @@ class SemanticAnalyzer:
             raise ValueError(f"Type incorrect : attendu {expected_type}, obtenu STRING !!!!!!!! , line = {line}")
 
     def validate_condition(self, condition ,line):
-        if condition[0] != "condition":
-            raise ValueError("Structure de condition invalide")
+        if condition[0] == "not":
+            self.get_expression_type(condition ,line)
+        elif condition[0] == "condition" :
         
-        operator = condition[1]  # Par exemple : ">" ou "<="
-        left_expr = condition[2]  # Expression à gauche de l'opérateur
-        right_expr = condition[3]  # Expression à droite de l'opérateur
+            operator = condition[1]  # Par exemple : ">" ou "<="
+            left_expr = condition[2]  # Expression à gauche de l'opérateur
+            right_expr = condition[3]  # Expression à droite de l'opérateur
 
-        # Récupérer les types des expressions de gauche et de droite
-        left_type = self.get_expression_type(left_expr ,line)
-        right_type = self.get_expression_type(right_expr ,line)
+            # Récupérer les types des expressions de gauche et de droite
+            left_type = self.get_expression_type(left_expr ,line)
+            right_type = self.get_expression_type(right_expr ,line)
 
-        # Vérifier les types compatibles
-        if left_type != right_type:
-            raise ValueError(f"Types incompatibles dans la condition : {left_type} {operator} {right_type} , line = {line}")
+            # Vérifier les types compatibles
+            if left_type != right_type:
+                raise ValueError(f"Types incompatibles dans la condition : {left_type} {operator} {right_type} , line = {line}")
 
-        # Les conditions logiques ne sont valables que pour des types numériques
-        if left_type not in ["INTEGER", "FLOAT"]:
-            raise ValueError(f"Condition invalide : {operator} n'est pas applicable au type {left_type} , line = {line}")
+            # Les conditions logiques ne sont valables que pour des types numériques
+            if left_type not in ["INTEGER", "FLOAT"]:
+                raise ValueError(f"Condition invalide : {operator} n'est pas applicable au type {left_type} !!, line = {line}")
+            
+            return left_type
 
         
     def get_expression_type(self, expr ,line):
@@ -263,7 +265,9 @@ class SemanticAnalyzer:
                 return "FLOAT"
             else : 
                 x = self.hash_table.search(value)
-                if x :
+                if x and not x[2]['type']:
+                    raise ValueError(f"var non decl : {value} , line = {line}")
+                elif x : 
                     return x[2]['type']
                 elif isinstance(value, str):
                     return "CHAR"
@@ -294,12 +298,16 @@ class SemanticAnalyzer:
                     raise ValueError(f"Indice de tableau {array_name} doit etre INTEGER , line = {line}")
             else :
                 self.validate_expression(index_expr, "INTEGER" ,line)
-            index = self.evaluate_expression(index_expr ,line)
-            if not isinstance(index, int) or index < 0 or index >= size:
-                raise ValueError(f"Indice invalide pour le tableau {array_name} , line = {line}")
+            #index = self.evaluate_expression(index_expr ,line)
+            #if not isinstance(index, int) or index < 0 or index >= size:
+                #raise ValueError(f"Indice invalide pour le tableau {array_name} , line = {line}")
             return y[2]['type']
         elif isinstance(expr ,str) :
             return "CHAR"
+        elif expr[0] == 'condition' :
+            return self.validate_condition(expr , line)
+        elif expr[0] == "not" :
+            return self.validate_condition(expr[1] , line)    
         return None
     
     def evaluate_expression(self, expr ,line):
@@ -336,7 +344,7 @@ class SemanticAnalyzer:
 
 """
 # Exemple d'utilisation avec l'AST fourni
-if __name__ == "__main__":
+if _name_ == "_main_":
     with open("parse.json", 'r') as file:
             ast = json.load(file)  # Remplacez par l'AST donné
     analyzer = SemanticAnalyzer(ast)
