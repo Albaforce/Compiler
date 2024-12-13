@@ -2,7 +2,7 @@ from lexer import MinINGLexer
 from parse import MinINGParser
 from semantic import SemanticAnalyzer
 from HashTable import HashTable
-#import quads
+import quads
 import json
 
 
@@ -135,9 +135,24 @@ except ValueError as e:
 
 
 # -------------------------- Quadruplets -------------------------------
-"""
-quads.generate_code(ast)
-print("Generated Quadruplets:")
-for quad in quads.quadruplets:
-    print(quad)
-"""
+with open("JSON/parse.json", 'r') as file:
+        ast = json.load(file)  # Remplacez par l'AST donné
+
+# Cas d'erreur Syntaxique
+if not ast :
+    exit()
+try:
+    # Generate quadruplets
+    quads.generate_code(ast)
+    
+    # Print and save quadruplets
+    print("Generated Quadruplets:")
+    for quad, line in quads.quadruplets:
+        print(f"{quad} {line}")
+
+    with open("JSON/quadruplets.json", 'w') as file:
+        json.dump(quads.quadruplets, file, indent=4)
+
+except ValueError as e:
+    print(f"Erreur lors de la génération des quadruplets : {e}")
+    exit()
