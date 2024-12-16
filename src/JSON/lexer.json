@@ -346,7 +346,7 @@
     ],
     [
         "type: IDF",
-        "Value: Chaine",
+        "Value: B",
         "Line: 12"
     ],
     [
@@ -355,668 +355,643 @@
         "Line: 12"
     ],
     [
-        "type: INTEGER",
-        "Value: 0",
-        "Line: 12"
-    ],
-    [
-        "type: RBRACKET",
-        "Value: ]",
-        "Line: 12"
-    ],
-    [
-        "type: EQUALS",
-        "Value: =",
-        "Line: 12"
-    ],
-    [
-        "type: CHAR",
-        "Value: 'A'",
-        "Line: 12"
-    ],
-    [
-        "type: SEMICOL",
-        "Value: ;",
-        "Line: 12"
-    ],
-    [
-        "type: IDF",
-        "Value: Lettre",
-        "Line: 13"
-    ],
-    [
-        "type: EQUALS",
-        "Value: =",
-        "Line: 13"
-    ],
-    [
-        "type: CHAR",
-        "Value: 'Z'",
-        "Line: 13"
-    ],
-    [
-        "type: SEMICOL",
-        "Value: ;",
-        "Line: 13"
-    ],
-    [
-        "type: IF",
-        "Value: IF",
-        "Line: 14"
-    ],
-    [
-        "type: LPAREN",
-        "Value: (",
-        "Line: 14"
-    ],
-    [
         "type: IDF",
         "Value: A",
-        "Line: 14"
+        "Line: 12"
     ],
     [
-        "type: EQ",
-        "Value: ==",
-        "Line: 14"
-    ],
-    [
-        "type: INTEGER",
-        "Value: 0",
-        "Line: 14"
-    ],
-    [
-        "type: AND",
-        "Value: &&",
-        "Line: 14"
-    ],
-    [
-        "type: LPAREN",
-        "Value: (",
-        "Line: 14"
+        "type: PLUS",
+        "Value: +",
+        "Line: 12"
     ],
     [
         "type: IDF",
         "Value: C",
-        "Line: 14"
+        "Line: 12"
     ],
     [
-        "type: EQ",
-        "Value: ==",
-        "Line: 14"
+        "type: RBRACKET",
+        "Value: ]",
+        "Line: 12"
     ],
     [
-        "type: INTEGER",
-        "Value: 5",
-        "Line: 14"
+        "type: EQUALS",
+        "Value: =",
+        "Line: 12"
     ],
     [
-        "type: OR",
-        "Value: ||",
-        "Line: 14"
+        "type: IDF",
+        "Value: B",
+        "Line: 12"
+    ],
+    [
+        "type: LBRACKET",
+        "Value: [",
+        "Line: 12"
     ],
     [
         "type: IDF",
         "Value: C",
-        "Line: 14"
-    ],
-    [
-        "type: NE",
-        "Value: !=",
-        "Line: 14"
-    ],
-    [
-        "type: INTEGER",
-        "Value: 2",
-        "Line: 14"
-    ],
-    [
-        "type: RPAREN",
-        "Value: )",
-        "Line: 14"
-    ],
-    [
-        "type: RPAREN",
-        "Value: )",
-        "Line: 14"
-    ],
-    [
-        "type: LBRACE",
-        "Value: {",
-        "Line: 14"
-    ],
-    [
-        "type: IDF",
-        "Value: A",
-        "Line: 15"
-    ],
-    [
-        "type: EQUALS",
-        "Value: =",
-        "Line: 15"
-    ],
-    [
-        "type: IDF",
-        "Value: B",
-        "Line: 15"
-    ],
-    [
-        "type: LBRACKET",
-        "Value: [",
-        "Line: 15"
-    ],
-    [
-        "type: IDF",
-        "Value: E",
-        "Line: 15"
-    ],
-    [
-        "type: LBRACKET",
-        "Value: [",
-        "Line: 15"
-    ],
-    [
-        "type: INTEGER",
-        "Value: 3",
-        "Line: 15"
-    ],
-    [
-        "type: PLUS",
-        "Value: +",
-        "Line: 15"
-    ],
-    [
-        "type: INTEGER",
-        "Value: 1",
-        "Line: 15"
-    ],
-    [
-        "type: RBRACKET",
-        "Value: ]",
-        "Line: 15"
-    ],
-    [
-        "type: DIVIDE",
-        "Value: /",
-        "Line: 15"
-    ],
-    [
-        "type: INTEGER",
-        "Value: 12",
-        "Line: 15"
-    ],
-    [
-        "type: PLUS",
-        "Value: +",
-        "Line: 15"
-    ],
-    [
-        "type: INTEGER",
-        "Value: 2",
-        "Line: 15"
-    ],
-    [
-        "type: RBRACKET",
-        "Value: ]",
-        "Line: 15"
-    ],
-    [
-        "type: PLUS",
-        "Value: +",
-        "Line: 15"
-    ],
-    [
-        "type: INTEGER",
-        "Value: 1",
-        "Line: 15"
-    ],
-    [
-        "type: SEMICOL",
-        "Value: ;",
-        "Line: 15"
-    ],
-    [
-        "type: RBRACE",
-        "Value: }",
-        "Line: 16"
-    ],
-    [
-        "type: ELSE",
-        "Value: ELSE",
-        "Line: 16"
-    ],
-    [
-        "type: LBRACE",
-        "Value: {",
-        "Line: 16"
-    ],
-    [
-        "type: IDF",
-        "Value: A",
-        "Line: 17"
-    ],
-    [
-        "type: EQUALS",
-        "Value: =",
-        "Line: 17"
-    ],
-    [
-        "type: INTEGER",
-        "Value: 1",
-        "Line: 17"
-    ],
-    [
-        "type: SEMICOL",
-        "Value: ;",
-        "Line: 17"
-    ],
-    [
-        "type: RBRACE",
-        "Value: }",
-        "Line: 18"
-    ],
-    [
-        "type: FOR",
-        "Value: FOR",
-        "Line: 19"
-    ],
-    [
-        "type: LPAREN",
-        "Value: (",
-        "Line: 19"
-    ],
-    [
-        "type: IDF",
-        "Value: A",
-        "Line: 19"
-    ],
-    [
-        "type: EQUALS",
-        "Value: =",
-        "Line: 19"
-    ],
-    [
-        "type: INTEGER",
-        "Value: 0",
-        "Line: 19"
-    ],
-    [
-        "type: COLOM",
-        "Value: :",
-        "Line: 19"
-    ],
-    [
-        "type: INTEGER",
-        "Value: 1",
-        "Line: 19"
-    ],
-    [
-        "type: PLUS",
-        "Value: +",
-        "Line: 19"
-    ],
-    [
-        "type: IDF",
-        "Value: A",
-        "Line: 19"
-    ],
-    [
-        "type: COLOM",
-        "Value: :",
-        "Line: 19"
-    ],
-    [
-        "type: IDF",
-        "Value: B",
-        "Line: 19"
-    ],
-    [
-        "type: LBRACKET",
-        "Value: [",
-        "Line: 19"
-    ],
-    [
-        "type: IDF",
-        "Value: E",
-        "Line: 19"
-    ],
-    [
-        "type: LBRACKET",
-        "Value: [",
-        "Line: 19"
-    ],
-    [
-        "type: INTEGER",
-        "Value: 3",
-        "Line: 19"
-    ],
-    [
-        "type: PLUS",
-        "Value: +",
-        "Line: 19"
-    ],
-    [
-        "type: INTEGER",
-        "Value: 1",
-        "Line: 19"
-    ],
-    [
-        "type: RBRACKET",
-        "Value: ]",
-        "Line: 19"
-    ],
-    [
-        "type: DIVIDE",
-        "Value: /",
-        "Line: 19"
-    ],
-    [
-        "type: INTEGER",
-        "Value: 12",
-        "Line: 19"
-    ],
-    [
-        "type: PLUS",
-        "Value: +",
-        "Line: 19"
-    ],
-    [
-        "type: INTEGER",
-        "Value: 2",
-        "Line: 19"
-    ],
-    [
-        "type: RBRACKET",
-        "Value: ]",
-        "Line: 19"
-    ],
-    [
-        "type: RPAREN",
-        "Value: )",
-        "Line: 19"
-    ],
-    [
-        "type: LBRACE",
-        "Value: {",
-        "Line: 19"
-    ],
-    [
-        "type: IDF",
-        "Value: A",
-        "Line: 20"
-    ],
-    [
-        "type: EQUALS",
-        "Value: =",
-        "Line: 20"
-    ],
-    [
-        "type: IDF",
-        "Value: A",
-        "Line: 20"
-    ],
-    [
-        "type: PLUS",
-        "Value: +",
-        "Line: 20"
-    ],
-    [
-        "type: INTEGER",
-        "Value: 1",
-        "Line: 20"
-    ],
-    [
-        "type: SEMICOL",
-        "Value: ;",
-        "Line: 20"
-    ],
-    [
-        "type: RBRACE",
-        "Value: }",
-        "Line: 21"
-    ],
-    [
-        "type: WRITE",
-        "Value: WRITE",
-        "Line: 22"
-    ],
-    [
-        "type: LPAREN",
-        "Value: (",
-        "Line: 22"
-    ],
-    [
-        "type: INTEGER",
-        "Value: 2",
-        "Line: 22"
-    ],
-    [
-        "type: RPAREN",
-        "Value: )",
-        "Line: 22"
-    ],
-    [
-        "type: SEMICOL",
-        "Value: ;",
-        "Line: 22"
-    ],
-    [
-        "type: WRITE",
-        "Value: WRITE",
-        "Line: 23"
-    ],
-    [
-        "type: LPAREN",
-        "Value: (",
-        "Line: 23"
-    ],
-    [
-        "type: IDF",
-        "Value: A",
-        "Line: 23"
-    ],
-    [
-        "type: COMMA",
-        "Value: ,",
-        "Line: 23"
-    ],
-    [
-        "type: IDF",
-        "Value: B",
-        "Line: 23"
-    ],
-    [
-        "type: LBRACKET",
-        "Value: [",
-        "Line: 23"
-    ],
-    [
-        "type: INTEGER",
-        "Value: 2",
-        "Line: 23"
-    ],
-    [
-        "type: RBRACKET",
-        "Value: ]",
-        "Line: 23"
-    ],
-    [
-        "type: COMMA",
-        "Value: ,",
-        "Line: 23"
-    ],
-    [
-        "type: IDF",
-        "Value: Lettre",
-        "Line: 23"
-    ],
-    [
-        "type: RPAREN",
-        "Value: )",
-        "Line: 23"
-    ],
-    [
-        "type: SEMICOL",
-        "Value: ;",
-        "Line: 23"
-    ],
-    [
-        "type: WRITE",
-        "Value: WRITE",
-        "Line: 24"
-    ],
-    [
-        "type: LPAREN",
-        "Value: (",
-        "Line: 24"
-    ],
-    [
-        "type: STRING",
-        "Value: \"Hello World !\"",
-        "Line: 24"
-    ],
-    [
-        "type: RPAREN",
-        "Value: )",
-        "Line: 24"
-    ],
-    [
-        "type: SEMICOL",
-        "Value: ;",
-        "Line: 24"
-    ],
-    [
-        "type: WRITE",
-        "Value: WRITE",
-        "Line: 25"
-    ],
-    [
-        "type: LPAREN",
-        "Value: (",
-        "Line: 25"
-    ],
-    [
-        "type: STRING",
-        "Value: \"test\"",
-        "Line: 25"
-    ],
-    [
-        "type: COMMA",
-        "Value: ,",
-        "Line: 25"
-    ],
-    [
-        "type: IDF",
-        "Value: A",
-        "Line: 25"
-    ],
-    [
-        "type: PLUS",
-        "Value: +",
-        "Line: 25"
-    ],
-    [
-        "type: INTEGER",
-        "Value: 2",
-        "Line: 25"
-    ],
-    [
-        "type: COMMA",
-        "Value: ,",
-        "Line: 25"
-    ],
-    [
-        "type: STRING",
-        "Value: \"test\"",
-        "Line: 25"
-    ],
-    [
-        "type: RPAREN",
-        "Value: )",
-        "Line: 25"
-    ],
-    [
-        "type: SEMICOL",
-        "Value: ;",
-        "Line: 25"
-    ],
-    [
-        "type: READ",
-        "Value: READ",
-        "Line: 26"
-    ],
-    [
-        "type: LPAREN",
-        "Value: (",
-        "Line: 26"
-    ],
-    [
-        "type: IDF",
-        "Value: A",
-        "Line: 26"
-    ],
-    [
-        "type: RPAREN",
-        "Value: )",
-        "Line: 26"
-    ],
-    [
-        "type: SEMICOL",
-        "Value: ;",
-        "Line: 26"
-    ],
-    [
-        "type: IDF",
-        "Value: A",
-        "Line: 27"
-    ],
-    [
-        "type: EQUALS",
-        "Value: =",
-        "Line: 27"
-    ],
-    [
-        "type: INTEGER",
-        "Value: 5",
-        "Line: 27"
+        "Line: 12"
     ],
     [
         "type: MINUS",
         "Value: -",
-        "Line: 27"
+        "Line: 12"
+    ],
+    [
+        "type: IDF",
+        "Value: A",
+        "Line: 12"
+    ],
+    [
+        "type: RBRACKET",
+        "Value: ]",
+        "Line: 12"
+    ],
+    [
+        "type: SEMICOL",
+        "Value: ;",
+        "Line: 12"
+    ],
+    [
+        "type: IDF",
+        "Value: Chaine",
+        "Line: 13"
+    ],
+    [
+        "type: LBRACKET",
+        "Value: [",
+        "Line: 13"
     ],
     [
         "type: INTEGER",
-        "Value: -3",
-        "Line: 27"
+        "Value: 0",
+        "Line: 13"
     ],
     [
-        "type: MULTIPLY",
-        "Value: *",
-        "Line: 27"
+        "type: RBRACKET",
+        "Value: ]",
+        "Line: 13"
+    ],
+    [
+        "type: EQUALS",
+        "Value: =",
+        "Line: 13"
+    ],
+    [
+        "type: CHAR",
+        "Value: 'A'",
+        "Line: 13"
+    ],
+    [
+        "type: SEMICOL",
+        "Value: ;",
+        "Line: 13"
+    ],
+    [
+        "type: IDF",
+        "Value: Lettre",
+        "Line: 14"
+    ],
+    [
+        "type: EQUALS",
+        "Value: =",
+        "Line: 14"
+    ],
+    [
+        "type: CHAR",
+        "Value: 'Z'",
+        "Line: 14"
+    ],
+    [
+        "type: SEMICOL",
+        "Value: ;",
+        "Line: 14"
+    ],
+    [
+        "type: IF",
+        "Value: IF",
+        "Line: 15"
+    ],
+    [
+        "type: LPAREN",
+        "Value: (",
+        "Line: 15"
+    ],
+    [
+        "type: IDF",
+        "Value: A",
+        "Line: 15"
+    ],
+    [
+        "type: EQ",
+        "Value: ==",
+        "Line: 15"
     ],
     [
         "type: INTEGER",
-        "Value: 12",
-        "Line: 27"
+        "Value: 0",
+        "Line: 15"
+    ],
+    [
+        "type: AND",
+        "Value: &&",
+        "Line: 15"
+    ],
+    [
+        "type: LPAREN",
+        "Value: (",
+        "Line: 15"
+    ],
+    [
+        "type: IDF",
+        "Value: C",
+        "Line: 15"
+    ],
+    [
+        "type: EQ",
+        "Value: ==",
+        "Line: 15"
+    ],
+    [
+        "type: INTEGER",
+        "Value: 5",
+        "Line: 15"
+    ],
+    [
+        "type: OR",
+        "Value: ||",
+        "Line: 15"
+    ],
+    [
+        "type: IDF",
+        "Value: C",
+        "Line: 15"
+    ],
+    [
+        "type: NE",
+        "Value: !=",
+        "Line: 15"
+    ],
+    [
+        "type: INTEGER",
+        "Value: 2",
+        "Line: 15"
+    ],
+    [
+        "type: RPAREN",
+        "Value: )",
+        "Line: 15"
+    ],
+    [
+        "type: RPAREN",
+        "Value: )",
+        "Line: 15"
+    ],
+    [
+        "type: LBRACE",
+        "Value: {",
+        "Line: 15"
+    ],
+    [
+        "type: IDF",
+        "Value: A",
+        "Line: 16"
+    ],
+    [
+        "type: EQUALS",
+        "Value: =",
+        "Line: 16"
+    ],
+    [
+        "type: IDF",
+        "Value: B",
+        "Line: 16"
+    ],
+    [
+        "type: LBRACKET",
+        "Value: [",
+        "Line: 16"
+    ],
+    [
+        "type: IDF",
+        "Value: E",
+        "Line: 16"
+    ],
+    [
+        "type: LBRACKET",
+        "Value: [",
+        "Line: 16"
+    ],
+    [
+        "type: INTEGER",
+        "Value: 3",
+        "Line: 16"
     ],
     [
         "type: PLUS",
         "Value: +",
-        "Line: 27"
+        "Line: 16"
     ],
     [
         "type: INTEGER",
-        "Value: -62",
-        "Line: 27"
+        "Value: 1",
+        "Line: 16"
     ],
     [
-        "type: PLUS",
-        "Value: +",
-        "Line: 27"
+        "type: RBRACKET",
+        "Value: ]",
+        "Line: 16"
+    ],
+    [
+        "type: DIVIDE",
+        "Value: /",
+        "Line: 16"
     ],
     [
         "type: INTEGER",
         "Value: 12",
+        "Line: 16"
+    ],
+    [
+        "type: PLUS",
+        "Value: +",
+        "Line: 16"
+    ],
+    [
+        "type: INTEGER",
+        "Value: 2",
+        "Line: 16"
+    ],
+    [
+        "type: RBRACKET",
+        "Value: ]",
+        "Line: 16"
+    ],
+    [
+        "type: PLUS",
+        "Value: +",
+        "Line: 16"
+    ],
+    [
+        "type: INTEGER",
+        "Value: 1",
+        "Line: 16"
+    ],
+    [
+        "type: SEMICOL",
+        "Value: ;",
+        "Line: 16"
+    ],
+    [
+        "type: RBRACE",
+        "Value: }",
+        "Line: 17"
+    ],
+    [
+        "type: ELSE",
+        "Value: ELSE",
+        "Line: 17"
+    ],
+    [
+        "type: LBRACE",
+        "Value: {",
+        "Line: 17"
+    ],
+    [
+        "type: IDF",
+        "Value: A",
+        "Line: 18"
+    ],
+    [
+        "type: EQUALS",
+        "Value: =",
+        "Line: 18"
+    ],
+    [
+        "type: INTEGER",
+        "Value: 1",
+        "Line: 18"
+    ],
+    [
+        "type: SEMICOL",
+        "Value: ;",
+        "Line: 18"
+    ],
+    [
+        "type: RBRACE",
+        "Value: }",
+        "Line: 19"
+    ],
+    [
+        "type: IF",
+        "Value: IF",
+        "Line: 20"
+    ],
+    [
+        "type: LPAREN",
+        "Value: (",
+        "Line: 20"
+    ],
+    [
+        "type: IDF",
+        "Value: A",
+        "Line: 20"
+    ],
+    [
+        "type: EQ",
+        "Value: ==",
+        "Line: 20"
+    ],
+    [
+        "type: INTEGER",
+        "Value: 5",
+        "Line: 20"
+    ],
+    [
+        "type: RPAREN",
+        "Value: )",
+        "Line: 20"
+    ],
+    [
+        "type: LBRACE",
+        "Value: {",
+        "Line: 20"
+    ],
+    [
+        "type: IDF",
+        "Value: A",
+        "Line: 21"
+    ],
+    [
+        "type: EQUALS",
+        "Value: =",
+        "Line: 21"
+    ],
+    [
+        "type: IDF",
+        "Value: A",
+        "Line: 21"
+    ],
+    [
+        "type: PLUS",
+        "Value: +",
+        "Line: 21"
+    ],
+    [
+        "type: INTEGER",
+        "Value: 1",
+        "Line: 21"
+    ],
+    [
+        "type: SEMICOL",
+        "Value: ;",
+        "Line: 21"
+    ],
+    [
+        "type: RBRACE",
+        "Value: }",
+        "Line: 22"
+    ],
+    [
+        "type: FOR",
+        "Value: FOR",
+        "Line: 23"
+    ],
+    [
+        "type: LPAREN",
+        "Value: (",
+        "Line: 23"
+    ],
+    [
+        "type: IDF",
+        "Value: A",
+        "Line: 23"
+    ],
+    [
+        "type: EQUALS",
+        "Value: =",
+        "Line: 23"
+    ],
+    [
+        "type: INTEGER",
+        "Value: 0",
+        "Line: 23"
+    ],
+    [
+        "type: COLOM",
+        "Value: :",
+        "Line: 23"
+    ],
+    [
+        "type: INTEGER",
+        "Value: 1",
+        "Line: 23"
+    ],
+    [
+        "type: PLUS",
+        "Value: +",
+        "Line: 23"
+    ],
+    [
+        "type: IDF",
+        "Value: A",
+        "Line: 23"
+    ],
+    [
+        "type: COLOM",
+        "Value: :",
+        "Line: 23"
+    ],
+    [
+        "type: IDF",
+        "Value: B",
+        "Line: 23"
+    ],
+    [
+        "type: LBRACKET",
+        "Value: [",
+        "Line: 23"
+    ],
+    [
+        "type: IDF",
+        "Value: E",
+        "Line: 23"
+    ],
+    [
+        "type: LBRACKET",
+        "Value: [",
+        "Line: 23"
+    ],
+    [
+        "type: INTEGER",
+        "Value: 3",
+        "Line: 23"
+    ],
+    [
+        "type: PLUS",
+        "Value: +",
+        "Line: 23"
+    ],
+    [
+        "type: INTEGER",
+        "Value: 1",
+        "Line: 23"
+    ],
+    [
+        "type: RBRACKET",
+        "Value: ]",
+        "Line: 23"
+    ],
+    [
+        "type: DIVIDE",
+        "Value: /",
+        "Line: 23"
+    ],
+    [
+        "type: INTEGER",
+        "Value: 12",
+        "Line: 23"
+    ],
+    [
+        "type: PLUS",
+        "Value: +",
+        "Line: 23"
+    ],
+    [
+        "type: INTEGER",
+        "Value: 2",
+        "Line: 23"
+    ],
+    [
+        "type: RBRACKET",
+        "Value: ]",
+        "Line: 23"
+    ],
+    [
+        "type: RPAREN",
+        "Value: )",
+        "Line: 23"
+    ],
+    [
+        "type: LBRACE",
+        "Value: {",
+        "Line: 23"
+    ],
+    [
+        "type: IDF",
+        "Value: A",
+        "Line: 24"
+    ],
+    [
+        "type: EQUALS",
+        "Value: =",
+        "Line: 24"
+    ],
+    [
+        "type: IDF",
+        "Value: A",
+        "Line: 24"
+    ],
+    [
+        "type: PLUS",
+        "Value: +",
+        "Line: 24"
+    ],
+    [
+        "type: INTEGER",
+        "Value: 1",
+        "Line: 24"
+    ],
+    [
+        "type: SEMICOL",
+        "Value: ;",
+        "Line: 24"
+    ],
+    [
+        "type: RBRACE",
+        "Value: }",
+        "Line: 25"
+    ],
+    [
+        "type: WRITE",
+        "Value: WRITE",
+        "Line: 26"
+    ],
+    [
+        "type: LPAREN",
+        "Value: (",
+        "Line: 26"
+    ],
+    [
+        "type: INTEGER",
+        "Value: 2",
+        "Line: 26"
+    ],
+    [
+        "type: RPAREN",
+        "Value: )",
+        "Line: 26"
+    ],
+    [
+        "type: SEMICOL",
+        "Value: ;",
+        "Line: 26"
+    ],
+    [
+        "type: WRITE",
+        "Value: WRITE",
+        "Line: 27"
+    ],
+    [
+        "type: LPAREN",
+        "Value: (",
+        "Line: 27"
+    ],
+    [
+        "type: IDF",
+        "Value: A",
+        "Line: 27"
+    ],
+    [
+        "type: COMMA",
+        "Value: ,",
+        "Line: 27"
+    ],
+    [
+        "type: IDF",
+        "Value: B",
+        "Line: 27"
+    ],
+    [
+        "type: LBRACKET",
+        "Value: [",
+        "Line: 27"
+    ],
+    [
+        "type: INTEGER",
+        "Value: 2",
+        "Line: 27"
+    ],
+    [
+        "type: RBRACKET",
+        "Value: ]",
+        "Line: 27"
+    ],
+    [
+        "type: COMMA",
+        "Value: ,",
+        "Line: 27"
+    ],
+    [
+        "type: IDF",
+        "Value: Lettre",
+        "Line: 27"
+    ],
+    [
+        "type: RPAREN",
+        "Value: )",
         "Line: 27"
     ],
     [
@@ -1025,8 +1000,173 @@
         "Line: 27"
     ],
     [
+        "type: WRITE",
+        "Value: WRITE",
+        "Line: 28"
+    ],
+    [
+        "type: LPAREN",
+        "Value: (",
+        "Line: 28"
+    ],
+    [
+        "type: STRING",
+        "Value: \"Hello World !\"",
+        "Line: 28"
+    ],
+    [
+        "type: RPAREN",
+        "Value: )",
+        "Line: 28"
+    ],
+    [
+        "type: SEMICOL",
+        "Value: ;",
+        "Line: 28"
+    ],
+    [
+        "type: WRITE",
+        "Value: WRITE",
+        "Line: 29"
+    ],
+    [
+        "type: LPAREN",
+        "Value: (",
+        "Line: 29"
+    ],
+    [
+        "type: STRING",
+        "Value: \"test\"",
+        "Line: 29"
+    ],
+    [
+        "type: COMMA",
+        "Value: ,",
+        "Line: 29"
+    ],
+    [
+        "type: IDF",
+        "Value: A",
+        "Line: 29"
+    ],
+    [
+        "type: PLUS",
+        "Value: +",
+        "Line: 29"
+    ],
+    [
+        "type: INTEGER",
+        "Value: 2",
+        "Line: 29"
+    ],
+    [
+        "type: COMMA",
+        "Value: ,",
+        "Line: 29"
+    ],
+    [
+        "type: STRING",
+        "Value: \"test\"",
+        "Line: 29"
+    ],
+    [
+        "type: RPAREN",
+        "Value: )",
+        "Line: 29"
+    ],
+    [
+        "type: SEMICOL",
+        "Value: ;",
+        "Line: 29"
+    ],
+    [
+        "type: READ",
+        "Value: READ",
+        "Line: 30"
+    ],
+    [
+        "type: LPAREN",
+        "Value: (",
+        "Line: 30"
+    ],
+    [
+        "type: IDF",
+        "Value: A",
+        "Line: 30"
+    ],
+    [
+        "type: RPAREN",
+        "Value: )",
+        "Line: 30"
+    ],
+    [
+        "type: SEMICOL",
+        "Value: ;",
+        "Line: 30"
+    ],
+    [
+        "type: IDF",
+        "Value: A",
+        "Line: 31"
+    ],
+    [
+        "type: EQUALS",
+        "Value: =",
+        "Line: 31"
+    ],
+    [
+        "type: INTEGER",
+        "Value: 5",
+        "Line: 31"
+    ],
+    [
+        "type: MINUS",
+        "Value: -",
+        "Line: 31"
+    ],
+    [
+        "type: INTEGER",
+        "Value: -3",
+        "Line: 31"
+    ],
+    [
+        "type: MULTIPLY",
+        "Value: *",
+        "Line: 31"
+    ],
+    [
+        "type: INTEGER",
+        "Value: 12",
+        "Line: 31"
+    ],
+    [
+        "type: PLUS",
+        "Value: +",
+        "Line: 31"
+    ],
+    [
+        "type: INTEGER",
+        "Value: -62",
+        "Line: 31"
+    ],
+    [
+        "type: PLUS",
+        "Value: +",
+        "Line: 31"
+    ],
+    [
+        "type: INTEGER",
+        "Value: 12",
+        "Line: 31"
+    ],
+    [
+        "type: SEMICOL",
+        "Value: ;",
+        "Line: 31"
+    ],
+    [
         "type: RBRACE",
         "Value: }",
-        "Line: 28"
+        "Line: 32"
     ]
 ]

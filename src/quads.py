@@ -23,7 +23,7 @@ def new_label():
     label_count += 1
     return f"L{label_count}"
 
-def generate_condition(condition, true_label, false_label, line_number):
+def generate_condition(condition, true_label, false_label):
     """Generate quadruplets for conditions with correct precedence and handle 'not' properly."""
     if not isinstance(condition, list):
         return  # Base case for literals or unexpected inputs
@@ -45,8 +45,7 @@ def generate_condition(condition, true_label, false_label, line_number):
                 generate_condition(
                     ["condition", swapped_operator, inverted_left, inverted_right],
                     true_label,
-                    false_label,
-                    line_number
+                    false_label
                 )
 
             elif operator in [">", "<", ">=", "<=", "==", "!="]:  # Binop: invert comparison
@@ -62,13 +61,12 @@ def generate_condition(condition, true_label, false_label, line_number):
                 generate_condition(
                     ["condition", inverted_operator, inner_condition[2], inner_condition[3]],
                     true_label,
-                    false_label,
-                    line_number
+                    false_label
                 )
 
         else:
             # For all other cases, invert the logic by swapping true and false labels
-            generate_condition(inner_condition, false_label, true_label, line_number)
+            generate_condition(inner_condition, false_label, true_label)
 
         return
 
@@ -80,18 +78,18 @@ def generate_condition(condition, true_label, false_label, line_number):
         if operator == "&&":  # AND logic
             intermediate_label = new_label()
             # Left operand must evaluate to True
-            generate_condition(condition[2], intermediate_label, false_label, line_number)
+            generate_condition(condition[2], intermediate_label, false_label)
             # Right operand must evaluate to True
-            quadruplets.append((["label", intermediate_label, None, None], line_number))
-            generate_condition(condition[3], true_label, false_label, line_number)
+            quadruplets.append((["label", intermediate_label, None, None]))
+            generate_condition(condition[3], true_label, false_label)
 
         elif operator == "||":  # OR logic
             intermediate_label = new_label()
             # Left operand must evaluate to False to continue checking the right
-            generate_condition(condition[2], true_label, intermediate_label, line_number)
+            generate_condition(condition[2], true_label, intermediate_label)
             # Right operand must evaluate to True
-            quadruplets.append((["label", intermediate_label, None, None], line_number))
-            generate_condition(condition[3], true_label, false_label, line_number)
+            quadruplets.append((["label", intermediate_label, None, None]))
+            generate_condition(condition[3], true_label, false_label)
 
         else:  # Comparison operators (>, <, ==, etc.)
             left_operand = generate_code(condition[2])
@@ -104,17 +102,17 @@ def generate_condition(condition, true_label, false_label, line_number):
                 "==": "BNE",  # Branch if !=
                 "!=": "BE",  # Branch if ==
             }[operator]
-            quadruplets.append(([inverse_operator, false_label, left_operand, right_operand], line_number))
-            quadruplets.append((["BR", true_label, None, None], line_number))
+            quadruplets.append(([inverse_operator, false_label, left_operand, right_operand]))
+            quadruplets.append((["BR", true_label, None, None]))
 
     elif condition_type == "value":
         # Standalone value (e.g., boolean literals)
         temp_var = generate_code(condition)
-        quadruplets.append((["BNE", true_label, temp_var, 0], line_number))
-        quadruplets.append((["BR", false_label, None, None], line_number))
+        quadruplets.append((["BNE", true_label, temp_var, 0]))
+        quadruplets.append((["BR", false_label, None, None]))
 
 # Recursive function to process AST and generate quadruplets
-def generate_code(node, line=None):
+def generate_code(node):
     if not isinstance(node, list):
         return node  # Base case: Return literals or variable names directly
 
@@ -129,39 +127,40 @@ def generate_code(node, line=None):
     elif node_type == "type_decl":
         for var in node[2]:
             if var[0] == "var":
-                _, name, line_number = var
-                quadruplets.append((["DECLARE", name, None, None], line_number))
+                _, name,_ = var
+                quadruplets.append((["DECLARE", name, None, None]))
             
             elif var[0] == "var_init":
-                _, name, value, line_number = var
-                quadruplets.append((["DECLARE", name, None, None], line_number))
-                quadruplets.append((["=", value, None, name], line_number))
+                _, name, value,_ = var
+                quadruplets.append((["DECLARE", name, None, None]))
+                quadruplets.append((["=", value, None, name]))
 
             elif var[0] == "array":
-                _, name, size, line_number = var
-                quadruplets.append((["ADEC", name, size, None], line_number))
+                _, name, size,_ = var
+                quadruplets.append((["ADEC", name, size, None]))
 
     elif node_type == "const_decl":
-        _, _, idf, value, line_number = node
-        quadruplets.append((["const", value, None, idf], line_number))
+        _, _, idf, value,_ = node
+        quadruplets.append((["const", value, None, idf]))
 
     elif node_type == "assign":
-        _, idf, expression, line_number = node
-        expr_result = generate_code(expression, line_number)
-        quadruplets.append((["=", expr_result, None, idf], line_number))
+        _, idf, expression,_ = node
+        expr_result = generate_code(expression)
+        quadruplets.append((["=", expr_result, None, idf]))
 
     elif node_type == "array_assign":
-        _, idf, index, value, line_number = node
-        index_result = generate_code(index, line_number)
-        value_result = generate_code(value, line_number)
-        quadruplets.append((["SUBS", value_result, index_result, idf], line_number))
+        _, idf, index, value,_ = node
+        index_result = generate_code(index)
+        value_result = generate_code(value)
+        array_var = idf + "[" + str(index_result) + "]"
+        quadruplets.append((["=", value_result, None, array_var]))
 
     elif node_type == "binop":
         _, operator, left, right = node
-        left_result = generate_code(left, line)
-        right_result = generate_code(right, line)
+        left_result = generate_code(left)
+        right_result = generate_code(right)
         temp_var = new_temp()
-        quadruplets.append(([operator, left_result, right_result, temp_var], line))
+        quadruplets.append(([operator, left_result, right_result, temp_var]))
         return temp_var
 
     elif node_type == "value":
@@ -169,13 +168,15 @@ def generate_code(node, line=None):
 
     elif node_type == "array_access":
         _, idf, index = node
-        index_result = generate_code(index, line)
-        temp_var = new_temp()
-        quadruplets.append((["SUBS", idf, index_result, temp_var], line))
-        return temp_var
+        index_result = generate_code(index)
+        #temp_var = new_temp()
+        #quadruplets.append((["SUBS", idf, index_result, temp_var]))
+        #return temp_var
+        array_var = idf + "[" + str(index_result) + "]"
+        return array_var
 
     elif node_type == "if":
-        _, condition, if_block, line_number = node
+        _, condition, if_block,_ = node
 
         # Generate labels
         true_label = new_label()
@@ -186,20 +187,20 @@ def generate_code(node, line=None):
         generate_condition(condition, true_label, false_label)
 
         # True block
-        quadruplets.append((["label", true_label, None, None], None))
+        quadruplets.append((["label", true_label, None, None]))
         for instruction in if_block:
             generate_code(instruction)
-        quadruplets.append((["BR", end_label, None, None], None))
+        quadruplets.append((["BR", end_label, None, None]))
 
         # False block label
-        quadruplets.append((["label", false_label, None, None], None))
+        quadruplets.append((["label", false_label, None, None]))
 
         # End label
-        quadruplets.append((["label", end_label, None, None], line_number))
+        quadruplets.append((["label", end_label, None, None]))
 
     elif node_type == "if_else":
         # Extract condition, if block, and else block
-        _, condition, if_block, else_block, line_number = node
+        _, condition, if_block, else_block,_ = node
 
         # Generate labels
         true_label = new_label()
@@ -207,56 +208,56 @@ def generate_code(node, line=None):
         end_label = new_label()
 
         # Generate condition logic
-        generate_condition(condition, true_label, false_label, line_number)
+        generate_condition(condition, true_label, false_label)
 
         # True block
-        quadruplets.append((["label", true_label, None, None], None))
+        quadruplets.append((["label", true_label, None, None]))
         for instruction in if_block:
             generate_code(instruction)
-        quadruplets.append((["BR", end_label, None, None], None))
+        quadruplets.append((["BR", end_label, None, None]))
 
         # False block
-        quadruplets.append((["label", false_label, None, None], None))
+        quadruplets.append((["label", false_label, None, None]))
         for instruction in else_block:
             generate_code(instruction)
 
         # End label
-        quadruplets.append((["label", end_label, None, None], line_number))
+        quadruplets.append((["label", end_label, None, None]))
 
     elif node_type == "for":
-        _, initialization, step, stop_condition, body, line_number = node
+        _, initialization, step, stop_condition, body,_ = node
 
         loop_var = initialization[1]
-        init_value = generate_code(initialization[2], line_number)
-        step_value = generate_code(step, line_number)
-        stop_value = generate_code(stop_condition, line_number)
+        init_value = generate_code(initialization[2])
+        step_value = generate_code(step)
+        stop_value = generate_code(stop_condition)
 
         start_label = new_label()
         end_label = new_label()
 
-        quadruplets.append((["=", init_value, None, loop_var], line_number))
-        quadruplets.append((["label", start_label, None, None], line_number))
-        quadruplets.append((["BG", end_label, loop_var, stop_value], line_number))
+        quadruplets.append((["=", init_value, None, loop_var]))
+        quadruplets.append((["label", start_label, None, None]))
+        quadruplets.append((["BG", end_label, loop_var, stop_value]))
 
         for instruction in body:
             generate_code(instruction)
 
         temp_step = new_temp()
-        quadruplets.append((["+", loop_var, step_value, temp_step], line_number))
-        quadruplets.append((["=", temp_step, None, loop_var], line_number))
-        quadruplets.append((["BR", start_label, None, None], line_number))
-        quadruplets.append((["label", end_label, None, None], line_number))
+        quadruplets.append((["+", loop_var, step_value, temp_step]))
+        quadruplets.append((["=", temp_step, None, loop_var]))
+        quadruplets.append((["BR", start_label, None, None]))
+        quadruplets.append((["label", end_label, None, None]))
 
     elif node_type == "write":
         # Include line number for the write operation
-        expressions, line_number = node[1], node[2]
+        _ , expressions , _ = node
         for expression in expressions:
-            expr_result = generate_code(expression, line_number)
-            quadruplets.append((["WRITE", expr_result, None, None], line_number))
+            expr_result = generate_code(expression)
+            quadruplets.append((["WRITE", expr_result, None, None]))
 
     elif node_type == "read":
-        _, idf, line_number = node
-        quadruplets.append((["READ", idf, None, None], line_number))
+        _, idf,_ = node
+        quadruplets.append((["READ", idf, None, None]))
 
     return None
 
@@ -265,5 +266,5 @@ def generate_code(node, line=None):
 
 # Print all quadruplets with line numbers
 #print("Generated Quadruplets with Line Numbers:")
-#for quad, line in quadruplets:
+#for quad in quadruplets:
 #    print(f"{quad} {line}")

@@ -6,6 +6,13 @@
         "size": 100,
         "const": false
     },
+    "Var9": {
+        "value": "                                                                                                    ",
+        "type": "CHAR",
+        "is_array": true,
+        "size": 100,
+        "const": false
+    },
     "A": {
         "value": null,
         "type": "INTEGER",
@@ -38,12 +45,19 @@
         "size": 10,
         "const": false
     },
-    "D": {
-        "value": null,
+    "C": {
+        "value": 15,
         "type": "INTEGER",
         "is_array": false,
         "size": null,
         "const": false
+    },
+    "MAX": {
+        "value": 100,
+        "type": "INTEGER",
+        "is_array": false,
+        "size": null,
+        "const": true
     },
     "Var8": {
         "value": "'A'",
@@ -100,25 +114,11 @@
         "size": 20,
         "const": false
     },
-    "Var9": {
-        "value": "                                                                                                    ",
-        "type": "CHAR",
-        "is_array": true,
-        "size": 100,
-        "const": false
-    },
-    "C": {
-        "value": 15,
+    "D": {
+        "value": null,
         "type": "INTEGER",
         "is_array": false,
         "size": null,
         "const": false
-    },
-    "MAX": {
-        "value": 100,
-        "type": "INTEGER",
-        "is_array": false,
-        "size": null,
-        "const": true
     }
 }

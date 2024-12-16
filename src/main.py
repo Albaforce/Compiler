@@ -22,12 +22,16 @@ DECLARATION {
 INSTRUCTION {
     A = 10;
     B[2+A] = A ;
+    B[A+C] = B[C-A] ;
     Chaine[0] = 'A' ;
     Lettre = 'Z'; 
     IF (A == 0 && (C == 5 || C != 2)) {
         A = B[E[3+1] / 12 + 2 ] + 1;
     } ELSE {
         A = 1;
+    }
+    IF(A == 5){
+        A = A + 1 ;
     }
     FOR(A = 0 : 1+A: B[E[3+1] / 12 + 2 ]) {
         A = A + 1;
@@ -135,24 +139,45 @@ except ValueError as e:
 
 
 # -------------------------- Quadruplets -------------------------------
-with open("JSON/parse.json", 'r') as file:
+with open("src/JSON/parse.json", 'r') as file:
         ast = json.load(file)  # Remplacez par l'AST donné
 
 # Cas d'erreur Syntaxique
 if not ast :
     exit()
-try:
-    # Generate quadruplets
-    quads.generate_code(ast)
+
+# Generate quadruplets
+quads.generate_code(ast)
     
-    # Print and save quadruplets
-    print("Generated Quadruplets:")
-    for quad, line in quads.quadruplets:
-        print(f"{quad} {line}")
+# Print and save quadruplets
+print("Generated Quadruplets:")
+for quad in quads.quadruplets:
+    print(f"{quad}")
 
-    with open("JSON/quadruplets.json", 'w') as file:
-        json.dump(quads.quadruplets, file, indent=4)
+with open("src/JSON/quadruplets.json", 'w') as file:
+    json.dump(quads.quadruplets, file, indent=4)
 
+
+
+"""
+# ------------------------------------ Execution -------------------------------
+
+# Charger les quadruplets générés dans quads.py
+with open("src/JSON/quadruplets.json", "r") as file:
+    quadruplets = json.load(file)
+
+# init hash_table 
+with open("src/JSON/Symbol_Table.json", 'r') as file:
+    table = json.load(file)
+
+hash_table = HashTable()
+hash_table.load_from_dict(table)
+
+executor = QuadrupletExecutor(quadruplets , hash_table)
+try :
+    executor.execute()
+    hash_table.save_to_json("src/JSON/Symbol_Table.json")
 except ValueError as e:
-    print(f"Erreur lors de la génération des quadruplets : {e}")
-    exit()
+    print(e)
+
+"""
