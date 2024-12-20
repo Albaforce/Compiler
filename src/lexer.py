@@ -86,7 +86,7 @@ class MinINGLexer:
             if '_' in t.value:
                 self.errors.append(f"Error: Identifier {t.value} contains underscores, which are not allowed.")
             if len(t.value) > 8:
-                #raise ValueError(f"Erreur lexical : Identifier {t.value} is too long (max 8 chars) at line {t.lexer.lineno}")
+                raise ValueError(f"Erreur lexical : Identifier {t.value} is too long (max 8 chars) at line {t.lexer.lineno}")
                 self.errors.append(f"Warning: Identifier {t.value} is too long (max 8 chars).")
                 t.value = t.value[:8]
         return t
