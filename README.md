@@ -36,10 +36,10 @@ This project is a mini-compiler developed as part of the Information Security sp
 ### Folder
 - **JSON/**  
 Contains the JSON files generated at different steps of the compilation process:
-- **Symbol_Table.json**: Stores the symbol table generated during compilation, including details about variables, constants, arrays, and their properties.
-- **lexer.json**: Output of the lexical analysis phase, containing all identified tokens.
-- **parse.json**: Stores the parsed program structure or details about the AST.
-- **quadruplets.json**: Contains the quadruples generated during intermediate code generation, representing instructions in a simplified format.
+    - **Symbol_Table.json**: Stores the symbol table generated during compilation, including details about variables, constants, arrays, and their properties.
+    - **lexer.json**: Output of the lexical analysis phase, containing all identified tokens.
+    - **parse.json**: Stores the parsed program structure or details about the AST.
+    - **quadruplets.json**: Contains the quadruples generated during intermediate code generation, representing instructions in a simplified format.
 
 
 ## Usage
