@@ -1,26 +1,31 @@
-DECLARATION { 
-INTEGER A , B [ (-10) ] , C = 15 , D , E [ 5 ] ; 
-FLOAT Var6 , Var7 [ 20 ] ; 
-CHAR Var8 = 'A' , Var9 [ 100 ] , Chaine [ 100 ] , Ch [ ] = "t" ; 
-CONST INTEGER MAX = 100 ; 
-CHAR Lettre ; 
-} 
-INSTRUCTION { 
-A = 10 ; 
-B [ 3 ] = 2 ; 
-Ch [ 0 ] = 'E' ; 
-Lettre = 'Z' ; 
-IF ( A > 5 ) { 
-A = B [ 2 ] + 1 ; 
-} ELSE { 
-A = 1 ; 
-} 
-FOR ( I = 0 : 2 : N ) { 
-A = A + 1 ; 
-} 
-WRITE ( A , B [ 2 ] , Ch , Lettre ) ; 
-WRITE ( "Hello World !" ) ; 
-WRITE ( "test" , A + 2 , "test" ) ; 
-READ ( A ) ; 
-X = 5.8 - (-3.6) + 12 + (-62) * 12 ; 
-} 
+DECLARATION {
+    INTEGER A, B[(+10)], C = 15, D, E[5];
+    FLOAT Var6, Var7[20];
+    CHAR Var8 = 'A', Var9[100], Chaine[100];
+    CONST INTEGER MAX = 100;
+    CHAR Lettre;
+}
+INSTRUCTION {
+    A = 10;
+    B[2+A] = A ;
+    B[A+C] = B[C-A] ;
+    Chaine[0] = 'A' ;
+    Lettre = 'Z'; 
+    IF (A == 0 && (C == 5 || C != 2)) {
+        A = B[E[3+1] / 12 + 2 ] + 1;
+    } ELSE {
+        A = 1;
+    }
+    IF(A == 5){
+        A = A + 1 ;
+    }
+    FOR(A = 0 : 1+A: B[E[3+1] / 12 + 2 ]) {
+        A = A + 1;
+    } 
+    WRITE(2);
+    WRITE(A, B[2], Lettre);
+    WRITE("Hello World !");
+    WRITE("test",A+2,"test");
+    READ(A);
+    A = (+5) - (-3) * 12 + (-62) + (+12) ;
+}
